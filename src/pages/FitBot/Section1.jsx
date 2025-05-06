@@ -17,54 +17,39 @@ const FitBot = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
-    setLoading(true);
-    setError(null);
+ // FitBot.js (Frontend)
+const sendMessage = async () => {
+  if (!input.trim()) return;
 
-    const userMessage = { role: "user", content: input };
-    const updatedMessages = [...messages, userMessage];
-    setMessages(updatedMessages);
-    setInput("");
+  setLoading(true);
+  setError(null);
 
-    try {
-      // Format messages for Hugging Face API
-      const prompt = updatedMessages
-        .map((msg) => `${msg.role === "user" ? "User" : "Assistant"}: ${msg.content}`)
-        .join("\n") + "\nAssistant:";
+  const userMessage = { role: "user", content: input };
+  const updatedMessages = [...messages, userMessage];
+  setMessages(updatedMessages);
+  setInput("");
 
-      const response = await axios.post(
-        "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1",
-        {
-          inputs: prompt,
-          parameters: {
-            max_new_tokens: 300,
-            temperature: 0.7,
-            return_full_text: false,
-          },
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/api/auth/chat",
+      { messages: updatedMessages },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer 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`,
-            "Content-Type": "application/json",
-          },
-          timeout: 15000,
-        }
-      );
+      }
+    );
 
-      const botResponse = response.data[0]?.generated_text || "I didn't get that. Could you please rephrase your question?";
-      setMessages([...updatedMessages, { role: "assistant", content: botResponse }]);
-    } catch (err) {
-      console.error("API Error:", err);
-      setError("Failed to get response. Please try again later.");
-      setMessages([...updatedMessages, { 
-        role: "assistant", 
-        content: "Sorry, I'm having some technical difficulties right now. Please try again in a few moments." 
-      }]);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setMessages([...updatedMessages, { 
+      role: "assistant", 
+      content: response.data.response 
+    }]);
+  } catch (err) {
+    setError(err.response?.data?.error || "Failed to connect to FitBot");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !loading) {

@@ -3,18 +3,18 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/HomePage/Home";
 import Signin from "./pages/SigninPage/Signin";
-import Report from "./pages/ReportPage/Report";
-import LostItems from "./pages/LostItemsPage/LostItems";
-import FoundItems from "./pages/FoundItemsPage/FoundItems";
+import Report from "./pages/BMICalculator/Report.jsx";
+import LostItems from "./pages/FitBot/LostItems.jsx";
+import FoundItems from "./pages/VirtualTrainingAssistant/FoundItems.jsx";
 import EditProfile from "./pages/EditProfilePage/EditProfile";
-import MyListings from "./pages/MyReports/MyReports";
+import MyListings from "./pages/WorkoutPlanGenerator/MyReports.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NotificationsPage from "./pages/NotificationsPage/NotificationsPage";
 import VerificationPage from "./pages/VerficationPage/VerificationPage";
 import UserLogsPage from "./pages/UserLogsPage/UserLogsPage.jsx";
 import AllUserLogsPage from "./pages/AllUserLogsPage/AllUserLogsPage.jsx";
-import AdminLogsPage from "./pages/AdminLogsPage/AdminLogsPage.jsx";
+import AdminLogsPage from "./pages/CalorieTracker/AdminLogsPage.jsx";
 import  Contactus from './pages/ContactusPage/Contactus.jsx'
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
