@@ -1,0 +1,186 @@
+// FitBot.js - Updated with professional styling
+import React, { useState } from "react";
+import axios from "axios";
+import { FiCopy, FiRefreshCw } from "react-icons/fi";
+import { FaDumbbell, FaHeartbeat, FaRunning } from "react-icons/fa";
+import { BsRobot } from "react-icons/bs";
+import { IoMdSend } from "react-icons/io";
+
+const FitBot = () => {
+  const [messages, setMessages] = useState([
+    {
+      role: "assistant",
+      content: "Hi there! I'm FitBot, your AI fitness assistant. How can I help you with your workout today? 💪",
+    },
+  ]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+    setLoading(true);
+    setError(null);
+
+    const userMessage = { role: "user", content: input };
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
+    setInput("");
+
+    try {
+      // Format messages for Hugging Face API
+      const prompt = updatedMessages
+        .map((msg) => `${msg.role === "user" ? "User" : "Assistant"}: ${msg.content}`)
+        .join("\n") + "\nAssistant:";
+
+      const response = await axios.post(
+        "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1",
+        {
+          inputs: prompt,
+          parameters: {
+            max_new_tokens: 300,
+            temperature: 0.7,
+            return_full_text: false,
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer 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`,
+            "Content-Type": "application/json",
+          },
+          timeout: 15000,
+        }
+      );
+
+      const botResponse = response.data[0]?.generated_text || "I didn't get that. Could you please rephrase your question?";
+      setMessages([...updatedMessages, { role: "assistant", content: botResponse }]);
+    } catch (err) {
+      console.error("API Error:", err);
+      setError("Failed to get response. Please try again later.");
+      setMessages([...updatedMessages, { 
+        role: "assistant", 
+        content: "Sorry, I'm having some technical difficulties right now. Please try again in a few moments." 
+      }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !loading) {
+      sendMessage();
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center p-4 md:p-8">
+      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-green-500 to-blue-600 p-6 text-white">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <BsRobot className="text-2xl mr-3" />
+              <div>
+                <h1 className="text-2xl font-bold">FITBOT</h1>
+                <p className="text-sm opacity-90">Your AI Fitness Assistant</p>
+              </div>
+            </div>
+            <div className="flex space-x-2">
+              <button className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition">
+                <FiRefreshCw className="text-lg" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Chat Container */}
+        <div className="h-96 md:h-[32rem] overflow-y-auto p-4 bg-gray-50">
+          {messages.map((msg, index) => (
+            <div
+              key={index}
+              className={`flex mb-4 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+            >
+              <div
+                className={`max-w-xs md:max-w-md lg:max-w-lg rounded-2xl p-4 ${
+                  msg.role === "user"
+                    ? "bg-blue-500 text-white rounded-br-none"
+                    : "bg-white text-gray-800 shadow-sm rounded-bl-none"
+                }`}
+              >
+                <div className="flex items-center mb-1">
+                  {msg.role === "assistant" ? (
+                    <BsRobot className="mr-2 text-green-500" />
+                  ) : (
+                    <div className="w-4 h-4 rounded-full bg-white/50 mr-2"></div>
+                  )}
+                  <span className="text-xs font-medium">
+                    {msg.role === "user" ? "You" : "FitBot"}
+                  </span>
+                </div>
+                <p className="whitespace-pre-wrap">{msg.content}</p>
+              </div>
+            </div>
+          ))}
+          {loading && (
+            <div className="flex justify-start mb-4">
+              <div className="bg-white text-gray-800 shadow-sm rounded-2xl rounded-bl-none p-4 max-w-xs">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Input Area */}
+        <div className="border-t border-gray-200 bg-white p-4">
+          {error && (
+            <div className="mb-3 px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
+          <div className="flex">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              className="flex-1 px-4 py-3 rounded-l-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              placeholder="Ask FitBot about workouts, nutrition, etc..."
+              disabled={loading}
+            />
+            <button
+              onClick={sendMessage}
+              className="px-6 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-r-lg hover:opacity-90 transition disabled:opacity-50 flex items-center justify-center"
+              disabled={loading || !input.trim()}
+            >
+              {loading ? (
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              ) : (
+                <IoMdSend className="text-xl" />
+              )}
+            </button>
+          </div>
+          <div className="mt-3 flex items-center justify-center space-x-4">
+            <button className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full flex items-center">
+              <FaDumbbell className="mr-1 text-green-500" /> Workout
+            </button>
+            <button className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full flex items-center">
+              <FaHeartbeat className="mr-1 text-red-500" /> Nutrition
+            </button>
+            <button className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full flex items-center">
+              <FaRunning className="mr-1 text-blue-500" /> Cardio
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FitBot;

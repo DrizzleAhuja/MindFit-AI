@@ -1,0 +1,288 @@
+/* styles.css */
+
+/* General Styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Dark Mode */
+  .dark-mode {
+    background-color: #1a1a1a;
+    color: #f5f5f5;
+  }
+  
+  .dark-mode .bg-gray-100 {
+    background-color: #2a2a2a;
+  }
+  
+  .dark-mode .bg-gray-200 {
+    background-color: #3a3a3a;
+  }
+  
+  .dark-mode .text-gray-600 {
+    color: #b0b0b0;
+  }
+  
+  .dark-mode .text-gray-900 {
+    color: #f5f5f5;
+  }
+  
+  .dark-mode .border-gray-300 {
+    border-color: #444;
+  }
+  
+  .dark-mode .border-gray-600 {
+    border-color: #666;
+  }
+  
+  /* Container Styles */
+  .container {
+    padding: 10px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Header Styles */
+  .header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .header h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  
+  .header h6 {
+    font-size: 1.125rem;
+    color: #666;
+  }
+  
+  /* Search Bar Styles */
+  .search-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .search-bar input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .search-bar button {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .search-bar button:hover {
+    background-color: #4338ca;
+  }
+  
+  /* Category Buttons */
+  .category-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .category-buttons button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+  
+  .category-buttons button:hover {
+    background-color: #e2e2e2;
+  }
+  
+  /* Item Cards */
+  .item-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .item-card {
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+  }
+  
+  .item-card h3 {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  .item-card p {
+    font-size: 0.875rem;
+    margin: 5px 0;
+  }
+  
+  .item-card .actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  
+  .item-card button {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .item-card button.delete {
+    background-color: #f56565;
+    color: white;
+  }
+  
+  .item-card button.delete:hover {
+    background-color: #e53e3e;
+  }
+  
+  .item-card button.claim {
+    background-color: #48bb78;
+    color: white;
+  }
+  
+  .item-card button.claim:hover {
+    background-color: #38a169;
+  }
+  
+  .item-card button.edit {
+    background-color: #3182ce;
+    color: white;
+  }
+  
+  .item-card button.edit:hover {
+    background-color: #2b6cb0;
+  }
+  
+  /* Edit Form */
+  .edit-form {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+  }
+  
+  .edit-form h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+  
+  .edit-form label {
+    display: block;
+    font-size: 0.875rem;
+    margin-bottom: 5px;
+  }
+  
+  .edit-form input,
+  .edit-form textarea,
+  .edit-form select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+  }
+  
+  .edit-form input[type="file"] {
+    padding: 0;
+  }
+  
+  .edit-form button {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .edit-form button.save {
+    background-color: #4f46e5;
+    color: white;
+    margin-right: 10px;
+  }
+  
+  .edit-form button.save:hover {
+    background-color: #4338ca;
+  }
+  
+  .edit-form button.cancel {
+    background-color: #e2e2e2;
+    color: black;
+  }
+  
+  .edit-form button.cancel:hover {
+    background-color: #d4d4d4;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .header h1 {
+      font-size: 2rem;
+    }
+  
+    .header h6 {
+      font-size: 1rem;
+    }
+  
+    .search-bar input {
+      max-width: 100%;
+    }
+  
+    .category-buttons button {
+      flex: 1 1 45%;
+    }
+  
+    .item-cards {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+  
+    .edit-form input,
+    .edit-form textarea,
+    .edit-form select {
+      font-size: 0.875rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .header h1 {
+      font-size: 1.5rem;
+    }
+  
+    .header h6 {
+      font-size: 0.875rem;
+    }
+  
+    .category-buttons button {
+      flex: 1 1 100%;
+    }
+  
+    .edit-form input,
+    .edit-form textarea,
+    .edit-form select {
+      font-size: 0.75rem;
+    }
+  }
+  

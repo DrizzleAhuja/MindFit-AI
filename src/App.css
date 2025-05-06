@@ -1,0 +1,81 @@
+body {
+  overflow-x: hidden;
+}
+
+.vertical-line {
+  height: 80%;
+  border-left: 2px solid #ccc;
+  margin: 0 20px;
+}
+
+.pi.pi-eye,
+.pi.pi-eye-slash {
+  font-size: 2vw;
+}
+
+.custom-dropdown .p-dropdown-item {
+  font-size: 200vw;
+}
+
+/* Settings.css */
+.settings-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.settings-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.settings-title .fa-cog {
+  margin-left: 0.5rem;
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-form label {
+  margin-top: 1rem;
+}
+
+.settings-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+/* src/index.css */
+:root {
+  --background-color: #ffffff;
+  --text-color: #000000;
+}
+
+.dark {
+  --background-color: #121212;
+  --text-color: #ffffff;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+body {
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.dark {
+  background-color: #1a202c; /* Dark background */
+  color: #e2e8f0; /* Light text color */
+}
+/* Add this to App.css */
+
+.blur-background {
+  filter: blur(5px);
+  pointer-events: none;
+}

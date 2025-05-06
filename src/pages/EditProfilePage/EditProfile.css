@@ -1,0 +1,91 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+header, footer {
+  width: 100%;
+  position: fixed;
+  left: 0;
+  z-index: 1000;
+}
+
+header {
+  top: 0;
+}
+
+footer {
+  bottom: 0;
+}
+
+.edit-profile-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  margin-top: 100px; /* To create space for the fixed header */
+  margin-bottom: 80px; /* To create space for the fixed footer */
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+.edit-profile-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.dark {
+  background-color: #333;
+  color: #fff;
+}
+
+.light {
+  background-color: #f9f9f9;
+  color: #000;
+}
+
+.dark-input {
+  background-color: #444;
+  color: #fff;
+  border: 1px solid #555;
+}
+
+.dark-btn {
+  background-color: #555;
+  color: #fff;
+}
+
+.dark-delete-btn {
+  background-color: #b00;
+  color: #fff;
+}
+
+.delete-btn {
+  background-color: #f44336;
+  color: #fff;
+}
