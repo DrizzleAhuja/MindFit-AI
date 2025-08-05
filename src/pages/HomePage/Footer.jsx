@@ -46,8 +46,9 @@ export default function Footer({ darkMode }) {
           <div className="lg:col-span-1">
             <NavLink
               to="/"
-              className="text-2xl font-bold mb-4 inline-block"
+              className="text-2xl font-bold mb-4 inline-block flex items-center gap-2"
             >
+              <img src="/src/assets/logo.svg" alt="FitSync Logo" className="w-8 h-8" />
               <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
                 Fit<span className={darkMode ? "text-white" : "text-gray-800"}>Sync</span>
               </span>

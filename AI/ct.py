@@ -13,7 +13,7 @@ html = """
 <div style="background-color:#025246 ;padding:10px">
 <h2 style="color:white;text-align:center;">Nutrition</h2>
 </div>"""
-st.markdown(html, unsafe_allow_html=True) 
+st.markdown(html, unsafe_allow_html=True)
 
 st.write("")
 

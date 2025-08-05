@@ -1,15 +1,18 @@
 {
-  "name": "00.-vite-app",
+  "name": "fitsync",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "server": "cd Server && npm run dev",
+    "build:server": "cd Server && npm install",
+    "build:all": "npm run build && npm run build:server",
+    "start": "cd Server && npm start",
     "dev": "concurrently -n \"client,server\" -c \"bgBlue,bgYellow\" \"npm run start-client\" \"npm run server\"",
-    "start-client": "vite"
+    "start-client": "vite",
+    "server": "cd Server && npm run dev",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@mediapipe/hands": "^0.4.1675469240",

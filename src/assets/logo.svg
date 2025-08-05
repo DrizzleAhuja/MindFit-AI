@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Dumbbell -->
+    <g transform="translate(96, 206)">
+        <rect x="0" y="30" width="320" height="40" rx="20" fill="url(#gradient)" />
+        <rect x="40" y="0" width="40" height="100" rx="10" fill="url(#gradient)" />
+        <rect x="240" y="0" width="40" height="100" rx="10" fill="url(#gradient)" />
+    </g>
+    <!-- Sync Arrows -->
+    <g transform="translate(206, 156) rotate(45)">
+        <path d="M50,0 A50,50 0 1,1 0,50 L0,25 L-25,50 L0,75 L0,50 A25,25 0 1,0 25,25 Z" fill="url(#gradient)" />
+    </g>
+    <g transform="translate(306, 356) rotate(225)">
+        <path d="M50,0 A50,50 0 1,1 0,50 L0,25 L-25,50 L0,75 L0,50 A25,25 0 1,0 25,25 Z" fill="url(#gradient)" />
+    </g>
+    <!-- Gradient Definition -->
+    <defs>
+        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#3B82F6" />
+            <stop offset="50%" style="stop-color:#8B5CF6" />
+            <stop offset="100%" style="stop-color:#3B82F6" />
+        </linearGradient>
+    </defs>
+</svg> 

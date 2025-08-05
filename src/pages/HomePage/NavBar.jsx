@@ -7,6 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { FiMenu, FiX, FiUser, FiEdit2, FiLogOut, FiSun, FiMoon } from "react-icons/fi";
+import { API_ENDPOINTS } from "../../config/api";
 
 export default function NavBar({ darkMode, toggleDarkMode }) {
   const dispatch = useDispatch();
@@ -42,7 +43,7 @@ export default function NavBar({ darkMode, toggleDarkMode }) {
   const handleLoginSuccess = async (response) => {
     try {
       const { credential } = response;
-      const res = await axios.post("http://localhost:8000/api/auth/login", {
+      const res = await axios.post(API_ENDPOINTS.LOGIN, {
         token: credential,
         role,
       });
@@ -87,7 +88,7 @@ export default function NavBar({ darkMode, toggleDarkMode }) {
   return (
     <>
       <ToastContainer position="top-center" autoClose={2000} />
-      <GoogleOAuthProvider clientId="860312032073-8mfimrab6r5t9e09hj8ibl0n498tmf9g.apps.googleusercontent.com">
+      <GoogleOAuthProvider clientId="702465560392-m5dmr0ompctjmnglnnt224s6h9qj9ptg.apps.googleusercontent.com">
         <nav className={`sticky top-0 left-0 w-full z-50 ${darkMode ? "bg-gray-900" : "bg-white"} shadow-md`}>
           <div className="container mx-auto px-4 py-3 flex justify-between items-center">
             {/* Logo */}
@@ -100,8 +101,9 @@ export default function NavBar({ darkMode, toggleDarkMode }) {
               </button>
               <NavLink
                 to="/"
-                className="text-2xl font-bold hover:opacity-90 transition-opacity"
+                className="text-2xl font-bold hover:opacity-90 transition-opacity flex items-center gap-2"
               >
+                <img src="/src/assets/logo.svg" alt="FitSync Logo" className="w-8 h-8" />
                 <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
                   Fit<span className={darkMode ? "text-white" : "text-gray-800"}>Sync</span>
                 </span>
@@ -234,3 +236,4 @@ export default function NavBar({ darkMode, toggleDarkMode }) {
     </>
   );
 }
+
