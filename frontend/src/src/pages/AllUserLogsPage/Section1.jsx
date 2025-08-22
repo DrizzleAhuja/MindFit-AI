@@ -26,7 +26,7 @@ export default function Section1({ darkMode }) {
       try {
         console.log("Fetching logs for user:", user._id);
         const response = await axios.get(
-          `http://localhost:8000/api/logs/user-logs`,
+          `https://mindfitaibackend.vercel.app/api/logs/user-logs`,
           {
             headers: {
               Authorization: `Bearer ${user.token}`,

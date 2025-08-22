@@ -7,9 +7,14 @@ const login = async (req, res) => {
   const { token, role } = req.body; // Accept role in the request body
 
   try {
+    const audienceEnv = process.env.GOOGLE_CLIENT_IDS || process.env.GOOGLE_CLIENT_ID;
+    const audience = audienceEnv && audienceEnv.includes(",")
+      ? audienceEnv.split(",").map((value) => value.trim()).filter(Boolean)
+      : audienceEnv;
+
     const ticket = await client.verifyIdToken({
       idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID,
+      audience,
     });
     const {
       email,

@@ -18,7 +18,7 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://mindfitai.vercel.app/",
     credentials: true,
   })
 );
@@ -32,11 +32,11 @@ app.use(
   })
 );
 
+const mongoUrl = process.env.MONGODB_URL;
+const mongoDbName = process.env.MONGODB_DB;
+
 mongoose
-  .connect(process.env.MONGODB_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(mongoUrl, mongoDbName ? { dbName: mongoDbName } : undefined)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 

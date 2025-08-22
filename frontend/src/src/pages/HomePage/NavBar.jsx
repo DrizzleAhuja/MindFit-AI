@@ -42,7 +42,7 @@ export default function NavBar() {
   const handleLoginSuccess = async (response) => {
     try {
       const { credential } = response;
-      const res = await axios.post("http://localhost:8000/api/auth/login", {
+      const res = await axios.post("https://mindfitaibackend.vercel.app/api/auth/login", {
         token: credential,
         role,
       });

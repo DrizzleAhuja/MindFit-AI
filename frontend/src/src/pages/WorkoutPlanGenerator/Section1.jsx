@@ -29,7 +29,7 @@ const WorkoutPlanGenerator = () => {
 
   const fetchWorkoutHistory = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/auth/history", {
+      const res = await axios.get("https://mindfitaibackend.vercel.app/api/auth/history", {
         params: { email: user.email },
       });
       setHistory(res.data.history);
@@ -51,7 +51,7 @@ const WorkoutPlanGenerator = () => {
   
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:8000/api/auth/generate-plan", {
+      const response = await axios.post("https://mindfitaibackend.vercel.app/api/auth/generate-plan", {
         ...formData,
         email: user.email,
       });
@@ -73,7 +73,7 @@ const WorkoutPlanGenerator = () => {
     if (!plan) return;
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:8000/api/auth/generate-plan", {
+      const response = await axios.post("https://mindfitaibackend.vercel.app/api/auth/generate-plan", {
         ...formData,
         email: user.email,
       });

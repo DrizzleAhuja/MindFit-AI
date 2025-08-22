@@ -18,7 +18,7 @@ export default function Section1({ darkMode }) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/api/reports")
+      .get("https://mindfitaibackend.vercel.app/api/reports")
       .then((response) => {
         const filteredReports = response.data.filter(
           (report) =>
@@ -58,7 +58,7 @@ export default function Section1({ darkMode }) {
     setLoading(true);
     axios
       .put(
-        `http://localhost:8000/api/reports/${reportId}/reset`,
+        `https://mindfitaibackend.vercel.app/api/reports/${reportId}/reset`,
         {
           claimedBy: "", // Set claimedBy to an empty string
           claimedAt: null, // Set claimedAt to null to clear the date
@@ -111,14 +111,14 @@ export default function Section1({ darkMode }) {
 
       setLoading(true);
 
-      await axios.put(`http://localhost:8000/api/reports/${reportId}/verify`, {
+      await axios.put(`https://mindfitaibackend.vercel.app/api/reports/${reportId}/verify`, {
         otp: otpInput,
       });
       const istTimestamp = moment()
         .tz("Asia/Kolkata")
         .format("YYYY-MM-DDTHH:mm:ss.SSSZ");
       await axios.post(
-        "http://localhost:8000/api/logs/admin-logs",
+        "https://mindfitaibackend.vercel.app/api/logs/admin-logs",
         {
           adminId: user._id,
           action: `Verified Report ${reportId}`,
@@ -164,7 +164,7 @@ const handleSendOtp = async (reportId) => {
     setLoading(true);
 
     const response = await axios.put(
-      `http://localhost:8000/api/reports/${reportId}/send-otp`,
+      `https://mindfitaibackend.vercel.app/api/reports/${reportId}/send-otp`,
       null,
       {
         headers: {

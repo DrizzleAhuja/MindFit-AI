@@ -23,7 +23,7 @@ const NotificationsPage = ({ darkMode }) => {
       }
 
       try {
-        const response = await axios.get("http://localhost:8000/api/reports", {
+        const response = await axios.get("https://mindfitaibackend.vercel.app/api/reports", {
           headers: {
             Authorization: `Bearer ${user.token}`,
             email: user.email,
@@ -62,7 +62,7 @@ const NotificationsPage = ({ darkMode }) => {
         const markAsReadPromises = userNotifications.map((notification) => {
           if (!notification.read) {
             return axios.put(
-              `http://localhost:8000/api/reports/notification/${notification._id}/read`,
+              `https://mindfitaibackend.vercel.app/api/reports/notification/${notification._id}/read`,
               {},
               {
                 headers: {

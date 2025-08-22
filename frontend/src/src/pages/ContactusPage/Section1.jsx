@@ -216,7 +216,7 @@ const ContactUs = ({ darkMode }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8000/api/contact", formData, {
+      await axios.post("https://mindfitaibackend.vercel.app/api/contact", formData, {
         headers: {
           Email: user.email,
         },

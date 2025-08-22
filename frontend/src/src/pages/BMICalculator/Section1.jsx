@@ -25,7 +25,7 @@ export default function BMICalculator() {
 
   const fetchBMIHistory = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/bmi/history", {
+      const res = await axios.get("https://mindfitaibackend.vercel.app/api/bmi/history", {
         params: { email: user.email }
       });
       setHistory(res.data);
@@ -57,7 +57,7 @@ export default function BMICalculator() {
 
   const saveBMI = async (calculatedBMI, bmiCategory) => {
     try {
-      await axios.post("http://localhost:8000/api/bmi/save", {
+      await axios.post("https://mindfitaibackend.vercel.app/api/bmi/save", {
         email: user.email,
         bmi: calculatedBMI,
         category: bmiCategory

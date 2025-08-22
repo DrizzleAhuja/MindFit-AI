@@ -40,7 +40,7 @@ export default function EditProfile({ darkMode }) {
     e.preventDefault();
     try {
       const res = await axios.put(
-        `http://localhost:8000/api/users/${user._id}`,
+        `https://mindfitaibackend.vercel.app/api/users/${user._id}`,
         formData
       );
       dispatch(setUser(res.data));

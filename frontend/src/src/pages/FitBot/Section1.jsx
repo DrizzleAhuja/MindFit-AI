@@ -31,7 +31,7 @@ const sendMessage = async () => {
 
   try {
     const response = await axios.post(
-      "http://localhost:8000/api/auth/chat",
+      "https://mindfitaibackend.vercel.app/api/auth/chat",
       { messages: updatedMessages },
       {
         headers: {
