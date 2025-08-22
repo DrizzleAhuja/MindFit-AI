@@ -13,9 +13,27 @@ router.use((req, res, next) => {
     method: req.method,
     url: req.url,
     origin: req.headers.origin,
-    userAgent: req.headers['user-agent']
+    userAgent: req.headers['user-agent'],
+    headers: req.headers
   });
+
+  // Ensure CORS headers are set for auth routes specifically
+  res.header('Access-Control-Allow-Origin', 'https://mindfitai.vercel.app');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+
   next();
+});
+
+// Handle OPTIONS requests for auth routes
+router.options('*', (req, res) => {
+  console.log('Auth route OPTIONS request:', req.url);
+  res.header('Access-Control-Allow-Origin', 'https://mindfitai.vercel.app');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.status(200).end();
 });
 
 router.post("/generate-plan", async (req, res) => {
@@ -147,8 +165,16 @@ router.post("/login", (req, res, next) => {
     method: req.method,
     url: req.url,
     origin: req.headers.origin,
-    body: req.body
+    body: req.body,
+    headers: req.headers
   });
+
+  // Ensure CORS headers are set for login specifically
+  res.header('Access-Control-Allow-Origin', 'https://mindfitai.vercel.app');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+
   next();
 }, login);
 

@@ -14,47 +14,38 @@ const logRoutes = require('./routes/logRoutes');
 
 const app = express();
 
-// CORS configuration - must come before other middleware
-const corsOptions = {
-  origin: "https://mindfitai.vercel.app",
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept'],
-  exposedHeaders: ['Set-Cookie'],
-  preflightContinue: false,
-  optionsSuccessStatus: 204
-};
-
-app.use(cors(corsOptions));
-
-// Handle preflight requests explicitly
-app.options('*', (req, res) => {
-  console.log('Preflight request received:', req.method, req.url);
-  console.log('Preflight headers:', req.headers);
-
-  res.header('Access-Control-Allow-Origin', 'https://mindfitai.vercel.app');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Max-Age', '86400'); // 24 hours
-  res.status(204).end();
-});
-
-// Add CORS headers to all responses
+// CORS middleware - must come before all other middleware
 app.use((req, res, next) => {
+  console.log(`\n=== REQUEST RECEIVED ===`);
+  console.log(`Method: ${req.method}`);
+  console.log(`URL: ${req.url}`);
+  console.log(`Origin: ${req.headers.origin}`);
+  console.log(`User-Agent: ${req.headers['user-agent']}`);
+  console.log(`All Headers:`, req.headers);
+
+  // Set CORS headers for all responses
   res.header('Access-Control-Allow-Origin', 'https://mindfitai.vercel.app');
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Max-Age', '86400'); // 24 hours
 
-  // Log all requests for debugging
-  console.log(`${req.method} ${req.url} - Origin: ${req.headers.origin}`);
-  console.log('Request headers:', req.headers);
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    console.log('=== PREFLIGHT REQUEST HANDLED ===');
+    console.log('Preflight request received:', req.method, req.url);
+    console.log('Preflight headers:', req.headers);
 
+    // Send 200 status for preflight
+    res.status(200).end();
+    return;
+  }
+
+  console.log('=== REQUEST CONTINUING ===');
   next();
 });
 
+// Express middleware
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
@@ -82,6 +73,7 @@ mongoose
 
 // Test endpoint to verify CORS
 app.get('/api/test-cors', (req, res) => {
+  console.log('=== TEST CORS ENDPOINT HIT ===');
   console.log('Test CORS endpoint hit:', {
     method: req.method,
     url: req.url,
@@ -105,6 +97,7 @@ app.use("/api/messages", messageRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
+  console.error("=== SERVER ERROR ===");
   console.error("Server Error:", err.stack);
   res.status(500).send({
     status: "error",
