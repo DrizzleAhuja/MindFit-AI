@@ -45,7 +45,9 @@ export default function NavBar() {
       const res = await axios.post("https://mindfitaibackend.vercel.app/api/auth/login", {
         token: credential,
         role,
-      });
+      },
+      { withCredentials: true }   // 👈 Important
+    );
       dispatch(setUser(res.data.user));
       localStorage.setItem("user", JSON.stringify(res.data.user));
       localStorage.setItem("isLoggedIn", true);
