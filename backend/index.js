@@ -16,25 +16,12 @@ const app = express();
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://mindfitai.vercel.app",
-];
-
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error("CORS not allowed for this origin: " + origin));
-    },
+    origin: "https://mindfitai.vercel.app",
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Email"],
   })
 );
-
-app.options("*", cors());
 
 app.use(
   session({
