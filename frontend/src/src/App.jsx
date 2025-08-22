@@ -17,139 +17,102 @@ import AllUserLogsPage from "./pages/AllUserLogsPage/AllUserLogsPage.jsx";
 import AdminLogsPage from "./pages/CalorieTracker/AdminLogsPage.jsx";
 import  Contactus from './pages/ContactusPage/Contactus.jsx'
 function App() {
-  const [darkMode, setDarkMode] = useState(() => {
-    const savedMode = localStorage.getItem("darkMode");
-    return savedMode === "true";
-  });
-
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     const savedLoginStatus = localStorage.getItem("isLoggedIn");
     return savedLoginStatus === "true";
   });
 
   useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-    localStorage.setItem("darkMode", darkMode);
-  }, [darkMode]);
-
-  useEffect(() => {
     localStorage.setItem("isLoggedIn", isLoggedIn);
   }, [isLoggedIn]);
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
-
   return (
-    <div
-      className={`w-screen min-h-screen bg-gray-900${
-        darkMode ? "bg-gray-900 text-white" : "bg-white text-black"
-      }`}
-    >
+    <div className="w-screen min-h-screen bg-white text-black">
       <Routes>
         <Route
           path="/"
-          element={<Home darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
+          element={<Home />}
         />
         <Route
           path="/home"
-          element={<Home darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
+          element={<Home />}
         />
         <Route
           path="/signin"
           element={
-            <Signin darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+            <Signin />
           }
         />
         <Route
           path="/notifications"
           element={
-            <NotificationsPage
-              darkMode={darkMode}
-              toggleDarkMode={toggleDarkMode}
-            />
+            <NotificationsPage/>
           }
         />
         <Route
           path="/CurrentBMI"
           element={
-            <Report darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+            <Report />
           }
         />
         <Route
           path="/AiCoach"
           element={
-            <LostItems darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+            <LostItems />
           }
         />
         <Route
           path="/VirtualTA"
           element={
-            <FoundItems darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+            <FoundItems />
           }
         />
         <Route
           path="/EditProfile"
           element={
-            <EditProfile darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+            <EditProfile />
           }
         />
         <Route
           path="/Workout"
           element={
-            <MyListings darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+            <MyListings />
           }
         />
         <Route
           path="/VerificationPage"
           element={
-            <VerificationPage
-              darkMode={darkMode}
-              toggleDarkMode={toggleDarkMode}
-            />
+            <VerificationPage/>
           }
         />
          <Route
           path="/ContactUs"
           element={
-            <Contactus
-              darkMode={darkMode}
-              toggleDarkMode={toggleDarkMode}
-            />
+            <Contactus/>
           }
         />
        
         <Route
           path="/UserLogs"
           element={
-            <UserLogsPage darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+            <UserLogsPage/>
           }
         />
         <Route
           path="/AllUsersLogs"
           element={
-            <AllUserLogsPage
-              darkMode={darkMode}
-              toggleDarkMode={toggleDarkMode}
-            />
+            <AllUserLogsPage/>
           }
         />
         <Route
           path="/Calorietracker"
           element={
-            <AdminLogsPage
-              darkMode={darkMode}
-              toggleDarkMode={toggleDarkMode}
-            />
+            <AdminLogsPage/>
           }
         />
       </Routes>
       <ToastContainer
-        theme={darkMode ? "dark" : "light"}
+        theme="light"
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
