@@ -7,6 +7,17 @@ const { login } = require("../controllers/authController")
 const HF_API_KEY = "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";
 const HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1";
 
+// Add debugging middleware for auth routes
+router.use((req, res, next) => {
+  console.log('Auth route accessed:', {
+    method: req.method,
+    url: req.url,
+    origin: req.headers.origin,
+    userAgent: req.headers['user-agent']
+  });
+  next();
+});
+
 router.post("/generate-plan", async (req, res) => {
   try {
     const { email, fitnessGoal, gender, trainingMethod, workoutType, strengthLevel } = req.body;
@@ -131,7 +142,14 @@ router.get("/history", async (req, res) => {
   }
 });
 
-router.post("/login", login)
-
+router.post("/login", (req, res, next) => {
+  console.log('Login route hit:', {
+    method: req.method,
+    url: req.url,
+    origin: req.headers.origin,
+    body: req.body
+  });
+  next();
+}, login);
 
 module.exports = router;
