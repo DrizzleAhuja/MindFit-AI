@@ -42,16 +42,23 @@ export default function NavBar() {
   const handleLoginSuccess = async (response) => {
     try {
       const { credential } = response;
-      const res = await axios.post("https://mindfitaibackend.vercel.app/api/auth/login", {
-        token: credential,
-        role,
-      },
-      { withCredentials: true }   // 👈 Important
-    );
+  
+      const res = await axios.post(
+        "https://mindfitaibackend.vercel.app/api/auth/login",
+        {
+          token: credential,
+          role,
+        },
+        {
+          withCredentials: true, // 👈 sahi jagah pe
+        }
+      );
+  
       dispatch(setUser(res.data.user));
       localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("isLoggedIn", true);
+      localStorage.setItem("isLoggedIn", "true"); // 👈 string rakho
       setRole(res.data.user.role);
+  
       toast.success("Logged in successfully", {
         autoClose: 1000,
         onClose: () => navigate("/editprofile"),
@@ -61,6 +68,7 @@ export default function NavBar() {
       toast.error("Login failed", { autoClose: 2000 });
     }
   };
+  
 
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem("user"));
