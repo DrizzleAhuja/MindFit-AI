@@ -18,25 +18,52 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
 
-// ✅ CORS config (production frontend only)
-app.use(
-  cors({
-    origin: "https://mindfitai.vercel.app", // 👈 frontend domain
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true, // 👈 allow cookies/sessions
-  })
-);
+// ✅ CORS config (production + localhost) with proper preflight handling
+const allowedOrigins = [
+  "https://mindfitai.vercel.app",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+];
 
-// ✅ Preflight OPTIONS request
-app.options("*", cors());
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow server-to-server or curl (no origin)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("Not allowed by CORS"));
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "X-CSRF-Token",
+  ],
+  credentials: true,
+};
 
-// ✅ Extra CORS headers (for Vercel strict checks)
+app.use(cors(corsOptions));
+
+// ✅ Explicitly handle preflight with same options
+app.options("*", cors(corsOptions));
+
+// ✅ Extra CORS headers (for platforms with strict proxying)
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://mindfitai.vercel.app");
+  const requestOrigin = req.headers.origin;
+  if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+    res.header("Access-Control-Allow-Origin", requestOrigin);
+  }
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Requested-With, X-CSRF-Token"
+  );
+
+  // Short-circuit preflight
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
   next();
 });
 
