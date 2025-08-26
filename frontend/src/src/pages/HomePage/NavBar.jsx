@@ -50,13 +50,18 @@ export default function NavBar() {
           role,
         },
         {
-          withCredentials: true, // 👈 sahi jagah pe
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            // Add these headers if needed
+            'Accept': 'application/json',
+          }
         }
       );
   
       dispatch(setUser(res.data.user));
       localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("isLoggedIn", "true"); // 👈 string rakho
+      localStorage.setItem("isLoggedIn", "true");
       setRole(res.data.user.role);
   
       toast.success("Logged in successfully", {
@@ -65,7 +70,18 @@ export default function NavBar() {
       });
     } catch (error) {
       console.error("Error during login", error);
-      toast.error("Login failed", { autoClose: 2000 });
+      
+      // Better error handling
+      let errorMessage = "Login failed";
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        errorMessage = error.response.data.message || errorMessage;
+      } else if (error.request) {
+        // The request was made but no response was received
+        errorMessage = "Network error. Please check your connection.";
+      }
+      
+      toast.error(errorMessage, { autoClose: 2000 });
     }
   };
   
