@@ -113,7 +113,7 @@ export default function NavBar() {
   return (
     <>
       <ToastContainer position="top-center" autoClose={2000} />
-      <GoogleOAuthProvider clientId="702465560392-m5dmr0ompctjmnglnnt224s6h9qj9ptg.apps.googleusercontent.com">
+      <GoogleOAuthProvider clientId="702465560392-1mu8j4kqafadep516m62oa5vf5klt7pu.apps.googleusercontent.com">
         <nav className="sticky top-0 left-0 w-full z-50 bg-white shadow-md">
           <div className="container mx-auto px-4 py-3 flex justify-between items-center">
             {/* Logo */}
