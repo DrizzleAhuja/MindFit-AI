@@ -3,7 +3,7 @@ const { OAuth2Client } = require("google-auth-library");
 const User = require("../models/User");
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-const login = async (req, res) => {
+exports.login = async (req, res) => {
   const { token, role } = req.body; // Accept role in the request body
 
   try {
@@ -42,9 +42,7 @@ const login = async (req, res) => {
 
     res.status(200).json({ message: "Logged in successfully", user });
   } catch (error) {
-    console.error("Error during login:", error);
-    res.status(500).json({ message: "Error logging in", error });
+    console.error("Login error:", error); // Add this for debugging
+    res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
 };
-
-module.exports = { login };
