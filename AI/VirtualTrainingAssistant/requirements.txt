@@ -5,3 +5,4 @@ plotly
 numpy==1.24.3
 Pillow
 setuptools
+opencv-contrib-python-headless
