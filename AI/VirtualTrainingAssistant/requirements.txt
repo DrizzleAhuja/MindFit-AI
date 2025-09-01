@@ -1,6 +1,6 @@
-streamlit==1.28.1
-opencv-python==4.8.1.78
-ultralytics==8.0.196
-plotly==5.17.0
-numpy==1.24.3
-Pillow==10.0.1
+streamlit
+opencv-python
+ultralytics
+plotly
+numpy
+Pillow
