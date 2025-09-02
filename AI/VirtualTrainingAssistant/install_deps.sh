@@ -12,51 +12,10 @@ apt-get update
 # Install system dependencies for OpenCV and other libraries
 echo "Installing system dependencies..."
 apt-get install -y \
-    libgl1-mesa-glx \
-    libgl1-mesa-dri \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender-dev \
-    libgomp1 \
-    libgthread-2.0-0 \
-    libgtk-3-0 \
-    libavcodec-dev \
-    libavformat-dev \
-    libswscale-dev \
-    libv4l-dev \
-    libxvidcore-dev \
-    libx264-dev \
-    libjpeg-dev \
-    libpng-dev \
-    libtiff-dev \
-    libatlas-base-dev \
-    gfortran \
     wget \
     curl \
     build-essential \
-    pkg-config \
-    libhdf5-dev \
-    libhdf5-serial-dev \
-    libhdf5-103 \
-    libqtgui4 \
-    libqtwebkit4 \
-    libqt4-test \
-    python3-pyqt5 \
-    libgstreamer1.0-0 \
-    gstreamer1.0-plugins-base \
-    gstreamer1.0-plugins-good \
-    gstreamer1.0-plugins-bad \
-    gstreamer1.0-plugins-ugly \
-    gstreamer1.0-libav \
-    gstreamer1.0-doc \
-    gstreamer1.0-tools \
-    gstreamer1.0-x \
-    gstreamer1.0-alsa \
-    gstreamer1.0-gl \
-    gstreamer1.0-gtk3 \
-    gstreamer1.0-qt5 \
-    gstreamer1.0-pulseaudio
+    pkg-config
 
 # Upgrade pip to latest version
 echo "Upgrading pip..."
@@ -82,12 +41,24 @@ for i in {1..3}; do
     fi
 done
 
-# Verify critical imports
+# Install Ultralytics separately to manage its dependencies
+echo "Installing Ultralytics..."
+pip install --no-cache-dir ultralytics --no-deps
+# Explicitly install Ultralytics dependencies to ensure correct versions
+pip install --no-cache-dir opencv-python-headless
+pip install --no-cache-dir numpy>=1.25.0
+
+# Remove `opencv-python` and ensure `opencv-python-headless` is the only version
+echo "Ensuring opencv-python-headless is the only OpenCV version..."
+pip uninstall -y opencv-python opencv-python-headless || true
+pip install --no-cache-dir opencv-python-headless
+
 echo "Verifying installation..."
 python -c "import cv2; print('OpenCV version:', cv2.__version__)"
 python -c "import streamlit; print('Streamlit version:', streamlit.__version__)"
 python -c "import ultralytics; print('Ultralytics imported successfully')"
 python -c "import plotly; print('Plotly imported successfully')"
+python -c "import numpy; print('NumPy version:', numpy.__version__)"
 
 echo "Installation complete!"
 echo "You can now run the application with: streamlit run vta.py"

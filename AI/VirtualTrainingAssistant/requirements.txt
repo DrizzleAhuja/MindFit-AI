@@ -1,7 +1,5 @@
 streamlit>=1.28.0
-opencv-python-headless==4.8.1.78
-ultralytics>=8.0.0
-plotly>=5.0.0
+plotly
 numpy>=1.25.0
 Pillow>=9.0.0
 setuptools>=65.0.0

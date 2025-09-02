@@ -57,13 +57,7 @@ setup_cloud_python() {
     # Install Python dependencies with cloud-optimized versions
     echo "Installing Python dependencies..."
     
-    # Install packages one by one to handle potential conflicts
-    pip install --no-cache-dir streamlit>=1.28.0
-    pip install --no-cache-dir opencv-python-headless==4.8.1.78
-    pip install --no-cache-dir ultralytics>=8.0.0
-    pip install --no-cache-dir plotly>=5.0.0
-    pip install --no-cache-dir "numpy>=1.21.0,<1.25.0"
-    pip install --no-cache-dir Pillow>=9.0.0
+    ./install_deps.sh # Use the dedicated dependency installation script
     
     echo "Python environment setup complete!"
 }
@@ -122,18 +116,13 @@ EOF
 main() {
     echo "Starting cloud deployment setup..."
     
-    # Install cloud dependencies
-    install_cloud_deps
-    
-    # Setup Python environment
-    setup_cloud_python
-    
-    # Verify installation
-    verify_cloud_installation
+    # Ensure install_deps.sh is executable and run it for all dependencies
+    chmod +x install_deps.sh
+    ./install_deps.sh
     
     # Create cloud configuration
     create_cloud_config
-    
+
     echo "=========================================="
     echo "Cloud deployment setup completed!"
     echo "=========================================="
