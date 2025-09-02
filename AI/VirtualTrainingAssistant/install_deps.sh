@@ -43,15 +43,7 @@ done
 
 # Install Ultralytics separately to manage its dependencies
 echo "Installing Ultralytics..."
-pip install --no-cache-dir ultralytics --no-deps
-# Explicitly install Ultralytics dependencies to ensure correct versions
-pip install --no-cache-dir opencv-python-headless
-pip install --no-cache-dir numpy>=1.25.0
-
-# Remove `opencv-python` and ensure `opencv-python-headless` is the only version
-echo "Ensuring opencv-python-headless is the only OpenCV version..."
-pip uninstall -y opencv-python opencv-python-headless || true
-pip install --no-cache-dir opencv-python-headless
+# Python dependencies will be handled by requirements.txt
 
 echo "Verifying installation..."
 python -c "import cv2; print('OpenCV version:', cv2.__version__)"

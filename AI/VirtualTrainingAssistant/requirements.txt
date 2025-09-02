@@ -1,4 +1,6 @@
 streamlit>=1.28.0
+ultralytics[cpu,headless]
+opencv-python-headless
 plotly
 numpy>=1.25.0
 Pillow>=9.0.0
