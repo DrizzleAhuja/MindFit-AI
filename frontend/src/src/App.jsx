@@ -18,6 +18,8 @@ import AllUserLogsPage from "./pages/AllUserLogsPage/AllUserLogsPage.jsx";
 import CalorieTracker from "./pages/CalorieTracker/CalorieTracker.jsx";
 import Contactus from './pages/ContactusPage/Contactus.jsx'
 import { ThemeProvider } from "./context/ThemeContext.jsx"; // Import ThemeProvider
+import About from './pages/AboutPage/About.jsx'; // Import About component
+import Features from './pages/FeaturesPage/Features.jsx'; // Import Features component
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     const savedLoginStatus = localStorage.getItem("isLoggedIn");
@@ -132,6 +134,16 @@ function App() {
           draggable
           pauseOnHover
         />
+        <Routes>
+          <Route
+            path="/about"
+            element={<About />}
+          />
+          <Route
+            path="/features"
+            element={<Features />}
+          />
+        </Routes>
       </div>
     </ThemeProvider>
   );

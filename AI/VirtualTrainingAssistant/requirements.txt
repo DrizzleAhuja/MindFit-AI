@@ -1,8 +1,7 @@
 streamlit>=1.28.0
-opencv-python-headless>=4.8.1.78 # Specify a known stable version
-ultralytics>=8.0.0
 plotly
-numpy>=1.25.0 # Ensure numpy is compatible with Python 3.13
 Pillow>=9.0.0
-setuptools>=65.0.0 # Good practice to include
-wheel # Good practice to include
+setuptools>=65.0.0
+wheel
+numpy>=1.25.0 # Ensure numpy is installed first
+opencv-python-headless>=4.8.1.78 # Explicitly use headless version

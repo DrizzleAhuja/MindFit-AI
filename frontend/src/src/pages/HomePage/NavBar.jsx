@@ -7,6 +7,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { FiMenu, FiX, FiUser, FiEdit2, FiLogOut } from "react-icons/fi";
+import { useTheme } from '../../context/ThemeContext'; // Import useTheme
+import { Brain, Sparkles } from 'lucide-react'; // Import Lucide icons for logo
 
 export default function NavBar() {
   const dispatch = useDispatch();
@@ -15,6 +17,8 @@ export default function NavBar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [role, setRole] = useState("user");
+  
+  const { darkMode } = useTheme(); // Access dark mode state
 
   const getUserInitials = (user) => {
     if (user && user.firstName) {
@@ -98,7 +102,8 @@ export default function NavBar() {
     { path: "/", label: "HOME" },
     ...(!user
       ? [
-          { path: "/About", label: "ABOUT US" },
+          { path: "/about", label: "ABOUT US" },
+          { path: "/features", label: "FEATURES" }, // New tab for non-signed-in users
           { path: "/Contactus", label: "CONTACT US" },
         ]
       : [
@@ -128,9 +133,10 @@ export default function NavBar() {
                 to="/"
                 className="text-2xl font-bold hover:opacity-90 transition-opacity flex items-center gap-2"
               >
-                <img src="/src/assets/logo.svg" alt="MindFit Logo" className="w-8 h-8" />
-                <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
-                  MindFit
+                <Brain className={`w-8 h-8 ${darkMode ? 'text-green-400' : 'text-green-600'} mr-1`} />
+                <Sparkles className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />
+                <span className={`bg-clip-text text-transparent ${darkMode ? 'bg-gradient-to-r from-green-400 to-blue-500' : 'bg-gradient-to-r from-green-600 to-blue-800'}`}>
+                  MindFit AI
                 </span>
               </NavLink>
             </div>
@@ -178,7 +184,7 @@ export default function NavBar() {
                       </NavLink>
                       <button
                         onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm flex items-center text-gray-200 hover:bg-gray-700"
+                        className="w-full text-left px-4 py-2 text-sm flex items-center text-gray-200 hover:bg-gray-700"
                       >
                         <FiLogOut className="mr-2" /> Logout
                       </button>
@@ -207,7 +213,7 @@ export default function NavBar() {
                     key={link.path}
                     to={link.path}
                     className={({ isActive }) => 
-                      `block px-3 py-2 rounded-md text-base font-medium ${
+                      `px-3 py-2 rounded-md text-base font-medium flex items-center ${
                         isActive ? "bg-gray-700 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white"
                       }`
                     }
