@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { selectUser, setUser } from "../../redux/userSlice";
 import { FiUser, FiMail, FiSave, FiArrowLeft } from "react-icons/fi";
 
-export default function EditProfile({ darkMode }) {
+export default function EditProfile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector(selectUser);
@@ -60,27 +60,27 @@ export default function EditProfile({ darkMode }) {
 
   if (!user) {
     return (
-      <div className={`flex justify-center items-center h-screen ${darkMode ? "bg-gray-900" : "bg-gray-100"}`}>
+      <div className="flex justify-center items-center h-screen bg-gray-900 text-white">
         <div className="animate-pulse text-lg">Loading user data...</div>
       </div>
     );
   }
 
   return (
-    <div className={`min-h-screen ${darkMode ? "bg-gray-900" : "bg-gray-50"}`}>
-      <ToastContainer position="top-center" autoClose={2000} />
+    <div className="min-h-screen bg-gray-900">
+      <ToastContainer position="top-center" autoClose={2000} theme="dark"/>
       <div className="max-w-2xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div className={`rounded-xl shadow-xl overflow-hidden ${darkMode ? "bg-gray-800" : "bg-white"}`}>
+        <div className="rounded-xl shadow-xl overflow-hidden bg-gray-800">
           {/* Header */}
-          <div className={`px-6 py-4 border-b ${darkMode ? "border-gray-700 bg-gray-900" : "border-gray-200 bg-gray-50"}`}>
+          <div className="px-6 py-4 border-b border-gray-700 bg-gray-900">
             <div className="flex items-center">
               <button
                 onClick={() => navigate(-1)}
-                className={`p-2 rounded-full mr-4 ${darkMode ? "text-gray-300 hover:bg-gray-700" : "text-gray-500 hover:bg-gray-100"}`}
+                className="p-2 rounded-full mr-4 text-gray-300 hover:bg-gray-700"
               >
                 <FiArrowLeft size={20} />
               </button>
-              <h2 className={`text-2xl font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>
+              <h2 className="text-2xl font-bold text-white">
                 Edit Profile
               </h2>
             </div>
@@ -90,11 +90,11 @@ export default function EditProfile({ darkMode }) {
           <div className="px-6 py-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="firstName" className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <label htmlFor="firstName" className="block text-sm font-medium mb-2 text-gray-300">
                   First Name
                 </label>
                 <div className="relative rounded-md shadow-sm">
-                  <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                     <FiUser size={18} />
                   </div>
                   <input
@@ -103,7 +103,7 @@ export default function EditProfile({ darkMode }) {
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleChange}
-                    className={`block w-full pl-10 pr-3 py-3 rounded-md ${darkMode ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"} border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                    className="block w-full pl-10 pr-3 py-3 rounded-md bg-gray-700 border-gray-600 text-white placeholder-gray-400 border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="John"
                     required
                   />
@@ -111,11 +111,11 @@ export default function EditProfile({ darkMode }) {
               </div>
 
               <div>
-                <label htmlFor="lastName" className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <label htmlFor="lastName" className="block text-sm font-medium mb-2 text-gray-300">
                   Last Name
                 </label>
                 <div className="relative rounded-md shadow-sm">
-                  <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                     <FiUser size={18} />
                   </div>
                   <input
@@ -124,18 +124,18 @@ export default function EditProfile({ darkMode }) {
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleChange}
-                    className={`block w-full pl-10 pr-3 py-3 rounded-md ${darkMode ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" : "bg-white border-gray-300 text-gray-900 placeholder-gray-500"} border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
+                    className="block w-full pl-10 pr-3 py-3 rounded-md bg-gray-700 border-gray-600 text-white placeholder-gray-400 border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Doe"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="email" className={`block text-sm font-medium mb-2 ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <label htmlFor="email" className="block text-sm font-medium mb-2 text-gray-300">
                   Email
                 </label>
                 <div className="relative rounded-md shadow-sm">
-                  <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                     <FiMail size={18} />
                   </div>
                   <input
@@ -144,7 +144,7 @@ export default function EditProfile({ darkMode }) {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className={`block w-full pl-10 pr-3 py-3 rounded-md ${darkMode ? "bg-gray-700 border-gray-600 text-gray-300 placeholder-gray-400" : "bg-gray-100 border-gray-300 text-gray-500 placeholder-gray-500"} border focus:outline-none cursor-not-allowed`}
+                    className="block w-full pl-10 pr-3 py-3 rounded-md bg-gray-700 border-gray-600 text-gray-300 placeholder-gray-400 border focus:outline-none cursor-not-allowed"
                     disabled
                   />
                 </div>

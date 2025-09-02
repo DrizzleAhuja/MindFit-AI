@@ -29,7 +29,7 @@ Section2.css
 }
 
 .navbar-links a:hover {
-  color: #007bff;
+  color: #60a5fa; /* Adjusted for dark mode */
 }
 
 /* Navbar User Section */
@@ -52,7 +52,7 @@ button {
 
 /* User Initials */
 .user-initials {
-  background-color: #007bff;
+  background-color: #1e3a8a; /* Dark blue */
   color: white;
   width: 30px;
   height: 30px;
@@ -73,20 +73,7 @@ button {
 }
 
 .logout-button:hover {
-  background-color: #0062cc;
-}
-
-/* Light Mode */
-.bg-white {
-  background-color: #ffffff;
-}
-
-.text-black {
-  color: #000000;
-}
-
-.border-gray-300 {
-  border-color: #d1d5db;
+  background-color: #1c1d1f; /* Darker blue */
 }
 
 /* Dark Mode */
@@ -118,8 +105,7 @@ button {
   background-color: #e5e7eb;
 }
 
-/* Section2.css */
-
+/* Section2.css - Specific styles for Section2 component from HomePage */
 .section-container {
   display: flex;
   justify-content: space-around;
@@ -167,23 +153,25 @@ button {
   text-decoration: none;
   color: inherit;
 }
-/* Section2.css */
-
-/* General Section Styles */
+/* Section2.css - General Section and Box Styles, simplified for dark mode only */
 .section-container {
   display: flex;
   justify-content: space-around;
   align-items: center;
   padding: 2rem;
   transition: background-color 0.3s, color 0.3s;
+  background-color: #232a2f; /* Dark background color */
+  color: #ffffff; /* Dark text color */
 }
 
-/* Box Styles */
 .box {
   text-align: center;
   padding: 1rem;
   border-radius: 8px;
   transition: background-color 0.3s, color 0.3s;
+  background-color: #343a40; /* Dark box color */
+  color: #ffffff; /* Dark text color */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .box img {
@@ -197,29 +185,6 @@ button {
   color: inherit; /* Use inherited text color */
 }
 
-/* Light Mode Styles */
-.section-container.light {
-  background-color: #f8f9fa;
-  color: #343a40;
-}
-
-.box.light-box {
-  background-color: #ffffff;
-  color: #343a40;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Dark Mode Styles */
-.section-container.dark {
-  background-color: #232a2f; /* Footer background color */
-  color: #ffffff; /* Footer text color */
-}
-
-.box.dark-box {
-  background-color: #343a40; /* Box color similar to footer */
-  color: #ffffff; /* Text color similar to footer */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-}
 .navbar .relative .absolute .bg-red-500 {
   background-color: #ef4444; /* Tailwind's red-500 color */
   color: #ffffff;
@@ -254,8 +219,8 @@ button {
 }
 
 .user-initials {
-  background-color: #cccccc;
-  color: #000;
+  background-color: #4b5563; /* Darker gray */
+  color: #ffffff;
   border-radius: 50%;
   padding: 0.5rem;
   display: flex;
@@ -278,10 +243,10 @@ button {
   position: absolute;
   top: 100%;
   right: 0;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: #374151; /* Dark gray */
+  border: 1px solid #4b5563; /* Darker gray border */
   border-radius: 0.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   z-index: 10;
 }
@@ -291,7 +256,9 @@ button {
 .notification-card {
   display: flex;
   align-items: center;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #4b5563; /* Darker border */
+  background-color: #1f2937; /* Dark background */
+  color: #ffffff;
 }
 
 .notification-card img {
@@ -301,10 +268,12 @@ button {
 .notification-card strong {
   font-size: 1.25rem;
   margin-bottom: 0.5rem;
+  color: #ffffff;
 }
 
 .notification-card div {
   margin-bottom: 0.25rem;
+  color: #e5e7eb;
 }
 
 html, body, #root {
@@ -327,21 +296,25 @@ html, body, #root {
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
+  background-color: #1a1a1a;
+  color: #f5f5f5;
 }
 
 h2 {
   text-align: center;
+  color: #ffffff;
 }
 
 .notification-item {
-  border: 1px solid #ccc;
+  border: 1px solid #4b5563; /* Darker border */
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
-  background-color: #f9f9f9;
+  background-color: #2c2c2c; /* Dark background */
+  color: #f5f5f5;
 }
 
 .notification-date {
   font-size: 0.9em;
-  color: #666;
+  color: #9ca3af;
 }

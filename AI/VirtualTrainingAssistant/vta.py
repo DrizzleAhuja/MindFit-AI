@@ -1,10 +1,18 @@
 import streamlit as st
-import cv2
 import numpy as np
-from ultralytics import YOLO
 import plotly.graph_objects as go
 import time
 import math
+
+# Try to import OpenCV and YOLO, fall back to simple version if not available
+try:
+    import cv2
+    from ultralytics import YOLO
+    OPENCV_AVAILABLE = True
+except ImportError as e:
+    st.error(f"OpenCV or YOLO not available: {e}")
+    st.info("Switching to demo mode without camera functionality...")
+    OPENCV_AVAILABLE = False
 
 # Page configuration - MUST BE FIRST COMMAND
 st.set_page_config(page_title="Fitness Tracker", layout="wide")
@@ -355,54 +363,139 @@ else:
     weight = st.slider('What is your weight (kg)?', 20, 130, 40)
     goal_calories = st.slider('Set a goal calorie to burn', 1, 200, 15)
 
-    # Initialize YOLO model
-    @st.cache_resource
-    def load_model():
-        return YOLO('yolov8n-pose.pt')
+    if OPENCV_AVAILABLE:
+        # Initialize YOLO model
+        @st.cache_resource
+        def load_model():
+            return YOLO('yolov8n-pose.pt')
 
-    model = load_model()
+        model = load_model()
 
-    # Start button to initiate camera
-    if not st.session_state.camera_started:
-        if st.button("Start Camera"):
-            st.session_state.camera_started = True
-            st.session_state.start_time = time.time()
-            st.session_state.counter = 0
-            st.session_state.direction = "up"
-            st.session_state.feedback = "Starting exercise..."
-            st.session_state.feedback_type = "good"
+        # Start button to initiate camera
+        if not st.session_state.camera_started:
+            if st.button("Start Camera"):
+                st.session_state.camera_started = True
+                st.session_state.start_time = time.time()
+                st.session_state.counter = 0
+                st.session_state.direction = "up"
+                st.session_state.feedback = "Starting exercise..."
+                st.session_state.feedback_type = "good"
 
-    if st.session_state.camera_started:
-        # Video capture
-        cap = cv2.VideoCapture(0)
-        frame_placeholder = st.empty()
-        feedback_placeholder = st.empty()
-        stop_button = st.button("Stop")
+        if st.session_state.camera_started:
+            # Video capture
+            cap = cv2.VideoCapture(0)
+            frame_placeholder = st.empty()
+            feedback_placeholder = st.empty()
+            stop_button = st.button("Stop")
 
-        while cap.isOpened() and not stop_button:
-            ret, frame = cap.read()
-            if not ret:
-                st.warning("Unable to access camera. Please check your camera connection.")
-                break
+            while cap.isOpened() and not stop_button:
+                ret, frame = cap.read()
+                if not ret:
+                    st.warning("Unable to access camera. Please check your camera connection.")
+                    break
 
-            # Increase frame size for better posture visibility
-            frame = cv2.resize(frame, (800, 600))  # Adjusted to 800x600
-            frame = process_frame(frame, model, app_mode)
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            frame_placeholder.image(frame, channels="RGB")
-            
-            # Display feedback
-            feedback_class = "feedback-good" if st.session_state.feedback_type == "good" else "feedback-bad"
-            feedback_placeholder.markdown(
-                f"<div class='{feedback_class}'>{st.session_state.feedback}</div>", 
-                unsafe_allow_html=True
-            )
+                # Increase frame size for better posture visibility
+                frame = cv2.resize(frame, (800, 600))  # Adjusted to 800x600
+                frame = process_frame(frame, model, app_mode)
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                frame_placeholder.image(frame, channels="RGB")
+                
+                # Display feedback
+                feedback_class = "feedback-good" if st.session_state.feedback_type == "good" else "feedback-bad"
+                feedback_placeholder.markdown(
+                    f"<div class='{feedback_class}'>{st.session_state.feedback}</div>", 
+                    unsafe_allow_html=True
+                )
 
-        if stop_button or not cap.isOpened():
-            cap.release()
+            if stop_button or not cap.isOpened():
+                cap.release()
 
-            # Calculate workout statistics
+                # Calculate workout statistics
+                duration = time.time() - st.session_state.start_time
+                # Different calorie calculations for different exercises
+                if app_mode in ["Left Dumbbell", "Right Dumbbell"]:
+                    calories_burned = 0.25 * st.session_state.counter
+                elif app_mode in ["Lateral Raises", "Front Raises"]:
+                    calories_burned = 0.3 * st.session_state.counter
+                elif app_mode == "Triceps Kickbacks":
+                    calories_burned = 0.2 * st.session_state.counter
+
+                st.write("---")
+                st.write("## Workout Summary")
+                st.write(f"Total Reps: {int(st.session_state.counter)}")
+                st.write(f"Duration: {int(duration)} seconds")
+                st.write(f"Calories Burned: {calories_burned:.2f} kcal")
+
+                # Create progress chart
+                fig = go.Figure()
+                fig.add_trace(go.Bar(
+                    x=['Calories'],
+                    y=[calories_burned],
+                    name='Calories Burned',
+                    marker_color='rgb(26, 118, 255)'
+                ))
+                fig.add_trace(go.Bar(
+                    x=['Calories'],
+                    y=[goal_calories],
+                    name='Goal',
+                    marker_color='rgb(55, 83, 109)'
+                ))
+
+                fig.update_layout(
+                    title='Workout Progress',
+                    xaxis_tickfont_size=14,
+                    yaxis=dict(
+                        title='Calories (kcal)',
+                        title_font_size=16,
+                        tickfont_size=14,
+                    ),
+                    legend=dict(
+                        x=0,
+                        y=1.0,
+                        bgcolor='rgba(255, 255, 255, 0)',
+                        bordercolor='rgba(255, 255, 255, 0)'
+                    ),
+                    barmode='group',
+                    bargap=0.15,
+                    bargroupgap=0.1
+                )
+
+                st.plotly_chart(fig)
+
+                # Reset session state for next workout
+                st.session_state.counter = 0
+                st.session_state.direction = "up"
+                st.session_state.start_time = None
+                st.session_state.camera_started = False
+    else:
+        # Fallback to manual mode when OpenCV is not available
+        st.warning("⚠️ Camera functionality not available. Using manual tracking mode.")
+        
+        # Manual rep counter
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            if st.button("Add Rep"):
+                st.session_state.counter += 1
+                st.rerun()
+        
+        with col2:
+            if st.button("Reset Counter"):
+                st.session_state.counter = 0
+                st.session_state.start_time = None
+                st.session_state.camera_started = False
+                st.rerun()
+        
+        with col3:
+            if st.button("Start Workout") and not st.session_state.camera_started:
+                st.session_state.camera_started = True
+                st.session_state.start_time = time.time()
+                st.rerun()
+
+        # Display current stats
+        if st.session_state.camera_started:
             duration = time.time() - st.session_state.start_time
+            
             # Different calorie calculations for different exercises
             if app_mode in ["Left Dumbbell", "Right Dumbbell"]:
                 calories_burned = 0.25 * st.session_state.counter
@@ -410,14 +503,19 @@ else:
                 calories_burned = 0.3 * st.session_state.counter
             elif app_mode == "Triceps Kickbacks":
                 calories_burned = 0.2 * st.session_state.counter
-
+            
             st.write("---")
-            st.write("## Workout Summary")
-            st.write(f"Total Reps: {int(st.session_state.counter)}")
-            st.write(f"Duration: {int(duration)} seconds")
-            st.write(f"Calories Burned: {calories_burned:.2f} kcal")
-
-            # Create progress chart
+            st.write("## Current Workout Stats")
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric("Reps", st.session_state.counter)
+            with col2:
+                st.metric("Duration", f"{int(duration)}s")
+            with col3:
+                st.metric("Calories", f"{calories_burned:.2f} kcal")
+            
+            # Progress chart
             fig = go.Figure()
             fig.add_trace(go.Bar(
                 x=['Calories'],
@@ -452,9 +550,13 @@ else:
             )
 
             st.plotly_chart(fig)
-
-            # Reset session state for next workout
-            st.session_state.counter = 0
-            st.session_state.direction = "up"
-            st.session_state.start_time = None
-            st.session_state.camera_started = False
+            
+            # Feedback
+            if calories_burned >= goal_calories:
+                st.success("🎉 Congratulations! You've reached your goal!")
+            elif calories_burned >= goal_calories * 0.8:
+                st.info("💪 Almost there! Keep going!")
+            else:
+                st.warning("🔥 Keep pushing! You can do it!")
+        else:
+            st.info("Click 'Start Workout' to begin tracking your exercise!")

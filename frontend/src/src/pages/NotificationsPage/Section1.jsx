@@ -6,7 +6,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaSpinner } from "react-icons/fa";
 
-const NotificationsPage = ({ darkMode }) => {
+const NotificationsPage = () => {
   const user = useSelector(selectUser);
   const [notifications, setNotifications] = useState([]);
   const [sortOrder, setSortOrder] = useState("latest"); // Default is 'latest'
@@ -91,13 +91,9 @@ const NotificationsPage = ({ darkMode }) => {
   };
 
   return (
-    <div
-      className={`flex flex-col min-h-screen ${
-        darkMode ? "dark bg-gray-900 text-white" : "bg-white text-black"
-      }`}
-    >
+    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
       <div className="container mx-auto py-6 px-4">
-        <h2 className="text-xl lg:text-2xl font-semibold mb-4">
+        <h2 className="text-xl lg:text-2xl font-semibold mb-4 text-white">
           Notifications
         </h2>
         <ToastContainer />
@@ -108,12 +104,8 @@ const NotificationsPage = ({ darkMode }) => {
               onClick={() => handleSortChange("latest")}
               className={`mr-2 px-4 py-2 rounded ${
                 sortOrder === "latest"
-                  ? darkMode
-                    ? "bg-blue-700 text-white"
-                    : "bg-blue-500 text-white"
-                  : darkMode
-                  ? "bg-gray-800 text-white"
-                  : "bg-gray-300 text-black"
+                  ? "bg-blue-700 text-white"
+                  : "bg-gray-800 text-white"
               }`}
             >
               Latest
@@ -122,12 +114,8 @@ const NotificationsPage = ({ darkMode }) => {
               onClick={() => handleSortChange("oldest")}
               className={`px-4 py-2 rounded ${
                 sortOrder === "oldest"
-                  ? darkMode
-                    ? "bg-blue-700 text-white"
-                    : "bg-blue-500 text-white"
-                  : darkMode
-                  ? "bg-gray-800 text-white"
-                  : "bg-gray-300 text-black"
+                  ? "bg-blue-700 text-white"
+                  : "bg-gray-800 text-white"
               }`}
             >
               Oldest
@@ -144,9 +132,7 @@ const NotificationsPage = ({ darkMode }) => {
             {notifications.map((notification) => (
               <div
                 key={notification._id}
-                className={`notification-card ${
-                  darkMode ? "bg-gray-800 text-white" : "bg-white text-black"
-                } shadow-md rounded-lg p-4 flex items-start`}
+                className="notification-card bg-gray-800 text-white shadow-md rounded-lg p-4 flex items-start border border-gray-700"
               >
                 <div className="w-16 h-16 lg:w-20 lg:h-20 flex-shrink-0 rounded-lg overflow-hidden">
                   {notification.images && notification.images.length > 0 ? (
@@ -156,41 +142,37 @@ const NotificationsPage = ({ darkMode }) => {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gray-300 rounded-lg">
+                    <div className="w-full h-full flex items-center justify-center bg-gray-700 text-gray-300 rounded-lg">
                       No Image
                     </div>
                   )}
                 </div>
                 <div className="flex-grow ml-4">
-                  <h3 className="text-md font-semibold mb-1">
+                  <h3 className="text-md font-semibold mb-1 text-white">
                     Item: {notification.itemName}
                   </h3>
-                  <p className="text-sm text-gray-500 mb-1">
+                  <p className="text-sm text-gray-400 mb-1">
                     <span className="font-semibold">Report ID:</span>{" "}
                     {notification.reportID}
                   </p>
-                  <p className="text-sm mb-2">
+                  <p className="text-sm text-gray-300 mb-2">
                     Description: {notification.description}
                   </p>
                   {notification.reportType === "lost" ? (
                     <div>
-                      <p className="text-sm">
+                      <p className="text-sm text-gray-300">
                         Claimed by: <strong>{notification.claimedBy}</strong>
                       </p>
                       {notification.responseMessage && (
                         <div
-                          className={`mt-2 p-2 border rounded-lg text-sm ${
-                            darkMode
-                              ? "bg-green-900 border-green-700 text-green-300"
-                              : "bg-green-100 border-green-500 text-green-600"
-                          }`}
+                          className="mt-2 p-2 border rounded-lg text-sm bg-green-900 border-green-700 text-green-300"
                         >
                           <h4 className="font-semibold">Response</h4>
                           <p>{notification.responseMessage}</p>
                         </div>
                       )}
                       {notification.otp && (
-                        <p className="text-sm mt-1">
+                        <p className="text-sm mt-1 text-gray-300">
                           OTP: <strong>{notification.otp}</strong>
                         </p>
                       )}
@@ -199,18 +181,14 @@ const NotificationsPage = ({ darkMode }) => {
                     <div>
                       {notification.responseMessage && (
                         <div
-                          className={`mt-2 p-2 border rounded-lg text-sm ${
-                            darkMode
-                              ? "bg-green-900 border-green-700 text-green-300"
-                              : "bg-green-100 border-green-500 text-green-600"
-                          }`}
+                          className="mt-2 p-2 border rounded-lg text-sm bg-green-900 border-green-700 text-green-300"
                         >
                           <h4 className="font-semibold">Response</h4>
                           <p>{notification.responseMessage}</p>
                         </div>
                       )}
                       {notification.user && (
-                        <div className="mt-1">
+                        <div className="mt-1 text-gray-300">
                           <h4 className="font-semibold text-sm">Posted By:</h4>
                           <p className="text-sm">
                             Contact: {notification.user.email}
@@ -218,7 +196,7 @@ const NotificationsPage = ({ darkMode }) => {
                         </div>
                       )}
                       {notification.locationDetails && (
-                        <div className="mt-1">
+                        <div className="mt-1 text-gray-300">
                           <h4 className="font-semibold text-sm">Location:</h4>
                           <p className="text-sm">
                             {notification.locationDetails}
@@ -226,7 +204,7 @@ const NotificationsPage = ({ darkMode }) => {
                         </div>
                       )}
                       {notification.additionalInfo && (
-                        <div className="mt-1">
+                        <div className="mt-1 text-gray-300">
                           <h4 className="font-semibold text-sm">
                             Additional Info:
                           </h4>
@@ -236,7 +214,7 @@ const NotificationsPage = ({ darkMode }) => {
                         </div>
                       )}
                       {notification.otp && (
-                        <p className="text-sm mt-1">
+                        <p className="text-sm mt-1 text-gray-300">
                           OTP: <strong>{notification.otp}</strong>
                         </p>
                       )}

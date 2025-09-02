@@ -2,6 +2,8 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
+  background-color: #333;
+  color: #fff;
 }
 
 header, footer {
@@ -23,15 +25,17 @@ footer {
   max-width: 600px;
   margin: auto;
   padding: 20px;
-  margin-top: 100px; /* To create space for the fixed header */
-  margin-bottom: 80px; /* To create space for the fixed footer */
+  margin-top: 100px;
+  margin-bottom: 80px;
   border-radius: 10px;
-  background-color: #f9f9f9;
+  background-color: #444;
+  color: #fff;
 }
 
 .edit-profile-container h2 {
   text-align: center;
   margin-bottom: 20px;
+  color: #fff;
 }
 
 .form-group {
@@ -41,6 +45,7 @@ footer {
 .form-group label {
   display: block;
   margin-bottom: 5px;
+  color: #ccc;
 }
 
 .form-group input,
@@ -48,7 +53,9 @@ footer {
   width: 100%;
   padding: 10px;
   border-radius: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid #555;
+  background-color: #444;
+  color: #fff;
 }
 
 .btn {
@@ -57,22 +64,6 @@ footer {
   border: none;
   border-radius: 5px;
   margin-top: 10px;
-}
-
-.dark {
-  background-color: #333;
-  color: #fff;
-}
-
-.light {
-  background-color: #f9f9f9;
-  color: #000;
-}
-
-.dark-input {
-  background-color: #444;
-  color: #fff;
-  border: 1px solid #555;
 }
 
 .dark-btn {

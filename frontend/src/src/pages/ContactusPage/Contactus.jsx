@@ -3,13 +3,13 @@ import NavBar from "../HomePage/NavBar";
 import Section1 from "./Section1";
 import Footer from "../HomePage/Footer";
 
-export default function Contactus({ darkMode, toggleDarkMode }) {
+export default function Contactus() {
   return (
-    <div className={darkMode ? "dark" : ""}>
-      <NavBar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+    <div className="dark">
+      <NavBar />
       <div>
-        <Section1 darkMode={darkMode} />
-        <Footer darkMode={darkMode} />
+        <Section1 />
+        <Footer />
       </div>
     </div>
   );

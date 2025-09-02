@@ -105,21 +105,21 @@ export default function NavBar() {
           { path: "/Aicoach", label: "AI COACH" },
           { path: "/VirtualTA", label: "VIRTUAL TRAINING ASSISTANT" },
           { path: "/CurrentBMI", label: "CURRENT BMI" },
-          { path: "/CalorieTracker", label: "CALORIE TRACKER" },
+          { path: "/calorie-tracker", label: "CALORIE TRACKER" },
           { path: "/Workout", label: "WORKOUT" },
         ]),
   ];
 
   return (
     <>
-      <ToastContainer position="top-center" autoClose={2000} />
+      {/* Removed ToastContainer as it's now in App.jsx */}
       <GoogleOAuthProvider clientId="702465560392-1mu8j4kqafadep516m62oa5vf5klt7pu.apps.googleusercontent.com">
-        <nav className="sticky top-0 left-0 w-full z-50 bg-white shadow-md">
+        <nav className="sticky top-0 left-0 w-full z-50 bg-gray-900 shadow-lg text-white">
           <div className="container mx-auto px-4 py-3 flex justify-between items-center">
             {/* Logo */}
             <div className="flex items-center">
               <button
-                className="md:hidden mr-4 text-gray-600"
+                className="md:hidden mr-4 text-gray-300"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
@@ -129,7 +129,7 @@ export default function NavBar() {
                 className="text-2xl font-bold hover:opacity-90 transition-opacity flex items-center gap-2"
               >
                 <img src="/src/assets/logo.svg" alt="MindFit Logo" className="w-8 h-8" />
-                <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
                   MindFit
                 </span>
               </NavLink>
@@ -143,7 +143,7 @@ export default function NavBar() {
                   to={link.path}
                   className={({ isActive }) => 
                     `px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive ? "bg-gray-100 text-gray-900" : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      isActive ? "bg-gray-700 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white"
                     }`
                   }
                 >
@@ -160,25 +160,25 @@ export default function NavBar() {
                     className="flex items-center space-x-2 cursor-pointer group"
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                   >
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-medium bg-blue-100 text-blue-800">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-medium bg-blue-700 text-white">
                       {getUserInitials(user)}
                     </div>
-                    <span className="hidden md:inline text-gray-800">
+                    <span className="hidden md:inline text-gray-200">
                       <b>{user.firstName} {user.lastName ? user.lastName : ''}</b>
                     </span>
                   </div>
                   {dropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 z-50 bg-white border border-gray-200">
+                    <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 z-50 bg-gray-800 border border-gray-700">
                       <NavLink
                         to="/EditProfile"
-                        className="block px-4 py-2 text-sm flex items-center hover:bg-gray-100"
+                        className="block px-4 py-2 text-sm flex items-center text-gray-200 hover:bg-gray-700"
                         onClick={() => setDropdownOpen(false)}
                       >
                         <FiEdit2 className="mr-2" /> Edit Profile
                       </NavLink>
                       <button
                         onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm flex items-center hover:bg-gray-100"
+                        className="block w-full text-left px-4 py-2 text-sm flex items-center text-gray-200 hover:bg-gray-700"
                       >
                         <FiLogOut className="mr-2" /> Logout
                       </button>
@@ -189,7 +189,7 @@ export default function NavBar() {
                 <GoogleLogin
                   onSuccess={handleLoginSuccess}
                   onError={() => toast.error("Login failed", { autoClose: 2000 })}
-                  theme="outline"
+                  theme="filled_blue"
                   shape="pill"
                   size="medium"
                   text="signin_with"
@@ -200,7 +200,7 @@ export default function NavBar() {
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div className="md:hidden bg-white shadow-xl">
+            <div className="md:hidden bg-gray-800 shadow-xl">
               <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 {navLinks.map((link) => (
                   <NavLink
@@ -208,7 +208,7 @@ export default function NavBar() {
                     to={link.path}
                     className={({ isActive }) => 
                       `block px-3 py-2 rounded-md text-base font-medium ${
-                        isActive ? "bg-gray-200 text-gray-900" : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                        isActive ? "bg-gray-700 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white"
                       }`
                     }
                     onClick={() => setMobileMenuOpen(false)}

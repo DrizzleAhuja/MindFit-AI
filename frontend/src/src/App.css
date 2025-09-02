@@ -50,30 +50,6 @@ body {
   display: flex;
   justify-content: space-between;
 }
-/* src/index.css */
-:root {
-  --background-color: #ffffff;
-  --text-color: #000000;
-}
-
-.dark {
-  --background-color: #121212;
-  --text-color: #ffffff;
-}
-
-body {
-  background-color: var(--background-color);
-  color: var(--text-color);
-}
-body {
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.dark {
-  background-color: #1a202c; /* Dark background */
-  color: #e2e8f0; /* Light text color */
-}
-/* Add this to App.css */
 
 .blur-background {
   filter: blur(5px);

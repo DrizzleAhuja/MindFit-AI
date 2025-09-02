@@ -1,39 +1,11 @@
-/* styles.css */
+/* styles.css - Optimized for Dark Mode Only */
 
 /* General Styles */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-  }
-  
-  /* Dark Mode */
-  .dark-mode {
-    background-color: #1a1a1a;
-    color: #f5f5f5;
-  }
-  
-  .dark-mode .bg-gray-100 {
-    background-color: #2a2a2a;
-  }
-  
-  .dark-mode .bg-gray-200 {
-    background-color: #3a3a3a;
-  }
-  
-  .dark-mode .text-gray-600 {
-    color: #b0b0b0;
-  }
-  
-  .dark-mode .text-gray-900 {
-    color: #f5f5f5;
-  }
-  
-  .dark-mode .border-gray-300 {
-    border-color: #444;
-  }
-  
-  .dark-mode .border-gray-600 {
-    border-color: #666;
+    background-color: #1a1a1a; /* Enforce dark background */
+    color: #f5f5f5; /* Enforce light text */
   }
   
   /* Container Styles */
@@ -52,11 +24,12 @@ body {
   .header h1 {
     font-size: 2.5rem;
     font-weight: bold;
+    color: #f5f5f5;
   }
   
   .header h6 {
     font-size: 1.125rem;
-    color: #666;
+    color: #b0b0b0;
   }
   
   /* Search Bar Styles */
@@ -69,7 +42,9 @@ body {
   .search-bar input {
     padding: 10px;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #444;
+    background-color: #2a2a2a;
+    color: #f5f5f5;
     width: 100%;
     max-width: 400px;
   }
@@ -77,7 +52,7 @@ body {
   .search-bar button {
     padding: 10px;
     margin-top: 10px;
-    background-color: #4f46e5;
+    background-color: #4f46e5; /* Adjusted for dark mode */
     color: white;
     border: none;
     border-radius: 5px;
@@ -85,7 +60,7 @@ body {
   }
   
   .search-bar button:hover {
-    background-color: #4338ca;
+    background-color: #4338ca; /* Darker hover */
   }
   
   /* Category Buttons */
@@ -103,13 +78,14 @@ body {
     align-items: center;
     padding: 10px;
     border-radius: 10px;
-    background-color: #f1f1f1;
-    border: 1px solid #ccc;
+    background-color: #2a2a2a; /* Dark background */
+    border: 1px solid #444; /* Dark border */
+    color: #f5f5f5;
     cursor: pointer;
   }
   
   .category-buttons button:hover {
-    background-color: #e2e2e2;
+    background-color: #3a3a3a; /* Darker hover */
   }
   
   /* Item Cards */
@@ -120,21 +96,24 @@ body {
   }
   
   .item-card {
-    background-color: white;
+    background-color: #2a2a2a; /* Dark background */
     padding: 15px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid #444; /* Dark border */
+    color: #f5f5f5;
   }
   
   .item-card h3 {
     font-size: 1.25rem;
     font-weight: bold;
+    color: #f5f5f5;
   }
   
   .item-card p {
     font-size: 0.875rem;
     margin: 5px 0;
+    color: #b0b0b0;
   }
   
   .item-card .actions {
@@ -151,50 +130,53 @@ body {
   }
   
   .item-card button.delete {
-    background-color: #f56565;
+    background-color: #ef4444; /* Red */
     color: white;
   }
   
   .item-card button.delete:hover {
-    background-color: #e53e3e;
+    background-color: #dc2626; /* Darker red */
   }
   
   .item-card button.claim {
-    background-color: #48bb78;
+    background-color: #22c55e; /* Green */
     color: white;
   }
   
   .item-card button.claim:hover {
-    background-color: #38a169;
+    background-color: #16a34a; /* Darker green */
   }
   
   .item-card button.edit {
-    background-color: #3182ce;
+    background-color: #3b82f6; /* Blue */
     color: white;
   }
   
   .item-card button.edit:hover {
-    background-color: #2b6cb0;
+    background-color: #2563eb; /* Darker blue */
   }
   
   /* Edit Form */
   .edit-form {
-    background-color: white;
+    background-color: #2a2a2a; /* Dark background */
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     margin: 20px 0;
+    color: #f5f5f5;
   }
   
   .edit-form h2 {
     font-size: 1.5rem;
     margin-bottom: 15px;
+    color: #f5f5f5;
   }
   
   .edit-form label {
     display: block;
     font-size: 0.875rem;
     margin-bottom: 5px;
+    color: #b0b0b0;
   }
   
   .edit-form input,
@@ -203,7 +185,9 @@ body {
     width: 100%;
     padding: 10px;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #444;
+    background-color: #3a3a3a;
+    color: #f5f5f5;
     margin-bottom: 10px;
   }
   
@@ -229,12 +213,12 @@ body {
   }
   
   .edit-form button.cancel {
-    background-color: #e2e2e2;
-    color: black;
+    background-color: #6b7280; /* Darker gray */
+    color: white;
   }
   
   .edit-form button.cancel:hover {
-    background-color: #d4d4d4;
+    background-color: #4b5563; /* Even darker gray */
   }
   
   /* Responsive Styles */

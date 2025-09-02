@@ -1,0 +1,188 @@
+.calorie-tracker-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Arial', sans-serif;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.tracker-title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.5em;
+  font-weight: bold;
+}
+
+.input-section {
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.input-section label {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.input-section input[type="number"] {
+  padding: 10px;
+  border: 1px solid;
+  border-radius: 6px;
+  width: 80px;
+  text-align: center;
+}
+
+.dish-selection {
+  border: 1px solid;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dish-selection h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.3em;
+}
+
+.dish-selection select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid;
+  border-radius: 6px;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.6-6.4H19.4c-7.5%200-14.5%203.3-19%209.7-5.1%207.2-5.1%2017.1%200%2024.3l129.5%20177.5c4.5%206.5%2011.5%209.7%2019%209.7s14.5-3.3%2019-9.7L287%2093.7c5.1-7.2%205.1-17.1%200-24.3z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px top 50%;
+  background-size: 12px;
+}
+
+.dish-selection .quantity-input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dish-selection p {
+  margin-top: 10px;
+  font-size: 0.95em;
+}
+
+.summary-section {
+  border: 1px solid;
+  border-radius: 8px;
+  padding: 25px;
+  margin-top: 40px;
+  text-align: center;
+}
+
+.summary-section h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.8em;
+}
+
+.summary-section p {
+  margin-bottom: 8px;
+  font-size: 1.2em;
+  font-weight: 500;
+}
+
+.charts-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-top: 40px;
+  justify-content: center;
+}
+
+.chart-item {
+  flex: 1 1 calc(33% - 25px);
+  min-width: 280px;
+  border: 1px solid;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  transition: transform 0.2s ease-in-out;
+}
+
+.chart-item:hover {
+  transform: translateY(-5px);
+}
+
+.chart-item h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.4em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .chart-item {
+    flex: 1 1 calc(50% - 20px);
+  }
+}
+
+@media (max-width: 768px) {
+  .calorie-tracker-container {
+    padding: 15px;
+  }
+
+  .tracker-title {
+    font-size: 2em;
+  }
+
+  .input-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dish-selection {
+    padding: 15px;
+  }
+
+  .chart-item {
+    flex: 1 1 100%;
+    min-width: unset;
+  }
+
+  .summary-section {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .calorie-tracker-container {
+    padding: 10px;
+  }
+
+  .tracker-title {
+    font-size: 1.8em;
+  }
+
+  .input-section {
+    gap: 10px;
+  }
+
+  .dish-selection select,
+  .dish-selection input[type="number"] {
+    padding: 8px;
+  }
+
+  .summary-section p {
+    font-size: 1em;
+  }
+
+  .chart-item {
+    padding: 15px;
+  }
+}

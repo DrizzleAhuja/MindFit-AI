@@ -10,7 +10,7 @@ const FitBot = () => {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: "Hi there! I'm FitBot, your AI fitness assistant. How can I help you with your workout today? 💪",
+      content: "Hi there! I\'m FitBot, your AI fitness assistant. How can I help you with your workout today? 💪",
     },
   ]);
   const [input, setInput] = useState("");
@@ -58,10 +58,10 @@ const sendMessage = async () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center p-4 md:p-8">
-      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden">
+    <div className="min-h-screen bg-gray-900 flex flex-col items-center p-4 md:p-8">
+      <div className="w-full max-w-4xl bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-700">
         {/* Header */}
-        <div className="bg-gradient-to-r from-green-500 to-blue-600 p-6 text-white">
+        <div className="bg-gradient-to-r from-green-600 to-blue-700 p-6 text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <BsRobot className="text-2xl mr-3" />
@@ -79,7 +79,7 @@ const sendMessage = async () => {
         </div>
 
         {/* Chat Container */}
-        <div className="h-96 md:h-[32rem] overflow-y-auto p-4 bg-gray-50">
+        <div className="h-96 md:h-[32rem] overflow-y-auto p-4 bg-gray-900">
           {messages.map((msg, index) => (
             <div
               key={index}
@@ -88,27 +88,27 @@ const sendMessage = async () => {
               <div
                 className={`max-w-xs md:max-w-md lg:max-w-lg rounded-2xl p-4 ${
                   msg.role === "user"
-                    ? "bg-blue-500 text-white rounded-br-none"
-                    : "bg-white text-gray-800 shadow-sm rounded-bl-none"
+                    ? "bg-blue-600 text-white rounded-br-none"
+                    : "bg-gray-700 text-white shadow-sm rounded-bl-none"
                 }`}
               >
                 <div className="flex items-center mb-1">
                   {msg.role === "assistant" ? (
-                    <BsRobot className="mr-2 text-green-500" />
+                    <BsRobot className="mr-2 text-green-400" />
                   ) : (
-                    <div className="w-4 h-4 rounded-full bg-white/50 mr-2"></div>
+                    <div className="w-4 h-4 rounded-full bg-gray-500 mr-2"></div>
                   )}
-                  <span className="text-xs font-medium">
+                  <span className="text-xs font-medium text-gray-200">
                     {msg.role === "user" ? "You" : "FitBot"}
                   </span>
                 </div>
-                <p className="whitespace-pre-wrap">{msg.content}</p>
+                <p className="whitespace-pre-wrap text-gray-100">{msg.content}</p>
               </div>
             </div>
           ))}
           {loading && (
             <div className="flex justify-start mb-4">
-              <div className="bg-white text-gray-800 shadow-sm rounded-2xl rounded-bl-none p-4 max-w-xs">
+              <div className="bg-gray-700 text-gray-800 shadow-sm rounded-2xl rounded-bl-none p-4 max-w-xs">
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
@@ -120,9 +120,9 @@ const sendMessage = async () => {
         </div>
 
         {/* Input Area */}
-        <div className="border-t border-gray-200 bg-white p-4">
+        <div className="border-t border-gray-700 bg-gray-800 p-4">
           {error && (
-            <div className="mb-3 px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm">
+            <div className="mb-3 px-4 py-2 bg-red-900 text-red-300 rounded-lg text-sm border border-red-700">
               {error}
             </div>
           )}
@@ -132,7 +132,7 @@ const sendMessage = async () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="flex-1 px-4 py-3 rounded-l-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="flex-1 px-4 py-3 rounded-l-lg border border-gray-600 focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-700 text-white"
               placeholder="Ask FitBot about workouts, nutrition, etc..."
               disabled={loading}
             />
@@ -152,14 +152,14 @@ const sendMessage = async () => {
             </button>
           </div>
           <div className="mt-3 flex items-center justify-center space-x-4">
-            <button className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full flex items-center">
-              <FaDumbbell className="mr-1 text-green-500" /> Workout
+            <button className="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded-full flex items-center text-gray-200">
+              <FaDumbbell className="mr-1 text-green-400" /> Workout
             </button>
-            <button className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full flex items-center">
-              <FaHeartbeat className="mr-1 text-red-500" /> Nutrition
+            <button className="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded-full flex items-center text-gray-200">
+              <FaHeartbeat className="mr-1 text-red-400" /> Nutrition
             </button>
-            <button className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full flex items-center">
-              <FaRunning className="mr-1 text-blue-500" /> Cardio
+            <button className="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded-full flex items-center text-gray-200">
+              <FaRunning className="mr-1 text-blue-400" /> Cardio
             </button>
           </div>
         </div>

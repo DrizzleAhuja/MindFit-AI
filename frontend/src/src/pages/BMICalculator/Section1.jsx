@@ -80,46 +80,46 @@ export default function BMICalculator() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 text-gray-100">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-blue-600">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">
             BMI Calculator
           </h1>
-          <p className="text-xl text-gray-600">
+          <p className="text-xl text-gray-300">
             Track your Body Mass Index and monitor your health progress
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Calculator Form */}
-          <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center">
-              <FaWeight className="mr-3 text-green-500" /> Calculate Your BMI
+          <div className="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6">
+            <h2 className="text-2xl font-bold mb-6 text-white flex items-center">
+              <FaWeight className="mr-3 text-green-400" /> Calculate Your BMI
             </h2>
             
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                  <FaBirthdayCake className="mr-2 text-gray-500" /> Age
+                <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center">
+                  <FaBirthdayCake className="mr-2 text-gray-400" /> Age
                 </label>
                 <input 
                   type="number" 
                   placeholder="Enter your age" 
                   value={age} 
                   onChange={(e) => setAge(e.target.value)} 
-                  className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-green-500 focus:ring-1 focus:ring-green-500 text-white"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                  <FaVenusMars className="mr-2 text-gray-500" /> Gender
+                <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center">
+                  <FaVenusMars className="mr-2 text-gray-400" /> Gender
                 </label>
                 <select 
                   value={gender} 
                   onChange={(e) => setGender(e.target.value)} 
-                  className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-green-500 focus:ring-1 focus:ring-green-500 text-white"
                 >
                   <option value="male">Male</option>
                   <option value="female">Female</option>
@@ -127,21 +127,21 @@ export default function BMICalculator() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                  <FaWeight className="mr-2 text-gray-500" /> Weight (kg)
+                <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center">
+                  <FaWeight className="mr-2 text-gray-400" /> Weight (kg)
                 </label>
                 <input 
                   type="number" 
                   placeholder="Enter weight in kg" 
                   value={weight} 
                   onChange={(e) => setWeight(e.target.value)} 
-                  className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                  className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-green-500 focus:ring-1 focus:ring-green-500 text-white"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                  <GiBodyHeight className="mr-2 text-gray-500" /> Height
+                <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center">
+                  <GiBodyHeight className="mr-2 text-gray-400" /> Height
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="relative">
@@ -150,9 +150,9 @@ export default function BMICalculator() {
                       placeholder="Feet" 
                       value={heightFeet} 
                       onChange={(e) => setHeightFeet(e.target.value)} 
-                      className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                      className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-green-500 focus:ring-1 focus:ring-green-500 text-white"
                     />
-                    <span className="absolute right-3 top-3 text-gray-500">ft</span>
+                    <span className="absolute right-3 top-3 text-gray-400">ft</span>
                   </div>
                   <div className="relative">
                     <input 
@@ -160,9 +160,9 @@ export default function BMICalculator() {
                       placeholder="Inches" 
                       value={heightInches} 
                       onChange={(e) => setHeightInches(e.target.value)} 
-                      className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                      className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-green-500 focus:ring-1 focus:ring-green-500 text-white"
                     />
-                    <span className="absolute right-3 top-3 text-gray-500">in</span>
+                    <span className="absolute right-3 top-3 text-gray-400">in</span>
                   </div>
                 </div>
               </div>
@@ -176,15 +176,15 @@ export default function BMICalculator() {
             </div>
 
             {bmi && (
-              <div className="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <h3 className="text-lg font-semibold mb-2 text-gray-800">Your Results</h3>
+              <div className="mt-8 p-4 bg-gray-700 rounded-lg border border-gray-600">
+                <h3 className="text-lg font-semibold mb-2 text-white">Your Results</h3>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-600">Your BMI:</p>
+                    <p className="text-gray-300">Your BMI:</p>
                     <p className={`text-3xl font-bold ${getBMIColor(bmi)}`}>{bmi}</p>
                   </div>
                   <div>
-                    <p className="text-gray-600">Category:</p>
+                    <p className="text-gray-300">Category:</p>
                     <p className={`text-xl font-semibold ${getBMIColor(bmi)}`}>{category}</p>
                   </div>
                 </div>
@@ -193,9 +193,9 @@ export default function BMICalculator() {
           </div>
 
           {/* History Section */}
-          <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center">
-              <FaHistory className="mr-3 text-green-500" /> BMI History
+          <div className="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6">
+            <h2 className="text-2xl font-bold mb-6 text-white flex items-center">
+              <FaHistory className="mr-3 text-green-400" /> BMI History
             </h2>
             
             {history.length > 0 ? (
@@ -203,18 +203,18 @@ export default function BMICalculator() {
                 {history.map((entry, index) => (
                   <div 
                     key={index} 
-                    className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-green-300 transition"
+                    className="p-4 bg-gray-700 rounded-lg border border-gray-600 hover:border-green-300 transition"
                   >
                     <div className="flex justify-between items-center mb-2">
                       <div>
                         <span className={`text-lg font-semibold ${getBMIColor(entry.bmi)}`}>
                           {entry.bmi}
                         </span>
-                        <span className="text-sm text-gray-500 ml-2">
+                        <span className="text-sm text-gray-400 ml-2">
                           ({entry.category})
                         </span>
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-400">
                         {new Date(entry.date).toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric',
@@ -222,13 +222,13 @@ export default function BMICalculator() {
                         })}
                       </div>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-gray-600 rounded-full h-2">
                       <div 
                         className={`h-2 rounded-full ${
-                          entry.category === "Underweight" ? "bg-blue-500" :
-                          entry.category === "Normal weight" ? "bg-green-500" :
-                          entry.category === "Overweight" ? "bg-yellow-500" :
-                          entry.category === "Obese" ? "bg-orange-500" : "bg-red-500"
+                          entry.category === "Underweight" ? "bg-blue-400" :
+                          entry.category === "Normal weight" ? "bg-green-400" :
+                          entry.category === "Overweight" ? "bg-yellow-400" :
+                          entry.category === "Obese" ? "bg-orange-400" : "bg-red-400"
                         }`}
                         style={{
                           width: `${Math.min(100, (parseFloat(entry.bmi) / 40) * 100)}%`
@@ -240,15 +240,15 @@ export default function BMICalculator() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <FaHistory className="text-5xl text-gray-300 mx-auto mb-4" />
-                <h3 className="text-xl font-medium text-gray-500">No BMI History</h3>
-                <p className="text-gray-400 mt-2">Calculate your BMI to start tracking your progress.</p>
+                <FaHistory className="text-5xl text-gray-600 mx-auto mb-4" />
+                <h3 className="text-xl font-medium text-gray-400">No BMI History</h3>
+                <p className="text-gray-500 mt-2">Calculate your BMI to start tracking your progress.</p>
               </div>
             )}
           </div>
         </div>
       </div>
-      <ToastContainer position="bottom-right" autoClose={3000} />
+      <ToastContainer position="bottom-right" autoClose={3000} theme="dark"/>
     </div>
   );
 }

@@ -1,0 +1,302 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  color: #f3f4f6; /* Dark mode color */
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  color: #9ca3af; /* Dark mode color */
+  font-size: 1.1rem;
+}
+
+.searchContainer {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid #4b5563; /* Dark mode border */
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  background-color: #374151; /* Dark mode background */
+  color: #f3f4f6; /* Dark mode text */
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #818cf8; /* Dark mode focus color */
+  box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.3); /* Dark mode shadow */
+}
+
+.searchButton {
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.3s;
+}
+
+.searchButton:hover {
+  background-color: #4338ca;
+}
+
+.foodGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.foodCard {
+  background: #1f2937; /* Dark mode background */
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2); /* Darker shadow */
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.foodCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+.foodImage {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.foodInfo {
+  padding: 1.25rem;
+}
+
+.foodName {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #f3f4f6; /* Dark mode color */
+}
+
+.foodDetails {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  color: #9ca3af; /* Dark mode color */
+  font-size: 0.9rem;
+}
+
+.addButton {
+  width: 100%;
+  padding: 0.5rem;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.addButton:hover {
+  background-color: #059669;
+}
+
+.selectedFoods {
+  margin-top: 3rem;
+}
+
+.selectedHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.calorieCount {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #f3f4f6; /* Dark mode color */
+}
+
+.calorieLimit {
+  color: #9ca3af; /* Dark mode color */
+  font-size: 0.9rem;
+}
+
+.progressBar {
+  height: 8px;
+  background-color: #374151; /* Dark mode background */
+  border-radius: 4px;
+  margin: 0.5rem 0 1.5rem;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #4f46e5, #8b5cf6);
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+.selectedList {
+  background: #1f2937; /* Dark mode background */
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+.selectedItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #374151; /* Dark mode border */
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.itemName {
+  font-weight: 500;
+  color: #f3f4f6; /* Dark mode color */
+  margin-bottom: 0.25rem;
+}
+
+.itemCalories {
+  font-size: 0.875rem;
+  color: #9ca3af; /* Dark mode color */
+}
+
+.itemActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.quantityButton {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid #4b5563; /* Dark mode border */
+  background: #374151; /* Dark mode background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #f3f4f6; /* Dark mode text */
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.quantityButton:hover {
+  background-color: #4b5563; /* Darker hover */
+  border-color: #6b7280; /* Darker border */
+}
+
+.quantity {
+  min-width: 24px;
+  text-align: center;
+  font-weight: 500;
+  color: #f3f4f6; /* Dark mode text */
+}
+
+.removeButton {
+  color: #ef4444;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  margin-left: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.removeButton:hover {
+  background-color: #fee2e2; /* Light red hover, consider darker for consistency */
+}
+
+.totalSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #374151; /* Dark mode border */
+  font-weight: 600;
+  color: #f3f4f6; /* Dark mode text */
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .foodGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .searchContainer {
+    flex-direction: column;
+  }
+  
+  .searchButton {
+    justify-content: center;
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .header h1 {
+    font-size: 1.8em;
+  }
+  
+  .input-section {
+    gap: 10px;
+  }
+  
+  .dish-selection select,
+  .dish-selection input[type="number"] {
+    padding: 8px;
+  }
+  
+  .totalSection p {
+    font-size: 1em;
+  }
+  
+  .foodCard {
+    padding: 15px;
+  }
+}

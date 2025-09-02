@@ -5,15 +5,15 @@ import Section2 from "./Section2";
 import Section3 from "./Section3";
 import Footer from "../HomePage/Footer";
 
-export default function Aboutus({ darkMode, toggleDarkMode }) {
+export default function LostItems() {
   return (
-    <div className={darkMode ? "dark" : ""}>
-      <NavBar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+    <div className="dark">
+      <NavBar />
       <div>
-        <Section1 darkMode={darkMode} />
-        <Section2 darkMode={darkMode} />
-        <Section3 darkMode={darkMode} />
-        <Footer darkMode={darkMode} />
+        <Section1 />
+        <Section2 />
+        <Section3 />
+        <Footer />
       </div>
     </div>
   );

@@ -86,13 +86,13 @@ const WorkoutPlanGenerator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 text-gray-100">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-blue-600">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">
             AI Workout Plan Generator
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
             Get personalized workout plans tailored to your goals, fitness level, and preferences
           </p>
         </div>
@@ -102,8 +102,8 @@ const WorkoutPlanGenerator = () => {
             onClick={() => setActiveTab("generate")}
             className={`px-6 py-3 font-medium rounded-t-lg flex items-center ${
               activeTab === "generate" 
-                ? "bg-white text-green-600 border-t-2 border-green-500 shadow-sm" 
-                : "text-gray-500 hover:text-gray-700"
+                ? "bg-gray-800 text-green-400 border-t-2 border-green-500 shadow-sm" 
+                : "text-gray-400 hover:text-gray-200"
             }`}
           >
             <FaDumbbell className="mr-2" /> Generate Plan
@@ -112,8 +112,8 @@ const WorkoutPlanGenerator = () => {
             onClick={() => setActiveTab("history")}
             className={`px-6 py-3 font-medium rounded-t-lg flex items-center ${
               activeTab === "history" 
-                ? "bg-white text-green-600 border-t-2 border-green-500 shadow-sm" 
-                : "text-gray-500 hover:text-gray-700"
+                ? "bg-gray-800 text-green-400 border-t-2 border-green-500 shadow-sm" 
+                : "text-gray-400 hover:text-gray-200"
             }`}
           >
             <FiClock className="mr-2" /> My History
@@ -124,23 +124,23 @@ const WorkoutPlanGenerator = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Form Column */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-green-500 to-blue-600 p-6 text-white">
+              <div className="bg-gray-800 rounded-xl shadow-md border border-gray-700 overflow-hidden">
+                <div className="bg-gradient-to-r from-green-600 to-blue-700 p-6 text-white">
                   <h2 className="text-2xl font-bold flex items-center">
                     <FaChartLine className="mr-3" /> Plan Settings
                   </h2>
                 </div>
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Fitness Goal</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Fitness Goal</label>
                     <div className="grid grid-cols-2 gap-3">
                       <button
                         type="button"
                         onClick={() => setFormData({...formData, fitnessGoal: "Lose Weight"})}
-                        className={`p-3 rounded-lg border flex flex-col items-center ${
+                        className={`p-3 rounded-lg border flex flex-col items-center text-gray-200 ${
                           formData.fitnessGoal === "Lose Weight" 
-                            ? "bg-green-50 border-green-500 text-green-700" 
-                            : "bg-gray-50 border-gray-200 hover:border-gray-300"
+                            ? "bg-green-700 border-green-500" 
+                            : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
                         <GiRunningShoe className="text-xl mb-1" />
@@ -149,10 +149,10 @@ const WorkoutPlanGenerator = () => {
                       <button
                         type="button"
                         onClick={() => setFormData({...formData, fitnessGoal: "Gain Muscle"})}
-                        className={`p-3 rounded-lg border flex flex-col items-center ${
+                        className={`p-3 rounded-lg border flex flex-col items-center text-gray-200 ${
                           formData.fitnessGoal === "Gain Muscle" 
-                            ? "bg-green-50 border-green-500 text-green-700" 
-                            : "bg-gray-50 border-gray-200 hover:border-gray-300"
+                            ? "bg-green-700 border-green-500" 
+                            : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
                         <GiWeightLiftingUp className="text-xl mb-1" />
@@ -162,15 +162,15 @@ const WorkoutPlanGenerator = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Gender</label>
                     <div className="grid grid-cols-2 gap-3">
                       <button
                         type="button"
                         onClick={() => setFormData({...formData, gender: "Male"})}
-                        className={`p-3 rounded-lg border flex items-center justify-center ${
+                        className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
                           formData.gender === "Male" 
-                            ? "bg-blue-50 border-blue-500 text-blue-700" 
-                            : "bg-gray-50 border-gray-200 hover:border-gray-300"
+                            ? "bg-blue-700 border-blue-500" 
+                            : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
                         Male
@@ -178,10 +178,10 @@ const WorkoutPlanGenerator = () => {
                       <button
                         type="button"
                         onClick={() => setFormData({...formData, gender: "Female"})}
-                        className={`p-3 rounded-lg border flex items-center justify-center ${
+                        className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
                           formData.gender === "Female" 
-                            ? "bg-purple-50 border-purple-500 text-purple-700" 
-                            : "bg-gray-50 border-gray-200 hover:border-gray-300"
+                            ? "bg-purple-700 border-purple-500" 
+                            : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
                         Female
@@ -190,12 +190,12 @@ const WorkoutPlanGenerator = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Training Method</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Training Method</label>
                     <select
                       name="trainingMethod"
                       value={formData.trainingMethod}
                       onChange={handleChange}
-                      className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                      className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-green-500 focus:ring-1 focus:ring-green-500 text-white"
                       required
                     >
                       <option value="">Select Method</option>
@@ -207,12 +207,12 @@ const WorkoutPlanGenerator = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Workout Type</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Workout Type</label>
                     <select
                       name="workoutType"
                       value={formData.workoutType}
                       onChange={handleChange}
-                      className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 focus:border-green-500 focus:ring-1 focus:ring-green-500"
+                      className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-green-500 focus:ring-1 focus:ring-green-500 text-white"
                       required
                     >
                       <option value="">Select Type</option>
@@ -223,15 +223,15 @@ const WorkoutPlanGenerator = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Strength Level</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Strength Level</label>
                     <div className="grid grid-cols-3 gap-3">
                       <button
                         type="button"
                         onClick={() => setFormData({...formData, strengthLevel: "Beginner"})}
-                        className={`p-3 rounded-lg border flex items-center justify-center ${
+                        className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
                           formData.strengthLevel === "Beginner" 
-                            ? "bg-green-50 border-green-500 text-green-700" 
-                            : "bg-gray-50 border-gray-200 hover:border-gray-300"
+                            ? "bg-green-700 border-green-500" 
+                            : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
                         Beginner
@@ -239,10 +239,10 @@ const WorkoutPlanGenerator = () => {
                       <button
                         type="button"
                         onClick={() => setFormData({...formData, strengthLevel: "Intermediate"})}
-                        className={`p-3 rounded-lg border flex items-center justify-center ${
+                        className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
                           formData.strengthLevel === "Intermediate" 
-                            ? "bg-green-50 border-green-500 text-green-700" 
-                            : "bg-gray-50 border-gray-200 hover:border-gray-300"
+                            ? "bg-green-700 border-green-500" 
+                            : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
                         Intermediate
@@ -250,10 +250,10 @@ const WorkoutPlanGenerator = () => {
                       <button
                         type="button"
                         onClick={() => setFormData({...formData, strengthLevel: "Advanced"})}
-                        className={`p-3 rounded-lg border flex items-center justify-center ${
+                        className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
                           formData.strengthLevel === "Advanced" 
-                            ? "bg-green-50 border-green-500 text-green-700" 
-                            : "bg-gray-50 border-gray-200 hover:border-gray-300"
+                            ? "bg-green-700 border-green-500" 
+                            : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
                         Advanced
@@ -285,8 +285,8 @@ const WorkoutPlanGenerator = () => {
             {/* Plan Column */}
             <div className="lg:col-span-2">
               {plan ? (
-                <div className="bg-white rounded-xl shadow-md border border-gray-200 h-full overflow-hidden">
-                  <div className="bg-gradient-to-r from-green-500 to-blue-600 p-6 text-white">
+                <div className="bg-gray-800 rounded-xl shadow-md border border-gray-700 h-full overflow-hidden">
+                  <div className="bg-gradient-to-r from-green-600 to-blue-700 p-6 text-white">
                     <div className="flex justify-between items-center">
                       <h2 className="text-2xl font-bold flex items-center">
                         <FaDumbbell className="mr-3" /> Your Custom Plan
@@ -312,17 +312,17 @@ const WorkoutPlanGenerator = () => {
                   </div>
                   <div className="p-6">
                     <div className="prose max-w-none">
-                      <pre className="whitespace-pre-wrap font-sans text-gray-800 bg-gray-50 p-4 rounded-lg">
+                      <pre className="whitespace-pre-wrap font-sans text-gray-100 bg-gray-700 p-4 rounded-lg">
                         {plan}
                       </pre>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="bg-white rounded-xl shadow-md border border-gray-200 h-full flex flex-col items-center justify-center text-center p-12">
-                  <FaDumbbell className="text-5xl text-gray-300 mb-6" />
-                  <h3 className="text-2xl font-medium text-gray-500 mb-3">No Workout Plan Generated</h3>
-                  <p className="text-gray-400 max-w-md">
+                <div className="bg-gray-800 rounded-xl shadow-md border border-gray-700 h-full flex flex-col items-center justify-center text-center p-12">
+                  <FaDumbbell className="text-5xl text-gray-600 mb-6" />
+                  <h3 className="text-2xl font-medium text-gray-400 mb-3">No Workout Plan Generated</h3>
+                  <p className="text-gray-500 max-w-md">
                     Fill out the form and click "Generate Workout Plan" to create your personalized fitness routine.
                   </p>
                 </div>
@@ -330,8 +330,8 @@ const WorkoutPlanGenerator = () => {
             </div>
           </div>
         ) : (
-          <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
-            <div className="bg-gradient-to-r from-green-500 to-blue-600 p-6 text-white">
+          <div className="bg-gray-800 rounded-xl shadow-md border border-gray-700 overflow-hidden">
+            <div className="bg-gradient-to-r from-green-600 to-blue-700 p-6 text-white">
               <h2 className="text-2xl font-bold flex items-center">
                 <FiCalendar className="mr-3" /> Workout History
               </h2>
@@ -342,14 +342,14 @@ const WorkoutPlanGenerator = () => {
                   {history.map((item, index) => (
                     <div 
                       key={index} 
-                      className="bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-green-300 transition cursor-pointer"
+                      className="bg-gray-700 rounded-lg p-5 border border-gray-600 hover:border-green-300 transition cursor-pointer"
                     >
                       <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-3">
                         <div>
-                          <h3 className="font-bold text-lg text-gray-800">
+                          <h3 className="font-bold text-lg text-white">
                             {item.fitnessGoal} Plan ({item.strengthLevel})
                           </h3>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-gray-400">
                             {new Date(item.createdAt).toLocaleDateString('en-US', {
                               weekday: 'long',
                               year: 'numeric',
@@ -359,16 +359,16 @@ const WorkoutPlanGenerator = () => {
                           </p>
                         </div>
                         <div className="flex space-x-2 mt-2 md:mt-0">
-                          <span className="px-3 py-1 text-xs rounded-full bg-green-100 text-green-800">
+                          <span className="px-3 py-1 text-xs rounded-full bg-green-800 text-green-100">
                             {item.trainingMethod}
                           </span>
-                          <span className="px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                          <span className="px-3 py-1 text-xs rounded-full bg-blue-800 text-blue-100">
                             {item.workoutType}
                           </span>
                         </div>
                       </div>
                       <div className="prose max-w-none">
-                        <pre className="whitespace-pre-wrap font-sans text-gray-600 text-sm bg-white p-3 rounded border">
+                        <pre className="whitespace-pre-wrap font-sans text-gray-100 text-sm bg-gray-900 p-3 rounded border border-gray-700">
                           {item.plan}
                         </pre>
                       </div>
@@ -377,16 +377,16 @@ const WorkoutPlanGenerator = () => {
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <FiClock className="text-5xl text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-xl font-medium text-gray-500">No Workout History</h3>
-                  <p className="text-gray-400 mt-2">Generate your first workout plan to see it appear here.</p>
+                  <FiClock className="text-5xl text-gray-600 mx-auto mb-4" />
+                  <h3 className="text-xl font-medium text-gray-400">No Workout History</h3>
+                  <p className="text-gray-500 mt-2">Generate your first workout plan to see it appear here.</p>
                 </div>
               )}
             </div>
           </div>
         )}
       </div>
-      <ToastContainer position="bottom-right" autoClose={3000} />
+      <ToastContainer position="bottom-right" autoClose={3000} theme="dark"/>
     </div>
   );
 };

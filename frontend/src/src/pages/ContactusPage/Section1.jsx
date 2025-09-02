@@ -183,7 +183,7 @@ import { selectUser } from "../../redux/userSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const ContactUs = ({ darkMode }) => {
+const ContactUs = () => {
   const user = useSelector(selectUser);
 
   const [formData, setFormData] = useState({
@@ -235,13 +235,7 @@ const ContactUs = ({ darkMode }) => {
   };
 
   return (
-    <div
-      className={`
-        flex flex-col items-center py-10 px-4 w-full ${
-          darkMode ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-900"
-        }
-      `}
-    >
+    <div className="flex flex-col items-center py-10 px-4 w-full bg-gray-900 text-white">
       {/* Feedback Form Link */}
       <div className="w-full max-w-md mb-6">
         <a
@@ -258,17 +252,13 @@ const ContactUs = ({ darkMode }) => {
       <div className="w-full max-w-md mb-8">
         <button
           onClick={() => setFormData((prevState) => ({ ...prevState, fakeClaim: false }))}
-          className={`p-3 bg-indigo-500 text-white rounded-md w-full mb-4 hover:bg-indigo-600 ${
-            !formData.fakeClaim ? "opacity-100" : "opacity-50"
-          }`}
+          className={`p-3 bg-indigo-500 text-white rounded-md w-full mb-4 hover:bg-indigo-600 ${!formData.fakeClaim ? "opacity-100" : "opacity-50"}`}
         >
           Report Another Issue
         </button>
         <button
           onClick={() => setFormData((prevState) => ({ ...prevState, fakeClaim: true }))}
-          className={`p-3 bg-red-500 text-white rounded-md w-full hover:bg-red-600 ${
-            formData.fakeClaim ? "opacity-100" : "opacity-50"
-          }`}
+          className={`p-3 bg-red-500 text-white rounded-md w-full hover:bg-red-600 ${formData.fakeClaim ? "opacity-100" : "opacity-50"}`}
         >
           Fake Claim
         </button>
@@ -276,90 +266,78 @@ const ContactUs = ({ darkMode }) => {
       <form onSubmit={handleSubmit} className="w-full max-w-md">
         {/* Form Fields */}
         <div className="mb-4">
-          <label className="block mb-2">Name</label>
+          <label className="block mb-2 text-gray-300">Name</label>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className={`p-2 rounded-md w-full ${
-              darkMode ? "bg-gray-800 border-gray-600 text-white" : "bg-white border-gray-300 text-black"
-            }`}
+            className="p-2 rounded-md w-full bg-gray-800 border-gray-600 text-white"
             required
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-2">Roll No</label>
+          <label className="block mb-2 text-gray-300">Roll No</label>
           <input
             type="text"
             name="rollNo"
             value={formData.rollNo}
             onChange={handleChange}
-            className={`p-2 rounded-md w-full ${
-              darkMode ? "bg-gray-800 border-gray-600 text-white" : "bg-white border-gray-300 text-black"
-            }`}
+            className="p-2 rounded-md w-full bg-gray-800 border-gray-600 text-white"
             required
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-2">Email</label>
+          <label className="block mb-2 text-gray-300">Email</label>
           <input
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className={`p-2 rounded-md w-full ${
-              darkMode ? "bg-gray-800 border-gray-600 text-white" : "bg-white border-gray-300 text-black"
-            }`}
+            className="p-2 rounded-md w-full bg-gray-800 border-gray-600 text-white"
             readOnly
             required
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-2">Item Lost/Found</label>
+          <label className="block mb-2 text-gray-300">Item Lost/Found</label>
           <input
             type="text"
             name="item"
             value={formData.item}
             onChange={handleChange}
-            className={`p-2 rounded-md w-full ${
-              darkMode ? "bg-gray-800 border-gray-600 text-white" : "bg-white border-gray-300 text-black"
-            }`}
+            className="p-2 rounded-md w-full bg-gray-800 border-gray-600 text-white"
             required
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-2">Description of Problem</label>
+          <label className="block mb-2 text-gray-300">Description of Problem</label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
-            className={`p-2 rounded-md w-full h-32 ${
-              darkMode ? "bg-gray-800 border-gray-600 text-white" : "bg-white border-gray-300 text-black"
-            }`}
+            className="p-2 rounded-md w-full h-32 bg-gray-800 border-gray-600 text-white"
             required
           ></textarea>
         </div>
         <div className="mb-4">
-          <label className="block mb-2">Report ID (Optional)</label>
+          <label className="block mb-2 text-gray-300">Report ID (Optional)</label>
           <input
             type="text"
             name="reportId"
             value={formData.reportId}
             onChange={handleChange}
-            className={`p-2 rounded-md w-full ${
-              darkMode ? "bg-gray-800 border-gray-600 text-white" : "bg-white border-gray-300 text-black"
-            }`}
+            className="p-2 rounded-md w-full bg-gray-800 border-gray-600 text-white"
           />
         </div>
         <button
           type="submit"
-          className="p-3 bg-indigo-500 text-white rounded-md w-full hover:bg-indigo-600"
+          className="p-3 bg-indigo-600 text-white rounded-md w-full hover:bg-indigo-700"
         >
           Send Message
         </button>
       </form>
-      <ToastContainer />
+      <ToastContainer theme="dark" />
     </div>
   );
 };
