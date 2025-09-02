@@ -29,16 +29,16 @@ pip install --upgrade pip setuptools wheel
 # Aggressively uninstall potentially conflicting packages
 echo "Cleaning up conflicting Python packages..."
 pip uninstall -y numpy opencv-python opencv-python-headless ultralytics || true
+pip install --no-cache-dir numpy>=2.0.0 # Install numpy first to satisfy other dependencies
+pip install --no-cache-dir opencv-python-headless # Ensure headless OpenCV is installed
 
-# Install requirements from requirements.txt
-echo "Installing Python dependencies from requirements.txt..."
+# Install remaining requirements from requirements.txt (excluding already installed ones)
+echo "Installing remaining Python dependencies from requirements.txt..."
 pip install --no-cache-dir -r requirements.txt
 
-# Explicitly install ultralytics and opencv-python-headless, and numpy
-echo "Installing Ultralytics, opencv-python-headless, and numpy explicitly..."
-pip install --no-cache-dir ultralytics
-pip install --no-cache-dir opencv-python-headless
-pip install --no-cache-dir numpy>=2.0.0
+# Install ultralytics, ensuring it uses the headless OpenCV
+echo "Installing Ultralytics..."
+pip install --no-cache-dir ultralytics # Ultralytics should now use opencv-python-headless
 
 echo "Verifying installation..."
 python -c "import cv2; print('OpenCV version:', cv2.__version__)"
