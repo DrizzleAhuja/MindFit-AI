@@ -9,13 +9,5 @@ echo "=========================================="
 echo "Virtual Training Assistant Cloud Deployment"
 echo "=========================================="
 
-# Ensure install_deps.sh is executable and run it
-chmod +x ./install_deps.sh
-./install_deps.sh
-
-echo "=========================================="
-echo "Starting Streamlit application..."
-echo "=========================================="
-
-# Run the Streamlit application
-streamlit run AI/VirtualTrainingAssistant/vta.py --server.port=$PORT --server.enableCORS=false --server.enableXsrfProtection=false
+echo "This deploy.sh is deprecated. The Dockerfile now handles deployment."
+exit 0
