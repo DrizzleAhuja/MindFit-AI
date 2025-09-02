@@ -14,6 +14,10 @@ except ImportError as e:
     st.info("Switching to demo mode without camera functionality...")
     OPENCV_AVAILABLE = False
 
+if OPENCV_AVAILABLE:
+    st.write(f"DEBUG: OpenCV imported successfully, version: {cv2.__version__}")
+else:
+    st.write(f"DEBUG: OPENCV_AVAILABLE is {OPENCV_AVAILABLE}")
 # Page configuration - MUST BE FIRST COMMAND
 st.set_page_config(page_title="Fitness Tracker", layout="wide")
 
