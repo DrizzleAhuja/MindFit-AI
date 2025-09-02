@@ -3,21 +3,37 @@ import numpy as np
 import plotly.graph_objects as go
 import time
 import math
+import subprocess
 
 # Try to import OpenCV and YOLO, fall back to simple version if not available
 try:
     import cv2
-    from ultralytics import YOLO
     OPENCV_AVAILABLE = True
 except ImportError as e:
-    st.error(f"OpenCV or YOLO not available: {e}")
+    st.error(f"OpenCV not available: {e}")
     st.info("Switching to demo mode without camera functionality...")
     OPENCV_AVAILABLE = False
 
+YOLO_AVAILABLE = False
 if OPENCV_AVAILABLE:
-    st.write(f"DEBUG: OpenCV imported successfully, version: {cv2.__version__}")
+    try:
+        from ultralytics import YOLO
+        YOLO_AVAILABLE = True
+        st.write(f"DEBUG: OpenCV imported successfully, version: {cv2.__version__}")
+    except ImportError as e:
+        st.error(f"YOLO not available: {e}. Attempting to install Ultralytics...")
+        try:
+            # Programmatically install ultralytics as a last resort
+            subprocess.run(["pip", "install", "ultralytics"], check=True, capture_output=True)
+            from ultralytics import YOLO # Try importing again
+            YOLO_AVAILABLE = True
+            st.success("Ultralytics installed successfully during runtime.")
+        except Exception as install_e:
+            st.error(f"Failed to install Ultralytics during runtime: {install_e}")
+            st.info("Continuing without YOLO functionality...")
 else:
-    st.write(f"DEBUG: OPENCV_AVAILABLE is {OPENCV_AVAILABLE}")
+    st.write(f"DEBUG: OPENCV_AVAILABLE is {OPENCV_AVAILABLE} and YOLO_AVAILABLE is {YOLO_AVAILABLE}")
+
 # Page configuration - MUST BE FIRST COMMAND
 st.set_page_config(page_title="Fitness Tracker", layout="wide")
 
