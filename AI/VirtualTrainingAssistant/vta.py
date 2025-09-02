@@ -9,6 +9,13 @@ try:
     import cv2
     from ultralytics import YOLO
     OPENCV_AVAILABLE = True
+    # Additional check: try to open camera to confirm actual availability
+    cap_test = cv2.VideoCapture(0)
+    if not cap_test.isOpened():
+        st.error("Camera device (cv2.VideoCapture(0)) is not available.")
+        OPENCV_AVAILABLE = False
+    else:
+        cap_test.release()
 except ImportError as e:
     st.error(f"OpenCV or YOLO not available: {e}")
     st.info("Switching to demo mode without camera functionality...")
@@ -377,7 +384,7 @@ else:
 
         # Start button to initiate camera
         if not st.session_state.camera_started:
-            if st.button("Start Camera"):
+            if OPENCV_AVAILABLE and st.button("Start Camera"):
                 st.session_state.camera_started = True
                 st.session_state.start_time = time.time()
                 st.session_state.counter = 0
