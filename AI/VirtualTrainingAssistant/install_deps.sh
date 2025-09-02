@@ -49,3 +49,11 @@ python -c "import numpy; print('NumPy version:', numpy.__version__)"
 
 echo "Installation complete!"
 echo "You can now run the application with: streamlit run vta.py"
+
+echo "--- Diagnostic Info ---"
+echo "Python executable: $(which python)"
+echo "Pip executable: $(which pip)"
+echo "Python path: $PYTHONPATH"
+echo "Installed Python packages:"
+pip freeze
+echo "-----------------------"
