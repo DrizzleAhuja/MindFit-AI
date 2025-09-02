@@ -17,33 +17,28 @@ apt-get install -y \
     build-essential \
     pkg-config
 
-# Upgrade pip to latest version
-echo "Upgrading pip..."
-python -m pip install --upgrade pip
+# Create and activate a virtual environment
+echo "Setting up Python virtual environment..."
+python3 -m venv venv
+source venv/bin/activate
 
-# Install Python dependencies with specific versions for compatibility
-echo "Installing Python dependencies..."
-pip install --no-cache-dir --upgrade setuptools wheel
+# Upgrade pip and install setuptools/wheel
+echo "Upgrading pip and installing build tools..."
+pip install --upgrade pip setuptools wheel
 
-# Install requirements with retry mechanism
-for i in {1..3}; do
-    echo "Attempt $i: Installing requirements..."
-    if pip install --no-cache-dir -r requirements.txt; then
-        echo "Requirements installed successfully!"
-        break
-    else
-        echo "Attempt $i failed, retrying..."
-        if [ $i -eq 3 ]; then
-            echo "All attempts failed. Please check the error messages above."
-            exit 1
-        fi
-        sleep 5
-    fi
-done
+# Aggressively uninstall potentially conflicting packages
+echo "Cleaning up conflicting Python packages..."
+pip uninstall -y numpy opencv-python opencv-python-headless ultralytics || true
 
-# Install Ultralytics separately to manage its dependencies
-echo "Installing Ultralytics..."
-# Python dependencies will be handled by requirements.txt
+# Install requirements from requirements.txt
+echo "Installing Python dependencies from requirements.txt..."
+pip install --no-cache-dir -r requirements.txt
+
+# Explicitly install ultralytics and opencv-python-headless, and numpy
+echo "Installing Ultralytics, opencv-python-headless, and numpy explicitly..."
+pip install --no-cache-dir ultralytics
+pip install --no-cache-dir opencv-python-headless
+pip install --no-cache-dir numpy>=2.0.0
 
 echo "Verifying installation..."
 python -c "import cv2; print('OpenCV version:', cv2.__version__)"
