@@ -1,0 +1,320 @@
+Section2.css
+
+/* General Navbar Styles */
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.navbar-logo img {
+  width: 150px;
+  height: auto;
+}
+
+/* Navbar Links */
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 16px;
+  transition: color 0.3s;
+}
+
+.navbar-links a:hover {
+  color: #60a5fa; /* Adjusted for dark mode */
+}
+
+/* Navbar User Section */
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar-user .text-2xl {
+  font-size: 1.5rem;
+}
+
+/* Dark Mode Toggle Button */
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* User Initials */
+.user-initials {
+  background-color: #1e3a8a; /* Dark blue */
+  color: white;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Logout Button */
+.logout-button {
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+  background-color: #1c1d1f; /* Darker blue */
+}
+
+/* Dark Mode */
+.bg-gray-800 {
+  background-color: #1f2937;
+}
+
+.text-white {
+  color: #ffffff;
+}
+
+.border-gray-700 {
+  border-color: #374151;
+}
+
+.bg-gray-700 {
+  background-color: #374151;
+}
+
+.bg-gray-600 {
+  background-color: #4b5563;
+}
+
+.bg-gray-100 {
+  background-color: #f3f4f6;
+}
+
+.bg-gray-200 {
+  background-color: #e5e7eb;
+}
+
+/* Section2.css - Specific styles for Section2 component from HomePage */
+.section-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px;
+  background-color: #1c1e21; /* Dark background color */
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 240px; /* Increase box width */
+  height: 360px; /* Increase box height */
+  background-color: #2c2f33; /* Box color */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+  text-align: center;
+  color: #ffffff; /* Text color */
+  font-family: "Roboto", sans-serif; /* Apply Roboto font */
+}
+
+.box:hover {
+  transform: translateY(-10px);
+}
+
+.box img {
+  width: 80%;
+  height: auto;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.box p {
+  margin: 5px 0;
+  font-size: 20px; /* Increase font size */
+}
+
+.box a {
+  text-decoration: none;
+  color: inherit;
+}
+/* Section2.css - General Section and Box Styles, simplified for dark mode only */
+.section-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 2rem;
+  transition: background-color 0.3s, color 0.3s;
+  background-color: #232a2f; /* Dark background color */
+  color: #ffffff; /* Dark text color */
+}
+
+.box {
+  text-align: center;
+  padding: 1rem;
+  border-radius: 8px;
+  transition: background-color 0.3s, color 0.3s;
+  background-color: #343a40; /* Dark box color */
+  color: #ffffff; /* Dark text color */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.box img {
+  width: 100px;
+  height: auto;
+  margin-bottom: 0.5rem;
+}
+
+.box p {
+  margin: 0.5rem 0;
+  color: inherit; /* Use inherited text color */
+}
+
+.navbar .relative .absolute .bg-red-500 {
+  background-color: #ef4444; /* Tailwind's red-500 color */
+  color: #ffffff;
+  border-radius: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem; /* 14px */
+}
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar-icons {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.user-initials {
+  background-color: #4b5563; /* Darker gray */
+  color: #ffffff;
+  border-radius: 50%;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  overflow: hidden;
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #374151; /* Dark gray */
+  border: 1px solid #4b5563; /* Darker gray border */
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  z-index: 10;
+}
+
+/* NotificationsPage.css */
+
+.notification-card {
+  display: flex;
+  align-items: center;
+  border: 1px solid #4b5563; /* Darker border */
+  background-color: #1f2937; /* Dark background */
+  color: #ffffff;
+}
+
+.notification-card img {
+  border-radius: 50%;
+}
+
+.notification-card strong {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+}
+
+.notification-card div {
+  margin-bottom: 0.25rem;
+  color: #e5e7eb;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  flex: 1;
+}
+
+.footer {
+  flex-shrink: 0;
+}
+
+
+.notifications-page {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #1a1a1a;
+  color: #f5f5f5;
+}
+
+h2 {
+  text-align: center;
+  color: #ffffff;
+}
+
+.notification-item {
+  border: 1px solid #4b5563; /* Darker border */
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #2c2c2c; /* Dark background */
+  color: #f5f5f5;
+}
+
+.notification-date {
+  font-size: 0.9em;
+  color: #9ca3af;
+}

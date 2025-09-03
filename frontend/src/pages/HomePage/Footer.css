@@ -1,0 +1,137 @@
+/* Base Styles (Mobile First) */
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 20px;
+  width: 100%; /* Ensure footer spans full width */
+  box-sizing: border-box; /* Include padding in total width */
+}
+
+.footer-item {
+  flex: 1 1 100%; /* Full width on mobile */
+  padding: 10px;
+}
+
+.footer-item img {
+  max-width: 100%;
+  height: auto;
+}
+
+.footer-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.footer-links,
+.footer-contact,
+.footer-social {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links li,
+.footer-contact li,
+.footer-social li {
+  margin-bottom: 10px;
+}
+
+.footer-links a,
+.footer-contact a,
+.footer-social a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.footer-links a:hover,
+.footer-contact a:hover,
+.footer-social a:hover {
+  text-decoration: underline;
+}
+
+.footer-divider {
+  margin: 20px 0;
+}
+
+.footer-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%; /* Ensure footer bottom spans full width */
+  box-sizing: border-box; /* Include padding in total width */
+}
+
+.footer-bottom p {
+  margin: 5px 0;
+}
+
+/* Tablets (≥ 768px) */
+@media (min-width: 768px) {
+  .footer-item {
+    flex: 1 1 50%; /* 2 items per row on tablets */
+    margin-bottom: 20px;
+  }
+}
+
+/* Laptops and Desktops (≥ 1024px) */
+@media (min-width: 1024px) {
+  .footer-container {
+    padding: 30px;
+  }
+
+  .footer-item {
+    flex: 1 1 25%; /* 4 items per row on larger screens */
+    margin-bottom: 30px;
+  }
+
+  .footer-bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .footer-bottom p {
+    margin: 0 15px;
+  }
+}
+
+/* Large Desktops (≥ 1440px) */
+@media (min-width: 1440px) {
+  .footer-container {
+    padding: 40px;
+  }
+
+  .footer-item {
+    flex: 1 1 20%; /* 5 items per row on large screens */
+    margin-bottom: 40px;
+  }
+
+  .footer-bottom p {
+    margin: 0 20px;
+  }
+}
+
+/* Extra Small Devices (< 768px) */
+@media (max-width: 767px) {
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footer-item {
+    flex: 1 1 100%;
+    margin-bottom: 10px;
+    text-align: center; /* Center align text on small devices */
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-bottom p {
+    margin: 10px 0;
+  }
+}
