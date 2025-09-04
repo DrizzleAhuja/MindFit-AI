@@ -5,8 +5,8 @@ const getApiBaseUrl = () => {
     return "http://localhost:8000";
   }
 
-  // For production, use the current origin
-  return window.location.origin;
+  // For production, use your backend URL
+  return "https://mindfitaibackend.vercel.app";
 };
 
 export const API_BASE_URL = getApiBaseUrl();
