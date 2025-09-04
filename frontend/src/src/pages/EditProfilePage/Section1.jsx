@@ -16,7 +16,6 @@ export default function EditProfile() {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    email: "",
   });
 
   useEffect(() => {
@@ -24,7 +23,6 @@ export default function EditProfile() {
       setFormData({
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email,
       });
     }
   }, [user]);
@@ -44,7 +42,14 @@ export default function EditProfile() {
         `${API_BASE_URL}${API_ENDPOINTS.USERS}/${user._id}`,
         formData
       );
+
+      // Update Redux store
       dispatch(setUser(res.data));
+
+      // Update localStorage
+      localStorage.setItem("user", JSON.stringify(res.data));
+
+      console.log("Profile updated successfully:", res.data);
       toast.success("Profile updated successfully", {
         autoClose: 1000,
       });
@@ -140,7 +145,7 @@ export default function EditProfile() {
                   htmlFor="email"
                   className="block text-sm font-medium mb-2 text-gray-300"
                 >
-                  Email
+                  Email 
                 </label>
                 <div className="relative rounded-md shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
@@ -150,12 +155,15 @@ export default function EditProfile() {
                     type="email"
                     id="email"
                     name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-3 rounded-md bg-gray-700 border-gray-600 text-gray-300 placeholder-gray-400 border focus:outline-none cursor-not-allowed"
+                    value={user?.email || ""}
+                    className="block w-full pl-10 pr-3 py-3 rounded-md bg-gray-600 border-gray-500 text-gray-300 placeholder-gray-400 border focus:outline-none cursor-not-allowed"
                     disabled
+                    readOnly
                   />
                 </div>
+                <p className="mt-1 text-xs text-gray-400">
+                  Email cannot be changed for security reasons
+                </p>
               </div>
 
               <div className="pt-4">
