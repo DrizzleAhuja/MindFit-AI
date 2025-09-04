@@ -5,51 +5,65 @@ import { FiCopy, FiRefreshCw } from "react-icons/fi";
 import { FaDumbbell, FaHeartbeat, FaRunning } from "react-icons/fa";
 import { BsRobot } from "react-icons/bs";
 import { IoMdSend } from "react-icons/io";
+import { API_BASE_URL } from "../../../config/api";
 
 const FitBot = () => {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content: "Hi there! I\'m FitBot, your AI fitness assistant. How can I help you with your workout today? 💪",
+      content:
+        "Hi there! I'm FitBot, your AI fitness assistant. How can I help you with your workout today? 💪",
     },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
- // FitBot.js (Frontend)
-const sendMessage = async () => {
-  if (!input.trim()) return;
+  // FitBot.js (Frontend)
+  const sendMessage = async () => {
+    if (!input.trim()) return;
 
-  setLoading(true);
-  setError(null);
+    setLoading(true);
+    setError(null);
 
-  const userMessage = { role: "user", content: input };
-  const updatedMessages = [...messages, userMessage];
-  setMessages(updatedMessages);
-  setInput("");
+    const userMessage = { role: "user", content: input };
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
+    setInput("");
 
-  try {
-    const response = await axios.post(
-      "https://mindfitaibackend.vercel.app/api/auth/chat",
-      { messages: updatedMessages },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/api/auth/chat`,
+        { messages: updatedMessages },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        setMessages([
+          ...updatedMessages,
+          {
+            role: "assistant",
+            content: response.data.response,
+          },
+        ]);
+        setError(null); // Clear any previous errors
+      } else {
+        setError("Failed to get response from FitBot");
       }
-    );
-
-    setMessages([...updatedMessages, { 
-      role: "assistant", 
-      content: response.data.response 
-    }]);
-  } catch (err) {
-    setError(err.response?.data?.error || "Failed to connect to FitBot");
-  } finally {
-    setLoading(false);
-  }
-};
+    } catch (err) {
+      console.error("FitBot error:", err);
+      setError(
+        err.response?.data?.error ||
+          "Failed to connect to FitBot. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !loading) {
@@ -83,7 +97,9 @@ const sendMessage = async () => {
           {messages.map((msg, index) => (
             <div
               key={index}
-              className={`flex mb-4 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+              className={`flex mb-4 ${
+                msg.role === "user" ? "justify-end" : "justify-start"
+              }`}
             >
               <div
                 className={`max-w-xs md:max-w-md lg:max-w-lg rounded-2xl p-4 ${
@@ -102,7 +118,9 @@ const sendMessage = async () => {
                     {msg.role === "user" ? "You" : "FitBot"}
                   </span>
                 </div>
-                <p className="whitespace-pre-wrap text-gray-100">{msg.content}</p>
+                <p className="whitespace-pre-wrap text-gray-100">
+                  {msg.content}
+                </p>
               </div>
             </div>
           ))}
@@ -111,8 +129,14 @@ const sendMessage = async () => {
               <div className="bg-gray-700 text-gray-800 shadow-sm rounded-2xl rounded-bl-none p-4 max-w-xs">
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                  <div
+                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                    style={{ animationDelay: "0.2s" }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                    style={{ animationDelay: "0.4s" }}
+                  ></div>
                 </div>
               </div>
             </div>
@@ -142,9 +166,25 @@ const sendMessage = async () => {
               disabled={loading || !input.trim()}
             >
               {loading ? (
-                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
               ) : (
                 <IoMdSend className="text-xl" />

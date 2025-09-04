@@ -175,13 +175,13 @@
 
 // export default ContactUs;
 
-
 import React, { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { API_BASE_URL } from "../../../config/api";
 
 const ContactUs = () => {
   const user = useSelector(selectUser);
@@ -216,16 +216,26 @@ const ContactUs = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://mindfitaibackend.vercel.app/api/contact", formData, {
+      await axios.post(`${API_BASE_URL}/api/contact`, formData, {
         headers: {
           Email: user.email,
         },
       });
-      toast.success("Your issue has been sent. Please visit the security office for reporting the issue.", {
-        position: "top-center",
-        autoClose: 5000,
+      toast.success(
+        "Your issue has been sent. Please visit the security office for reporting the issue.",
+        {
+          position: "top-center",
+          autoClose: 5000,
+        }
+      );
+      setFormData({
+        ...formData,
+        rollNo: "",
+        item: "",
+        description: "",
+        fakeClaim: false,
+        reportId: "",
       });
-      setFormData({ ...formData, rollNo: "", item: "", description: "", fakeClaim: false, reportId: "" });
     } catch (error) {
       toast.error("Failed to send message.", {
         position: "top-center",
@@ -251,14 +261,22 @@ const ContactUs = () => {
       <h1 className="text-4xl font-bold mb-8">Contact Us</h1>
       <div className="w-full max-w-md mb-8">
         <button
-          onClick={() => setFormData((prevState) => ({ ...prevState, fakeClaim: false }))}
-          className={`p-3 bg-indigo-500 text-white rounded-md w-full mb-4 hover:bg-indigo-600 ${!formData.fakeClaim ? "opacity-100" : "opacity-50"}`}
+          onClick={() =>
+            setFormData((prevState) => ({ ...prevState, fakeClaim: false }))
+          }
+          className={`p-3 bg-indigo-500 text-white rounded-md w-full mb-4 hover:bg-indigo-600 ${
+            !formData.fakeClaim ? "opacity-100" : "opacity-50"
+          }`}
         >
           Report Another Issue
         </button>
         <button
-          onClick={() => setFormData((prevState) => ({ ...prevState, fakeClaim: true }))}
-          className={`p-3 bg-red-500 text-white rounded-md w-full hover:bg-red-600 ${formData.fakeClaim ? "opacity-100" : "opacity-50"}`}
+          onClick={() =>
+            setFormData((prevState) => ({ ...prevState, fakeClaim: true }))
+          }
+          className={`p-3 bg-red-500 text-white rounded-md w-full hover:bg-red-600 ${
+            formData.fakeClaim ? "opacity-100" : "opacity-50"
+          }`}
         >
           Fake Claim
         </button>
@@ -311,7 +329,9 @@ const ContactUs = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-2 text-gray-300">Description of Problem</label>
+          <label className="block mb-2 text-gray-300">
+            Description of Problem
+          </label>
           <textarea
             name="description"
             value={formData.description}
@@ -321,7 +341,9 @@ const ContactUs = () => {
           ></textarea>
         </div>
         <div className="mb-4">
-          <label className="block mb-2 text-gray-300">Report ID (Optional)</label>
+          <label className="block mb-2 text-gray-300">
+            Report ID (Optional)
+          </label>
           <input
             type="text"
             name="reportId"

@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
 import { FaSearch, FaSpinner, FaClipboardList } from "react-icons/fa";
+import { API_BASE_URL, API_ENDPOINTS } from "../../../config/api";
 
 export default function Section1() {
   const [logs, setLogs] = useState([]);
@@ -25,7 +26,7 @@ export default function Section1() {
       try {
         console.log("Fetching logs for user:", user._id);
         const response = await axios.get(
-          `https://mindfitaibackend.vercel.app/api/logs/user-logs`,
+          `${API_BASE_URL}${API_ENDPOINTS.LOGS}/user-logs`,
           {
             headers: {
               Authorization: `Bearer ${user.token}`,
@@ -69,7 +70,9 @@ export default function Section1() {
     <div className="min-h-screen py-10 px-4 bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold mb-2 text-white">User Activity Logs</h1>
+          <h1 className="text-4xl font-bold mb-2 text-white">
+            User Activity Logs
+          </h1>
           <p className="text-xl text-gray-300">Track your recent actions</p>
         </div>
 
@@ -108,7 +111,9 @@ export default function Section1() {
               >
                 <div className="flex items-center mb-4">
                   <FaClipboardList className="text-2xl mr-2 text-blue-400" />
-                  <h3 className="text-2xl font-semibold text-white">{log.action}</h3>
+                  <h3 className="text-2xl font-semibold text-white">
+                    {log.action}
+                  </h3>
                 </div>
                 <p className="text-lg text-gray-400 mb-2">
                   {new Date(log.timestamp).toLocaleString()}
