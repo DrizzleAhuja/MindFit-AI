@@ -5,15 +5,13 @@ import { selectUser } from "../../redux/userSlice";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaSpinner } from "react-icons/fa";
+import { API_BASE_URL, API_ENDPOINTS } from "../../../config/api";
 
 const NotificationsPage = () => {
   const user = useSelector(selectUser);
   const [notifications, setNotifications] = useState([]);
   const [sortOrder, setSortOrder] = useState("latest"); // Default is 'latest'
   const [loading, setLoading] = useState(true); // Loading state
-
-
-  
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -23,12 +21,15 @@ const NotificationsPage = () => {
       }
 
       try {
-        const response = await axios.get("https://mindfitaibackend.vercel.app/api/reports", {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-            email: user.email,
-          },
-        });
+        const response = await axios.get(
+          `${API_BASE_URL}${API_ENDPOINTS.REPORTS}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+              email: user.email,
+            },
+          }
+        );
 
         let userNotifications;
         if (user.role === "admin") {
@@ -62,7 +63,7 @@ const NotificationsPage = () => {
         const markAsReadPromises = userNotifications.map((notification) => {
           if (!notification.read) {
             return axios.put(
-              `https://mindfitaibackend.vercel.app/api/reports/notification/${notification._id}/read`,
+              `${API_BASE_URL}${API_ENDPOINTS.REPORTS}/notification/${notification._id}/read`,
               {},
               {
                 headers: {
@@ -164,9 +165,7 @@ const NotificationsPage = () => {
                         Claimed by: <strong>{notification.claimedBy}</strong>
                       </p>
                       {notification.responseMessage && (
-                        <div
-                          className="mt-2 p-2 border rounded-lg text-sm bg-green-900 border-green-700 text-green-300"
-                        >
+                        <div className="mt-2 p-2 border rounded-lg text-sm bg-green-900 border-green-700 text-green-300">
                           <h4 className="font-semibold">Response</h4>
                           <p>{notification.responseMessage}</p>
                         </div>
@@ -180,9 +179,7 @@ const NotificationsPage = () => {
                   ) : (
                     <div>
                       {notification.responseMessage && (
-                        <div
-                          className="mt-2 p-2 border rounded-lg text-sm bg-green-900 border-green-700 text-green-300"
-                        >
+                        <div className="mt-2 p-2 border rounded-lg text-sm bg-green-900 border-green-700 text-green-300">
                           <h4 className="font-semibold">Response</h4>
                           <p>{notification.responseMessage}</p>
                         </div>

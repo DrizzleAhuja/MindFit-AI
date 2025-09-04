@@ -6,6 +6,7 @@ import moment from "moment-timezone";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
 import { FaSpinner, FaClipboardList, FaSearch } from "react-icons/fa";
+import { API_BASE_URL, API_ENDPOINTS } from "../../../config/api";
 export default function Section1({ darkMode }) {
   const [reports, setReports] = useState([]);
   const [otpInputs, setOtpInputs] = useState({});
@@ -18,7 +19,7 @@ export default function Section1({ darkMode }) {
 
   useEffect(() => {
     axios
-      .get("https://mindfitaibackend.vercel.app/api/reports")
+      .get(`${API_BASE_URL}${API_ENDPOINTS.REPORTS}`)
       .then((response) => {
         const filteredReports = response.data.filter(
           (report) =>
@@ -58,7 +59,7 @@ export default function Section1({ darkMode }) {
     setLoading(true);
     axios
       .put(
-        `https://mindfitaibackend.vercel.app/api/reports/${reportId}/reset`,
+        `${API_BASE_URL}${API_ENDPOINTS.REPORTS}/${reportId}/reset`,
         {
           claimedBy: "", // Set claimedBy to an empty string
           claimedAt: null, // Set claimedAt to null to clear the date
@@ -111,14 +112,17 @@ export default function Section1({ darkMode }) {
 
       setLoading(true);
 
-      await axios.put(`https://mindfitaibackend.vercel.app/api/reports/${reportId}/verify`, {
-        otp: otpInput,
-      });
+      await axios.put(
+        `${API_BASE_URL}${API_ENDPOINTS.REPORTS}/${reportId}/verify`,
+        {
+          otp: otpInput,
+        }
+      );
       const istTimestamp = moment()
         .tz("Asia/Kolkata")
         .format("YYYY-MM-DDTHH:mm:ss.SSSZ");
       await axios.post(
-        "https://mindfitaibackend.vercel.app/api/logs/admin-logs",
+        `${API_BASE_URL}${API_ENDPOINTS.LOGS}/admin-logs`,
         {
           adminId: user._id,
           action: `Verified Report ${reportId}`,
@@ -159,45 +163,44 @@ export default function Section1({ darkMode }) {
   const filteredReports = reports.filter((report) =>
     report.reportID.toLowerCase().includes(searchQuery.toLowerCase())
   );
-const handleSendOtp = async (reportId) => {
-  try {
-    setLoading(true);
+  const handleSendOtp = async (reportId) => {
+    try {
+      setLoading(true);
 
-    const response = await axios.put(
-      `https://mindfitaibackend.vercel.app/api/reports/${reportId}/send-otp`,
-      null,
-      {
-        headers: {
-          Email: user.email, // Ensure user.email is correct
-        },
-        withCredentials: true,
-      }
-    );
-
-    if (response.status === 200) {
-      toast.success("OTP sent successfully!", {
-        position: "top-center",
-        autoClose: 2000,
-      });
-
-      // Hide the Send OTP button by removing the button for the specific report
-      setReports((prevReports) =>
-        prevReports.map((report) =>
-          report._id === reportId ? { ...report, otpSent: true } : report
-        )
+      const response = await axios.put(
+        `${API_BASE_URL}${API_ENDPOINTS.REPORTS}/${reportId}/send-otp`,
+        null,
+        {
+          headers: {
+            Email: user.email, // Ensure user.email is correct
+          },
+          withCredentials: true,
+        }
       );
-    } else {
+
+      if (response.status === 200) {
+        toast.success("OTP sent successfully!", {
+          position: "top-center",
+          autoClose: 2000,
+        });
+
+        // Hide the Send OTP button by removing the button for the specific report
+        setReports((prevReports) =>
+          prevReports.map((report) =>
+            report._id === reportId ? { ...report, otpSent: true } : report
+          )
+        );
+      } else {
+        toast.error("Failed to send OTP.");
+      }
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error sending OTP:", error);
       toast.error("Failed to send OTP.");
+      setLoading(false);
     }
-
-    setLoading(false);
-  } catch (error) {
-    console.error("Error sending OTP:", error);
-    toast.error("Failed to send OTP.");
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <div

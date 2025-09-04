@@ -6,8 +6,14 @@ import { selectUser } from "../../redux/userSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FiCopy, FiRefreshCw, FiClock, FiCalendar } from "react-icons/fi";
-import { FaDumbbell, FaHeartbeat, FaUtensils, FaChartLine } from "react-icons/fa";
+import {
+  FaDumbbell,
+  FaHeartbeat,
+  FaUtensils,
+  FaChartLine,
+} from "react-icons/fa";
 import { GiWeightLiftingUp, GiRunningShoe } from "react-icons/gi";
+import { API_BASE_URL, API_ENDPOINTS } from "../../../config/api";
 
 const WorkoutPlanGenerator = () => {
   const [formData, setFormData] = useState({
@@ -15,7 +21,7 @@ const WorkoutPlanGenerator = () => {
     gender: "",
     trainingMethod: "",
     workoutType: "",
-    strengthLevel: ""
+    strengthLevel: "",
   });
   const user = useSelector(selectUser);
   const [plan, setPlan] = useState("");
@@ -29,9 +35,12 @@ const WorkoutPlanGenerator = () => {
 
   const fetchWorkoutHistory = async () => {
     try {
-      const res = await axios.get("https://mindfitaibackend.vercel.app/api/auth/history", {
-        params: { email: user.email },
-      });
+      const res = await axios.get(
+        `${API_BASE_URL}${API_ENDPOINTS.AUTH}/history`,
+        {
+          params: { email: user.email },
+        }
+      );
       setHistory(res.data.history);
     } catch (error) {
       toast.error("Error fetching workout history");
@@ -48,18 +57,23 @@ const WorkoutPlanGenerator = () => {
       toast.error("Please fill all fields");
       return;
     }
-  
+
     setLoading(true);
     try {
-      const response = await axios.post("https://mindfitaibackend.vercel.app/api/auth/generate-plan", {
-        ...formData,
-        email: user.email,
-      });
+      const response = await axios.post(
+        `${API_BASE_URL}${API_ENDPOINTS.AUTH}/generate-plan`,
+        {
+          ...formData,
+          email: user.email,
+        }
+      );
       setPlan(response.data.plan);
       fetchWorkoutHistory();
       toast.success("Workout plan generated successfully!");
     } catch (error) {
-      toast.error("Failed to generate plan. Please try again. " + error.message);
+      toast.error(
+        "Failed to generate plan. Please try again. " + error.message
+      );
     }
     setLoading(false);
   };
@@ -73,10 +87,13 @@ const WorkoutPlanGenerator = () => {
     if (!plan) return;
     setLoading(true);
     try {
-      const response = await axios.post("https://mindfitaibackend.vercel.app/api/auth/generate-plan", {
-        ...formData,
-        email: user.email,
-      });
+      const response = await axios.post(
+        `${API_BASE_URL}${API_ENDPOINTS.AUTH}/generate-plan`,
+        {
+          ...formData,
+          email: user.email,
+        }
+      );
       setPlan(response.data.plan);
       toast.success("New plan generated!");
     } catch (error) {
@@ -93,7 +110,8 @@ const WorkoutPlanGenerator = () => {
             AI Workout Plan Generator
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Get personalized workout plans tailored to your goals, fitness level, and preferences
+            Get personalized workout plans tailored to your goals, fitness
+            level, and preferences
           </p>
         </div>
 
@@ -101,8 +119,8 @@ const WorkoutPlanGenerator = () => {
           <button
             onClick={() => setActiveTab("generate")}
             className={`px-6 py-3 font-medium rounded-t-lg flex items-center ${
-              activeTab === "generate" 
-                ? "bg-gray-800 text-green-400 border-t-2 border-green-500 shadow-sm" 
+              activeTab === "generate"
+                ? "bg-gray-800 text-green-400 border-t-2 border-green-500 shadow-sm"
                 : "text-gray-400 hover:text-gray-200"
             }`}
           >
@@ -111,8 +129,8 @@ const WorkoutPlanGenerator = () => {
           <button
             onClick={() => setActiveTab("history")}
             className={`px-6 py-3 font-medium rounded-t-lg flex items-center ${
-              activeTab === "history" 
-                ? "bg-gray-800 text-green-400 border-t-2 border-green-500 shadow-sm" 
+              activeTab === "history"
+                ? "bg-gray-800 text-green-400 border-t-2 border-green-500 shadow-sm"
                 : "text-gray-400 hover:text-gray-200"
             }`}
           >
@@ -132,14 +150,21 @@ const WorkoutPlanGenerator = () => {
                 </div>
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Fitness Goal</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Fitness Goal
+                    </label>
                     <div className="grid grid-cols-2 gap-3">
                       <button
                         type="button"
-                        onClick={() => setFormData({...formData, fitnessGoal: "Lose Weight"})}
+                        onClick={() =>
+                          setFormData({
+                            ...formData,
+                            fitnessGoal: "Lose Weight",
+                          })
+                        }
                         className={`p-3 rounded-lg border flex flex-col items-center text-gray-200 ${
-                          formData.fitnessGoal === "Lose Weight" 
-                            ? "bg-green-700 border-green-500" 
+                          formData.fitnessGoal === "Lose Weight"
+                            ? "bg-green-700 border-green-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
@@ -148,10 +173,15 @@ const WorkoutPlanGenerator = () => {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setFormData({...formData, fitnessGoal: "Gain Muscle"})}
+                        onClick={() =>
+                          setFormData({
+                            ...formData,
+                            fitnessGoal: "Gain Muscle",
+                          })
+                        }
                         className={`p-3 rounded-lg border flex flex-col items-center text-gray-200 ${
-                          formData.fitnessGoal === "Gain Muscle" 
-                            ? "bg-green-700 border-green-500" 
+                          formData.fitnessGoal === "Gain Muscle"
+                            ? "bg-green-700 border-green-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
@@ -162,14 +192,18 @@ const WorkoutPlanGenerator = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Gender</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Gender
+                    </label>
                     <div className="grid grid-cols-2 gap-3">
                       <button
                         type="button"
-                        onClick={() => setFormData({...formData, gender: "Male"})}
+                        onClick={() =>
+                          setFormData({ ...formData, gender: "Male" })
+                        }
                         className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
-                          formData.gender === "Male" 
-                            ? "bg-blue-700 border-blue-500" 
+                          formData.gender === "Male"
+                            ? "bg-blue-700 border-blue-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
@@ -177,10 +211,12 @@ const WorkoutPlanGenerator = () => {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setFormData({...formData, gender: "Female"})}
+                        onClick={() =>
+                          setFormData({ ...formData, gender: "Female" })
+                        }
                         className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
-                          formData.gender === "Female" 
-                            ? "bg-purple-700 border-purple-500" 
+                          formData.gender === "Female"
+                            ? "bg-purple-700 border-purple-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
@@ -190,7 +226,9 @@ const WorkoutPlanGenerator = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Training Method</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Training Method
+                    </label>
                     <select
                       name="trainingMethod"
                       value={formData.trainingMethod}
@@ -199,15 +237,21 @@ const WorkoutPlanGenerator = () => {
                       required
                     >
                       <option value="">Select Method</option>
-                      <option value="Resistance Training">Resistance Training</option>
-                      <option value="Resistance + Cardio">Resistance + Cardio</option>
+                      <option value="Resistance Training">
+                        Resistance Training
+                      </option>
+                      <option value="Resistance + Cardio">
+                        Resistance + Cardio
+                      </option>
                       <option value="Meal Plan Only">Meal Plan Only</option>
                       <option value="Custom Routine">Custom Routine</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Workout Type</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Workout Type
+                    </label>
                     <select
                       name="workoutType"
                       value={formData.workoutType}
@@ -223,14 +267,21 @@ const WorkoutPlanGenerator = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Strength Level</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Strength Level
+                    </label>
                     <div className="grid grid-cols-3 gap-3">
                       <button
                         type="button"
-                        onClick={() => setFormData({...formData, strengthLevel: "Beginner"})}
+                        onClick={() =>
+                          setFormData({
+                            ...formData,
+                            strengthLevel: "Beginner",
+                          })
+                        }
                         className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
-                          formData.strengthLevel === "Beginner" 
-                            ? "bg-green-700 border-green-500" 
+                          formData.strengthLevel === "Beginner"
+                            ? "bg-green-700 border-green-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
@@ -238,10 +289,15 @@ const WorkoutPlanGenerator = () => {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setFormData({...formData, strengthLevel: "Intermediate"})}
+                        onClick={() =>
+                          setFormData({
+                            ...formData,
+                            strengthLevel: "Intermediate",
+                          })
+                        }
                         className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
-                          formData.strengthLevel === "Intermediate" 
-                            ? "bg-green-700 border-green-500" 
+                          formData.strengthLevel === "Intermediate"
+                            ? "bg-green-700 border-green-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
@@ -249,10 +305,15 @@ const WorkoutPlanGenerator = () => {
                       </button>
                       <button
                         type="button"
-                        onClick={() => setFormData({...formData, strengthLevel: "Advanced"})}
+                        onClick={() =>
+                          setFormData({
+                            ...formData,
+                            strengthLevel: "Advanced",
+                          })
+                        }
                         className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
-                          formData.strengthLevel === "Advanced" 
-                            ? "bg-green-700 border-green-500" 
+                          formData.strengthLevel === "Advanced"
+                            ? "bg-green-700 border-green-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
@@ -268,9 +329,25 @@ const WorkoutPlanGenerator = () => {
                   >
                     {loading ? (
                       <span className="flex items-center">
-                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <svg
+                          className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
                         </svg>
                         Generating...
                       </span>
@@ -305,7 +382,11 @@ const WorkoutPlanGenerator = () => {
                           className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition disabled:opacity-50"
                           title="Regenerate plan"
                         >
-                          <FiRefreshCw className={`text-lg ${loading ? "animate-spin" : ""}`} />
+                          <FiRefreshCw
+                            className={`text-lg ${
+                              loading ? "animate-spin" : ""
+                            }`}
+                          />
                         </button>
                       </div>
                     </div>
@@ -321,9 +402,12 @@ const WorkoutPlanGenerator = () => {
               ) : (
                 <div className="bg-gray-800 rounded-xl shadow-md border border-gray-700 h-full flex flex-col items-center justify-center text-center p-12">
                   <FaDumbbell className="text-5xl text-gray-600 mb-6" />
-                  <h3 className="text-2xl font-medium text-gray-400 mb-3">No Workout Plan Generated</h3>
+                  <h3 className="text-2xl font-medium text-gray-400 mb-3">
+                    No Workout Plan Generated
+                  </h3>
                   <p className="text-gray-500 max-w-md">
-                    Fill out the form and click "Generate Workout Plan" to create your personalized fitness routine.
+                    Fill out the form and click "Generate Workout Plan" to
+                    create your personalized fitness routine.
                   </p>
                 </div>
               )}
@@ -340,8 +424,8 @@ const WorkoutPlanGenerator = () => {
               {history.length > 0 ? (
                 <div className="space-y-4">
                   {history.map((item, index) => (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
                       className="bg-gray-700 rounded-lg p-5 border border-gray-600 hover:border-green-300 transition cursor-pointer"
                     >
                       <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-3">
@@ -350,12 +434,15 @@ const WorkoutPlanGenerator = () => {
                             {item.fitnessGoal} Plan ({item.strengthLevel})
                           </h3>
                           <p className="text-sm text-gray-400">
-                            {new Date(item.createdAt).toLocaleDateString('en-US', {
-                              weekday: 'long',
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
-                            })}
+                            {new Date(item.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                weekday: "long",
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              }
+                            )}
                           </p>
                         </div>
                         <div className="flex space-x-2 mt-2 md:mt-0">
@@ -378,15 +465,19 @@ const WorkoutPlanGenerator = () => {
               ) : (
                 <div className="text-center py-12">
                   <FiClock className="text-5xl text-gray-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-medium text-gray-400">No Workout History</h3>
-                  <p className="text-gray-500 mt-2">Generate your first workout plan to see it appear here.</p>
+                  <h3 className="text-xl font-medium text-gray-400">
+                    No Workout History
+                  </h3>
+                  <p className="text-gray-500 mt-2">
+                    Generate your first workout plan to see it appear here.
+                  </p>
                 </div>
               )}
             </div>
           </div>
         )}
       </div>
-      <ToastContainer position="bottom-right" autoClose={3000} theme="dark"/>
+      <ToastContainer position="bottom-right" autoClose={3000} theme="dark" />
     </div>
   );
 };

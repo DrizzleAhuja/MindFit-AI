@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { selectUser, setUser } from "../../redux/userSlice";
 import { FiUser, FiMail, FiSave, FiArrowLeft } from "react-icons/fi";
+import { API_BASE_URL, API_ENDPOINTS } from "../../../config/api";
 
 export default function EditProfile() {
   const dispatch = useDispatch();
@@ -40,7 +41,7 @@ export default function EditProfile() {
     e.preventDefault();
     try {
       const res = await axios.put(
-        `https://mindfitaibackend.vercel.app/api/users/${user._id}`,
+        `${API_BASE_URL}${API_ENDPOINTS.USERS}/${user._id}`,
         formData
       );
       dispatch(setUser(res.data));
@@ -68,7 +69,7 @@ export default function EditProfile() {
 
   return (
     <div className="min-h-screen bg-gray-900">
-      <ToastContainer position="top-center" autoClose={2000} theme="dark"/>
+      <ToastContainer position="top-center" autoClose={2000} theme="dark" />
       <div className="max-w-2xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="rounded-xl shadow-xl overflow-hidden bg-gray-800">
           {/* Header */}
@@ -80,9 +81,7 @@ export default function EditProfile() {
               >
                 <FiArrowLeft size={20} />
               </button>
-              <h2 className="text-2xl font-bold text-white">
-                Edit Profile
-              </h2>
+              <h2 className="text-2xl font-bold text-white">Edit Profile</h2>
             </div>
           </div>
 
@@ -90,7 +89,10 @@ export default function EditProfile() {
           <div className="px-6 py-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="firstName" className="block text-sm font-medium mb-2 text-gray-300">
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-medium mb-2 text-gray-300"
+                >
                   First Name
                 </label>
                 <div className="relative rounded-md shadow-sm">
@@ -111,7 +113,10 @@ export default function EditProfile() {
               </div>
 
               <div>
-                <label htmlFor="lastName" className="block text-sm font-medium mb-2 text-gray-300">
+                <label
+                  htmlFor="lastName"
+                  className="block text-sm font-medium mb-2 text-gray-300"
+                >
                   Last Name
                 </label>
                 <div className="relative rounded-md shadow-sm">
@@ -131,7 +136,10 @@ export default function EditProfile() {
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-2 text-gray-300">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium mb-2 text-gray-300"
+                >
                   Email
                 </label>
                 <div className="relative rounded-md shadow-sm">

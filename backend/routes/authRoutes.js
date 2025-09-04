@@ -2,17 +2,34 @@ const express = require("express");
 const router = express.Router();
 const Workout = require("../models/Workout");
 const User = require("../models/User");
-const axios = require('axios');
-const { login } = require("../controllers/authController")
-const HF_API_KEY = "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";
-const HF_API_URL = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1";
+const axios = require("axios");
+const { login } = require("../controllers/authController");
+const {
+  getCurrentUrl,
+  GEMINI_API_KEY,
+  GEMINI_API_URL,
+} = require("../config/config");
 
 router.post("/generate-plan", async (req, res) => {
   try {
-    const { email, fitnessGoal, gender, trainingMethod, workoutType, strengthLevel } = req.body;
+    const {
+      email,
+      fitnessGoal,
+      gender,
+      trainingMethod,
+      workoutType,
+      strengthLevel,
+    } = req.body;
 
     // Validate required fields
-    if (!email || !fitnessGoal || !gender || !trainingMethod || !workoutType || !strengthLevel) {
+    if (
+      !email ||
+      !fitnessGoal ||
+      !gender ||
+      !trainingMethod ||
+      !workoutType ||
+      !strengthLevel
+    ) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
@@ -46,25 +63,45 @@ router.post("/generate-plan", async (req, res) => {
     - [Tip 2]`;
 
     const response = await axios.post(
-      HF_API_URL,
+      `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
       {
-        inputs: prompt,
-        parameters: {
-          max_new_tokens: 1000,
+        contents: [
+          {
+            parts: [
+              {
+                text: prompt,
+              },
+            ],
+          },
+        ],
+        generationConfig: {
           temperature: 0.7,
-          return_full_text: false
-        }
+          maxOutputTokens: 1000,
+          topP: 0.8,
+          topK: 10,
+        },
       },
       {
         headers: {
-          Authorization: `Bearer ${HF_API_KEY}`,
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        timeout: 15000
+        timeout: 15000,
       }
     );
 
-    const planContent = response.data[0]?.generated_text || "Could not generate plan.";
+    let planContent =
+      response.data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "Could not generate plan.";
+
+    // Clean up the response by removing excessive asterisks and formatting
+    planContent = planContent
+      .replace(/\*{2,}/g, "") // Remove multiple asterisks (**, ***, etc.)
+      .replace(/\*([^*]+)\*/g, "$1") // Remove single asterisks around text
+      .replace(/\*{1,2}\s*/g, "") // Remove remaining asterisks at start of lines
+      .replace(/\n\s*\*\s*/g, "\n• ") // Convert remaining asterisks to bullet points
+      .replace(/\n{3,}/g, "\n\n") // Remove excessive line breaks
+      .replace(/^\s*\*\s*/gm, "• ") // Convert line-starting asterisks to bullets
+      .trim();
 
     const workout = new Workout({
       userId: user._id,
@@ -87,17 +124,17 @@ router.post("/generate-plan", async (req, res) => {
         trainingMethod,
         workoutType,
         strengthLevel,
-        generatedAt: new Date()
-      }
+        generatedAt: new Date(),
+      },
     });
   } catch (error) {
     console.error("Error generating workout plan:", error);
     if (error.response) {
-      console.error("API response error:", error.response.data);
+      console.error("Gemini API response error:", error.response.data);
     }
     res.status(500).json({
       error: "Failed to generate workout plan",
-      details: error.message
+      details: error.message,
     });
   }
 });
@@ -115,23 +152,100 @@ router.get("/history", async (req, res) => {
 
     const history = await Workout.find({ userId: user._id })
       .sort({ createdAt: -1 })
-      .select('-__v -_id -userId');
+      .select("-__v -_id -userId");
 
     res.json({
       success: true,
       count: history.length,
-      history
+      history,
     });
   } catch (error) {
     console.error("Error fetching workout history:", error);
     res.status(500).json({
       error: "Failed to fetch workout history",
-      details: error.message
+      details: error.message,
     });
   }
 });
 
-router.post("/login", login)
+router.post("/login", login);
 
+// Chat endpoint for FitBot
+router.post("/chat", async (req, res) => {
+  try {
+    const { messages } = req.body;
+
+    if (!messages || !Array.isArray(messages)) {
+      return res.status(400).json({ error: "Messages array is required" });
+    }
+
+    // Get the last user message
+    const lastUserMessage = messages.filter((msg) => msg.role === "user").pop();
+    if (!lastUserMessage) {
+      return res.status(400).json({ error: "No user message found" });
+    }
+
+    const prompt = `You are FitBot, an AI fitness assistant. Help users with their fitness questions, workout advice, nutrition tips, and motivation. Be encouraging, professional, and provide practical advice.
+
+User's question: ${lastUserMessage.content}
+
+Please provide a helpful response as a fitness coach would.`;
+
+    const response = await axios.post(
+      `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
+      {
+        contents: [
+          {
+            parts: [
+              {
+                text: prompt,
+              },
+            ],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 1000,
+          topP: 0.8,
+          topK: 10,
+        },
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: 15000,
+      }
+    );
+
+    let botResponse =
+      response.data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "I'm sorry, I couldn't process your request right now. Please try again.";
+
+    // Clean up the response by removing excessive asterisks and formatting
+    botResponse = botResponse
+      .replace(/\*{2,}/g, "") // Remove multiple asterisks (**, ***, etc.)
+      .replace(/\*([^*]+)\*/g, "$1") // Remove single asterisks around text
+      .replace(/\*{1,2}\s*/g, "") // Remove remaining asterisks at start of lines
+      .replace(/\n\s*\*\s*/g, "\n• ") // Convert remaining asterisks to bullet points
+      .replace(/\n{3,}/g, "\n\n") // Remove excessive line breaks
+      .replace(/^\s*\*\s*/gm, "• ") // Convert line-starting asterisks to bullets
+      .trim();
+
+    res.json({
+      success: true,
+      response: botResponse,
+    });
+  } catch (error) {
+    console.error("Error in chat endpoint:", error);
+    if (error.response) {
+      console.error("Gemini API response error:", error.response.data);
+    }
+    res.status(500).json({
+      error: "Failed to process chat message",
+      details: error.message,
+    });
+  }
+});
 
 module.exports = router;
