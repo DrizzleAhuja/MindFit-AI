@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Workout = require("../models/Workout");
 const User = require("../models/User");
+const BMI = require("../models/BMI");
 const axios = require("axios");
 const { login } = require("../controllers/authController");
 const {
@@ -173,7 +174,7 @@ router.post("/login", login);
 // Chat endpoint for FitBot
 router.post("/chat", async (req, res) => {
   try {
-    const { messages } = req.body;
+    const { messages, userEmail } = req.body;
 
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: "Messages array is required" });
@@ -185,11 +186,55 @@ router.post("/chat", async (req, res) => {
       return res.status(400).json({ error: "No user message found" });
     }
 
+    // Fetch user's BMI and workout plan data for personalized advice
+    let userContext = "";
+    if (userEmail) {
+      try {
+        const user = await User.findOne({ email: userEmail });
+        if (user) {
+          // Get latest BMI data
+          const latestBMI = await BMI.findOne({ userId: user._id })
+            .sort({ date: -1 })
+            .lean();
+
+          // Get latest workout plan
+          const latestWorkout = await Workout.findOne({ userId: user._id })
+            .sort({ createdAt: -1 })
+            .lean();
+
+          if (latestBMI) {
+            userContext += `\n\nUser's Health Profile:
+- BMI: ${latestBMI.bmi} (${latestBMI.category})
+- Age: ${latestBMI.age}
+- Height: ${latestBMI.heightFeet}'${latestBMI.heightInches}"
+- Weight: ${latestBMI.weight}kg
+- Selected Plan: ${latestBMI.selectedPlan || "Not selected"}
+- Target Weight: ${latestBMI.targetWeight || "Not set"}kg
+- Target Timeline: ${latestBMI.targetTimeline || "Not set"}
+- Diseases: ${latestBMI.diseases?.join(", ") || "None"}
+- Allergies: ${latestBMI.allergies?.join(", ") || "None"}`;
+          }
+
+          if (latestWorkout) {
+            userContext += `\n\nUser's Current Workout Plan:
+- Fitness Goal: ${latestWorkout.fitnessGoal}
+- Workout Type: ${latestWorkout.workoutType}
+- Training Method: ${latestWorkout.trainingMethod}
+- Strength Level: ${latestWorkout.strengthLevel}
+- Plan Details: ${latestWorkout.plan?.substring(0, 500)}...`;
+          }
+        }
+      } catch (contextError) {
+        console.error("Error fetching user context:", contextError);
+        // Continue without user context if there's an error
+      }
+    }
+
     const prompt = `You are FitBot, an AI fitness assistant. Help users with their fitness questions, workout advice, nutrition tips, and motivation. Be encouraging, professional, and provide practical advice.
 
-User's question: ${lastUserMessage.content}
+User's question: ${lastUserMessage.content}${userContext}
 
-Please provide a helpful response as a fitness coach would.`;
+Please provide a helpful response as a fitness coach would, taking into account the user's health profile and current workout plan when relevant.`;
 
     const response = await axios.post(
       `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
