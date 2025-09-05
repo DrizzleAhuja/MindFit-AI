@@ -1,23 +1,43 @@
 // FitBot.js - Updated with professional styling
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FiCopy, FiRefreshCw } from "react-icons/fi";
 import { FaDumbbell, FaHeartbeat, FaRunning } from "react-icons/fa";
 import { BsRobot } from "react-icons/bs";
 import { IoMdSend } from "react-icons/io";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../redux/userSlice";
 import { API_BASE_URL } from "../../../config/api";
 
 const FitBot = () => {
+  const user = useSelector(selectUser);
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      content:
-        "Hi there! I'm FitBot, your AI fitness assistant. How can I help you with your workout today? 💪",
+      content: user
+        ? `Hi ${
+            user.firstName || "there"
+          }! I'm FitBot, your AI fitness assistant. I have access to your BMI data and workout plan, so I can provide personalized advice. How can I help you today? 💪`
+        : "Hi there! I'm FitBot, your AI fitness assistant. How can I help you with your workout today? 💪",
     },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Update initial message when user data changes
+  useEffect(() => {
+    if (user && messages.length === 1) {
+      setMessages([
+        {
+          role: "assistant",
+          content: `Hi ${
+            user.firstName || "there"
+          }! I'm FitBot, your AI fitness assistant. I have access to your BMI data and workout plan, so I can provide personalized advice. How can I help you today? 💪`,
+        },
+      ]);
+    }
+  }, [user]);
 
   // FitBot.js (Frontend)
   const sendMessage = async () => {
@@ -34,7 +54,10 @@ const FitBot = () => {
     try {
       const response = await axios.post(
         `${API_BASE_URL}/api/auth/chat`,
-        { messages: updatedMessages },
+        {
+          messages: updatedMessages,
+          userEmail: user?.email || null,
+        },
         {
           headers: {
             "Content-Type": "application/json",
@@ -81,7 +104,14 @@ const FitBot = () => {
               <BsRobot className="text-2xl mr-3" />
               <div>
                 <h1 className="text-2xl font-bold">FITBOT</h1>
-                <p className="text-sm opacity-90">Your AI Fitness Assistant</p>
+                <p className="text-sm opacity-90">
+                  Your AI Fitness Assistant
+                  {user && (
+                    <span className="ml-2 px-2 py-1 bg-green-500/20 text-green-300 rounded-full text-xs">
+                      Personalized
+                    </span>
+                  )}
+                </p>
               </div>
             </div>
             <div className="flex space-x-2">
@@ -202,6 +232,14 @@ const FitBot = () => {
               <FaRunning className="mr-1 text-blue-400" /> Cardio
             </button>
           </div>
+          {user && (
+            <div className="mt-2 text-center">
+              <p className="text-xs text-gray-400">
+                💡 I can see your BMI data and workout plan for personalized
+                advice
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
