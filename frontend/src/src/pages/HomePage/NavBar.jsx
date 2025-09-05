@@ -73,7 +73,7 @@ export default function NavBar() {
 
       toast.success("Logged in successfully", {
         autoClose: 1000,
-        onClose: () => navigate("/editprofile"),
+        onClose: () => navigate("/CurrentBMI"),
       });
     } catch (error) {
       console.error("Error during login", error);
