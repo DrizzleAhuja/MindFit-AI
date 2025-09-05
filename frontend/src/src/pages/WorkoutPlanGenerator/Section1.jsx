@@ -3,8 +3,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { FiCopy, FiRefreshCw, FiClock, FiCalendar } from "react-icons/fi";
 import {
   FaDumbbell,
@@ -17,21 +15,39 @@ import { API_BASE_URL, API_ENDPOINTS } from "../../../config/api";
 
 const WorkoutPlanGenerator = () => {
   const [formData, setFormData] = useState({
-    fitnessGoal: "",
-    gender: "",
-    trainingMethod: "",
-    workoutType: "",
-    strengthLevel: "",
+    timeCommitment: "", // 15, 30, 45, 60 minutes
+    workoutType: "", // cardio, strength, mixed, flexibility
+    intensity: "", // beginner, intermediate, advanced
+    equipment: "", // none, basic, full_gym
+    daysPerWeek: 0,
   });
   const user = useSelector(selectUser);
   const [plan, setPlan] = useState("");
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("generate");
+  const [bmiData, setBmiData] = useState(null);
 
   useEffect(() => {
-    if (user?.email) fetchWorkoutHistory();
+    if (user?.email) {
+      fetchWorkoutHistory();
+      fetchBMIData();
+    }
   }, [user]);
+
+  const fetchBMIData = async () => {
+    try {
+      const res = await axios.get(
+        `${API_BASE_URL}${API_ENDPOINTS.BMI}/history`,
+        { params: { email: user.email } }
+      );
+      if (res.data.length > 0) {
+        setBmiData(res.data[0]); // Get latest BMI data
+      }
+    } catch (error) {
+      console.error("Error fetching BMI data", error);
+    }
+  };
 
   const fetchWorkoutHistory = async () => {
     try {
@@ -43,7 +59,7 @@ const WorkoutPlanGenerator = () => {
       );
       setHistory(res.data.history);
     } catch (error) {
-      toast.error("Error fetching workout history");
+      console.error("Error fetching workout history:", error);
     }
   };
 
@@ -51,53 +67,108 @@ const WorkoutPlanGenerator = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Function to clean AI-generated content
+  const cleanPlanContent = (content) => {
+    if (!content) return "";
+
+    return content
+      .replace(/#{1,6}\s*/g, "") // Remove markdown headers (# ## ### etc.)
+      .replace(/\*{1,2}([^*]+)\*{1,2}/g, "$1") // Remove bold/italic markdown
+      .replace(/\*{1,2}/g, "") // Remove any remaining asterisks
+      .replace(/#/g, "") // Remove any remaining hashtags
+      .replace(/\n{3,}/g, "\n\n") // Replace multiple newlines with double newlines
+      .trim();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!Object.values(formData).every(Boolean)) {
-      toast.error("Please fill all fields");
+    if (
+      !formData.timeCommitment ||
+      !formData.workoutType ||
+      !formData.intensity ||
+      !formData.equipment ||
+      formData.daysPerWeek === 0
+    ) {
+      console.error("Please fill all fields");
+      return;
+    }
+
+    if (!bmiData) {
+      console.error(
+        "Please calculate your BMI first to get personalized workout plans"
+      );
       return;
     }
 
     setLoading(true);
     try {
+      // Map our form data to backend expected format
+      const requestData = {
+        email: user.email,
+        fitnessGoal: bmiData.selectedPlan || "General Fitness", // Use BMI plan or default
+        gender: "Not specified", // Backend requires this field
+        trainingMethod: `${formData.workoutType} Training`, // Map workout type to training method
+        workoutType: formData.equipment, // Map equipment to workout type
+        strengthLevel: formData.intensity, // Map intensity to strength level
+        // Additional data for personalization
+        timeCommitment: formData.timeCommitment,
+        daysPerWeek: formData.daysPerWeek,
+        bmiData: bmiData,
+      };
+
+      console.log("Sending workout plan request:", requestData);
+
       const response = await axios.post(
         `${API_BASE_URL}${API_ENDPOINTS.AUTH}/generate-plan`,
-        {
-          ...formData,
-          email: user.email,
-        }
+        requestData
       );
+
+      console.log("Full API response:", response.data);
+      console.log("Plan content:", response.data.plan);
+      console.log("Plan length:", response.data.plan?.length);
+
       setPlan(response.data.plan);
       fetchWorkoutHistory();
-      toast.success("Workout plan generated successfully!");
+      console.log("Workout plan generated successfully!");
     } catch (error) {
-      toast.error(
-        "Failed to generate plan. Please try again. " + error.message
-      );
+      console.error("Failed to generate plan:", error);
+      if (error.response) {
+        console.error("Error response:", error.response.data);
+      }
     }
     setLoading(false);
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(plan);
-    toast.success("Plan copied to clipboard!");
+    navigator.clipboard.writeText(cleanPlanContent(plan));
+    console.log("Plan copied to clipboard!");
   };
 
   const regeneratePlan = async () => {
     if (!plan) return;
     setLoading(true);
     try {
+      // Map our form data to backend expected format
+      const requestData = {
+        email: user.email,
+        fitnessGoal: bmiData?.selectedPlan || "General Fitness",
+        gender: "Not specified",
+        trainingMethod: `${formData.workoutType} Training`,
+        workoutType: formData.equipment,
+        strengthLevel: formData.intensity,
+        timeCommitment: formData.timeCommitment,
+        daysPerWeek: formData.daysPerWeek,
+        bmiData: bmiData,
+      };
+
       const response = await axios.post(
         `${API_BASE_URL}${API_ENDPOINTS.AUTH}/generate-plan`,
-        {
-          ...formData,
-          email: user.email,
-        }
+        requestData
       );
       setPlan(response.data.plan);
-      toast.success("New plan generated!");
+      console.log("New plan generated!");
     } catch (error) {
-      toast.error("Failed to regenerate plan");
+      console.error("Failed to regenerate plan:", error);
     }
     setLoading(false);
   };
@@ -139,148 +210,181 @@ const WorkoutPlanGenerator = () => {
         </div>
 
         {activeTab === "generate" ? (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Form Column */}
             <div className="lg:col-span-1">
               <div className="bg-gray-800 rounded-xl shadow-md border border-gray-700 overflow-hidden">
                 <div className="bg-gradient-to-r from-green-600 to-blue-700 p-6 text-white">
                   <h2 className="text-2xl font-bold flex items-center">
-                    <FaChartLine className="mr-3" /> Plan Settings
+                    <FaChartLine className="mr-3" /> Workout Preferences
                   </h2>
                 </div>
+
+                {/* BMI Data Display */}
+                {bmiData ? (
+                  <div className="bg-gray-700 p-4 border-b border-gray-600">
+                    <h3 className="text-lg font-semibold text-white mb-2">
+                      Your BMI Data
+                    </h3>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-gray-300">
+                          BMI:{" "}
+                          <span className="font-bold text-white">
+                            {bmiData.bmi}
+                          </span>
+                        </p>
+                        <p className="text-gray-300">
+                          Category:{" "}
+                          <span className="font-bold text-white">
+                            {bmiData.category}
+                          </span>
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-gray-300">
+                          Weight:{" "}
+                          <span className="font-bold text-white">
+                            {bmiData.weight}kg
+                          </span>
+                        </p>
+                        <p className="text-gray-300">
+                          Height:{" "}
+                          <span className="font-bold text-white">
+                            {bmiData.heightFeet}'{bmiData.heightInches}"
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                    {bmiData.selectedPlan && (
+                      <p className="text-gray-300 mt-2">
+                        Plan:{" "}
+                        <span className="font-bold text-green-400 capitalize">
+                          {bmiData.selectedPlan.replace("_", " ")}
+                        </span>
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <div className="bg-red-900/20 p-4 border-b border-red-600">
+                    <p className="text-red-300 text-sm">
+                      <FaHeartbeat className="inline mr-2" />
+                      Please calculate your BMI first to get personalized
+                      workout plans
+                    </p>
+                  </div>
+                )}
+
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                  {/* Time Commitment */}
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Fitness Goal
+                      How much time can you commit per workout?
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[15, 30, 45, 60].map((time) => (
+                        <button
+                          key={time}
+                          type="button"
+                          onClick={() =>
+                            setFormData({
+                              ...formData,
+                              timeCommitment: time.toString(),
+                            })
+                          }
+                          className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
+                            formData.timeCommitment === time.toString()
+                              ? "bg-green-700 border-green-500"
+                              : "bg-gray-700 border-gray-600 hover:border-gray-500"
+                          }`}
+                        >
+                          {time} min
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Workout Type */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      What type of workout do you prefer?
                     </label>
                     <div className="grid grid-cols-2 gap-3">
                       <button
                         type="button"
                         onClick={() =>
-                          setFormData({
-                            ...formData,
-                            fitnessGoal: "Lose Weight",
-                          })
+                          setFormData({ ...formData, workoutType: "cardio" })
                         }
                         className={`p-3 rounded-lg border flex flex-col items-center text-gray-200 ${
-                          formData.fitnessGoal === "Lose Weight"
-                            ? "bg-green-700 border-green-500"
+                          formData.workoutType === "cardio"
+                            ? "bg-red-700 border-red-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
                         <GiRunningShoe className="text-xl mb-1" />
-                        <span>Lose Weight</span>
+                        <span>Cardio</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData({ ...formData, workoutType: "strength" })
+                        }
+                        className={`p-3 rounded-lg border flex flex-col items-center text-gray-200 ${
+                          formData.workoutType === "strength"
+                            ? "bg-blue-700 border-blue-500"
+                            : "bg-gray-700 border-gray-600 hover:border-gray-500"
+                        }`}
+                      >
+                        <GiWeightLiftingUp className="text-xl mb-1" />
+                        <span>Strength</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData({ ...formData, workoutType: "mixed" })
+                        }
+                        className={`p-3 rounded-lg border flex flex-col items-center text-gray-200 ${
+                          formData.workoutType === "mixed"
+                            ? "bg-purple-700 border-purple-500"
+                            : "bg-gray-700 border-gray-600 hover:border-gray-500"
+                        }`}
+                      >
+                        <FaDumbbell className="text-xl mb-1" />
+                        <span>Mixed</span>
                       </button>
                       <button
                         type="button"
                         onClick={() =>
                           setFormData({
                             ...formData,
-                            fitnessGoal: "Gain Muscle",
+                            workoutType: "flexibility",
                           })
                         }
                         className={`p-3 rounded-lg border flex flex-col items-center text-gray-200 ${
-                          formData.fitnessGoal === "Gain Muscle"
-                            ? "bg-green-700 border-green-500"
+                          formData.workoutType === "flexibility"
+                            ? "bg-yellow-700 border-yellow-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
-                        <GiWeightLiftingUp className="text-xl mb-1" />
-                        <span>Gain Muscle</span>
+                        <FaHeartbeat className="text-xl mb-1" />
+                        <span>Flexibility</span>
                       </button>
                     </div>
                   </div>
 
+                  {/* Intensity Level */}
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Gender
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setFormData({ ...formData, gender: "Male" })
-                        }
-                        className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
-                          formData.gender === "Male"
-                            ? "bg-blue-700 border-blue-500"
-                            : "bg-gray-700 border-gray-600 hover:border-gray-500"
-                        }`}
-                      >
-                        Male
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setFormData({ ...formData, gender: "Female" })
-                        }
-                        className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
-                          formData.gender === "Female"
-                            ? "bg-purple-700 border-purple-500"
-                            : "bg-gray-700 border-gray-600 hover:border-gray-500"
-                        }`}
-                      >
-                        Female
-                      </button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Training Method
-                    </label>
-                    <select
-                      name="trainingMethod"
-                      value={formData.trainingMethod}
-                      onChange={handleChange}
-                      className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-green-500 focus:ring-1 focus:ring-green-500 text-white"
-                      required
-                    >
-                      <option value="">Select Method</option>
-                      <option value="Resistance Training">
-                        Resistance Training
-                      </option>
-                      <option value="Resistance + Cardio">
-                        Resistance + Cardio
-                      </option>
-                      <option value="Meal Plan Only">Meal Plan Only</option>
-                      <option value="Custom Routine">Custom Routine</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Workout Type
-                    </label>
-                    <select
-                      name="workoutType"
-                      value={formData.workoutType}
-                      onChange={handleChange}
-                      className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-green-500 focus:ring-1 focus:ring-green-500 text-white"
-                      required
-                    >
-                      <option value="">Select Type</option>
-                      <option value="Weighted">Weighted</option>
-                      <option value="Bodyweight">Bodyweight</option>
-                      <option value="No Equipment">No Equipment</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Strength Level
+                      What's your fitness level?
                     </label>
                     <div className="grid grid-cols-3 gap-3">
                       <button
                         type="button"
                         onClick={() =>
-                          setFormData({
-                            ...formData,
-                            strengthLevel: "Beginner",
-                          })
+                          setFormData({ ...formData, intensity: "beginner" })
                         }
                         className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
-                          formData.strengthLevel === "Beginner"
+                          formData.intensity === "beginner"
                             ? "bg-green-700 border-green-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
@@ -292,11 +396,11 @@ const WorkoutPlanGenerator = () => {
                         onClick={() =>
                           setFormData({
                             ...formData,
-                            strengthLevel: "Intermediate",
+                            intensity: "intermediate",
                           })
                         }
                         className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
-                          formData.strengthLevel === "Intermediate"
+                          formData.intensity === "intermediate"
                             ? "bg-green-700 border-green-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
@@ -306,19 +410,89 @@ const WorkoutPlanGenerator = () => {
                       <button
                         type="button"
                         onClick={() =>
-                          setFormData({
-                            ...formData,
-                            strengthLevel: "Advanced",
-                          })
+                          setFormData({ ...formData, intensity: "advanced" })
                         }
                         className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
-                          formData.strengthLevel === "Advanced"
+                          formData.intensity === "advanced"
                             ? "bg-green-700 border-green-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
                         }`}
                       >
                         Advanced
                       </button>
+                    </div>
+                  </div>
+
+                  {/* Equipment */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      What equipment do you have access to?
+                    </label>
+                    <div className="grid grid-cols-1 gap-3">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData({ ...formData, equipment: "none" })
+                        }
+                        className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
+                          formData.equipment === "none"
+                            ? "bg-green-700 border-green-500"
+                            : "bg-gray-700 border-gray-600 hover:border-gray-500"
+                        }`}
+                      >
+                        No Equipment (Bodyweight Only)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData({ ...formData, equipment: "basic" })
+                        }
+                        className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
+                          formData.equipment === "basic"
+                            ? "bg-green-700 border-green-500"
+                            : "bg-gray-700 border-gray-600 hover:border-gray-500"
+                        }`}
+                      >
+                        Basic (Dumbbells, Resistance Bands)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData({ ...formData, equipment: "full_gym" })
+                        }
+                        className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
+                          formData.equipment === "full_gym"
+                            ? "bg-green-700 border-green-500"
+                            : "bg-gray-700 border-gray-600 hover:border-gray-500"
+                        }`}
+                      >
+                        Full Gym Access
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Days Per Week */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      How many days per week can you workout?
+                    </label>
+                    <div className="grid grid-cols-4 gap-2">
+                      {[3, 4, 5, 6].map((days) => (
+                        <button
+                          key={days}
+                          type="button"
+                          onClick={() =>
+                            setFormData({ ...formData, daysPerWeek: days })
+                          }
+                          className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
+                            formData.daysPerWeek === days
+                              ? "bg-green-700 border-green-500"
+                              : "bg-gray-700 border-gray-600 hover:border-gray-500"
+                          }`}
+                        >
+                          {days}
+                        </button>
+                      ))}
                     </div>
                   </div>
 
@@ -360,13 +534,14 @@ const WorkoutPlanGenerator = () => {
             </div>
 
             {/* Plan Column */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-3">
               {plan ? (
                 <div className="bg-gray-800 rounded-xl shadow-md border border-gray-700 h-full overflow-hidden">
                   <div className="bg-gradient-to-r from-green-600 to-blue-700 p-6 text-white">
                     <div className="flex justify-between items-center">
                       <h2 className="text-2xl font-bold flex items-center">
-                        <FaDumbbell className="mr-3" /> Your Custom Plan
+                        <FaDumbbell className="mr-3" /> Your Personalized
+                        Workout Plan
                       </h2>
                       <div className="flex space-x-3">
                         <button
@@ -390,12 +565,26 @@ const WorkoutPlanGenerator = () => {
                         </button>
                       </div>
                     </div>
+                    <div className="mt-4 flex flex-wrap gap-4 text-sm">
+                      <span className="bg-white/20 px-3 py-1 rounded-full">
+                        {formData.timeCommitment} min sessions
+                      </span>
+                      <span className="bg-white/20 px-3 py-1 rounded-full">
+                        {formData.workoutType} training
+                      </span>
+                      <span className="bg-white/20 px-3 py-1 rounded-full">
+                        {formData.daysPerWeek} days/week
+                      </span>
+                      <span className="bg-white/20 px-3 py-1 rounded-full">
+                        {formData.intensity} level
+                      </span>
+                    </div>
                   </div>
-                  <div className="p-6">
+                  <div className="p-6 max-h-screen overflow-y-auto">
                     <div className="prose max-w-none">
-                      <pre className="whitespace-pre-wrap font-sans text-gray-100 bg-gray-700 p-4 rounded-lg">
-                        {plan}
-                      </pre>
+                      <div className="whitespace-pre-wrap font-sans text-gray-100 bg-gray-700 p-8 rounded-lg text-base leading-relaxed min-h-96">
+                        {cleanPlanContent(plan)}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -406,8 +595,9 @@ const WorkoutPlanGenerator = () => {
                     No Workout Plan Generated
                   </h3>
                   <p className="text-gray-500 max-w-md">
-                    Fill out the form and click "Generate Workout Plan" to
-                    create your personalized fitness routine.
+                    {!bmiData
+                      ? "Please calculate your BMI first, then fill out the form to create your personalized fitness routine."
+                      : "Fill out the form and click 'Generate Workout Plan' to create your personalized fitness routine."}
                   </p>
                 </div>
               )}
@@ -431,7 +621,7 @@ const WorkoutPlanGenerator = () => {
                       <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-3">
                         <div>
                           <h3 className="font-bold text-lg text-white">
-                            {item.fitnessGoal} Plan ({item.strengthLevel})
+                            {item.workoutType} Plan ({item.intensity})
                           </h3>
                           <p className="text-sm text-gray-400">
                             {new Date(item.createdAt).toLocaleDateString(
@@ -447,17 +637,20 @@ const WorkoutPlanGenerator = () => {
                         </div>
                         <div className="flex space-x-2 mt-2 md:mt-0">
                           <span className="px-3 py-1 text-xs rounded-full bg-green-800 text-green-100">
-                            {item.trainingMethod}
+                            {item.timeCommitment} min
                           </span>
                           <span className="px-3 py-1 text-xs rounded-full bg-blue-800 text-blue-100">
-                            {item.workoutType}
+                            {item.daysPerWeek} days/week
+                          </span>
+                          <span className="px-3 py-1 text-xs rounded-full bg-purple-800 text-purple-100">
+                            {item.equipment}
                           </span>
                         </div>
                       </div>
                       <div className="prose max-w-none">
-                        <pre className="whitespace-pre-wrap font-sans text-gray-100 text-sm bg-gray-900 p-3 rounded border border-gray-700">
-                          {item.plan}
-                        </pre>
+                        <div className="whitespace-pre-wrap font-sans text-gray-100 text-sm bg-gray-900 p-4 rounded border border-gray-700 max-h-64 overflow-y-auto">
+                          {cleanPlanContent(item.plan)}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -477,7 +670,6 @@ const WorkoutPlanGenerator = () => {
           </div>
         )}
       </div>
-      <ToastContainer position="bottom-right" autoClose={3000} theme="dark" />
     </div>
   );
 };

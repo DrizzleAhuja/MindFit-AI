@@ -4,6 +4,7 @@ import "./App.css";
 import Home from "./pages/HomePage/Home";
 import Signin from "./pages/SigninPage/Signin";
 import Report from "./pages/BMICalculator/Report.jsx";
+import EnhancedBMICalculator from "./pages/BMICalculator/EnhancedBMICalculator.jsx";
 import LostItems from "./pages/FitBot/LostItems.jsx";
 import FoundItems from "./pages/VirtualTrainingAssistant/FoundItems.jsx";
 import EditProfile from "./pages/EditProfilePage/EditProfile";
@@ -16,10 +17,10 @@ import UserLogsPage from "./pages/UserLogsPage/UserLogsPage.jsx";
 import AllUserLogsPage from "./pages/AllUserLogsPage/AllUserLogsPage.jsx";
 // import AdminLogsPage from "./pages/CalorieTracker/AdminLogsPage.jsx";
 import CalorieTracker from "./pages/CalorieTracker/CalorieTracker.jsx";
-import Contactus from './pages/ContactusPage/Contactus.jsx'
+import Contactus from "./pages/ContactusPage/Contactus.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx"; // Import ThemeProvider
-import About from './pages/AboutPage/About.jsx'; // Import About component
-import Features from './pages/FeaturesPage/Features.jsx'; // Import Features component
+import About from "./pages/AboutPage/About.jsx"; // Import About component
+import Features from "./pages/FeaturesPage/Features.jsx"; // Import Features component
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     const savedLoginStatus = localStorage.getItem("isLoggedIn");
@@ -31,101 +32,41 @@ function App() {
   }, [isLoggedIn]);
 
   return (
-    <ThemeProvider> {/* Wrap the entire application with ThemeProvider */}
-      <div className="w-screen min-h-screen"> {/* Removed bg-white and text-black */}
+    <ThemeProvider>
+      {" "}
+      {/* Wrap the entire application with ThemeProvider */}
+      <div className="w-screen min-h-screen">
+        {" "}
+        {/* Removed bg-white and text-black */}
         <Routes>
-          <Route
-            path="/"
-            element={<Home />}
-          />
-          <Route
-            path="/home"
-            element={<Home />}
-          />
-          <Route
-            path="/signin"
-            element={
-              <Signin />
-            }
-          />
-          <Route
-            path="/notifications"
-            element={
-              <NotificationsPage/>
-            }
-          />
-          <Route
-            path="/CurrentBMI"
-            element={
-              <Report />
-            }
-          />
-          <Route
-            path="/AiCoach"
-            element={
-              <LostItems />
-            }
-          />
-          <Route
-            path="/VirtualTA"
-            element={
-              <FoundItems />
-            }
-          />
-          <Route
-            path="/EditProfile"
-            element={
-              <EditProfile />
-            }
-          />
-          <Route
-            path="/Workout"
-            element={
-              <MyListings />
-            }
-          />
-          <Route
-            path="/VerificationPage"
-            element={
-              <VerificationPage/>
-            }
-          />
-           <Route
-            path="/ContactUs"
-            element={
-              <Contactus/>
-            }
-          />
-         
-          <Route
-            path="/UserLogs"
-            element={
-              <UserLogsPage/>
-            }
-          />
-          <Route
-            path="/calorie-tracker"
-            element={
-              <CalorieTracker/>
-            }
-          />
-          <Route
-            path="/AllUsersLogs"
-            element={
-              <AllUserLogsPage/>
-            }
-          />
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="/CurrentBMI" element={<EnhancedBMICalculator />} />
+          <Route path="/AiCoach" element={<LostItems />} />
+          <Route path="/VirtualTA" element={<FoundItems />} />
+          <Route path="/EditProfile" element={<EditProfile />} />
+          <Route path="/Workout" element={<MyListings />} />
+          <Route path="/VerificationPage" element={<VerificationPage />} />
+          <Route path="/ContactUs" element={<Contactus />} />
+
+          <Route path="/UserLogs" element={<UserLogsPage />} />
+          <Route path="/calorie-tracker" element={<CalorieTracker />} />
+          <Route path="/AllUsersLogs" element={<AllUserLogsPage />} />
           <Route
             path="/admin-calorie-tracker"
             // element={
-              // <AdminLogsPage/>
+            // <AdminLogsPage/>
             // }
           />
+          <Route path="/about" element={<About />} />
+          <Route path="/features" element={<Features />} />
         </Routes>
         <ToastContainer
-          theme="dark" // Set ToastContainer theme to dark
-          position="top-right"
-          autoClose={5000}
+          theme="dark"
+          position="bottom-right"
+          autoClose={3000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick
@@ -134,16 +75,6 @@ function App() {
           draggable
           pauseOnHover
         />
-        <Routes>
-          <Route
-            path="/about"
-            element={<About />}
-          />
-          <Route
-            path="/features"
-            element={<Features />}
-          />
-        </Routes>
       </div>
     </ThemeProvider>
   );
