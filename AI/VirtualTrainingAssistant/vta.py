@@ -382,8 +382,18 @@ else:
         # Start button to initiate camera
         if not st.session_state.camera_started:
             if st.button("Start Camera"):
-                cap = cv2.VideoCapture(0) # Attempt to open camera
-                if cap.isOpened():
+                cap = None
+                for i in range(5):  # Try camera indices from 0 to 4
+                    cap = cv2.VideoCapture(i)
+                    if cap.isOpened():
+                        st.success(f"Successfully opened camera with index {i}")
+                        break
+                    else:
+                        st.warning(f"Could not open camera with index {i}. Trying next...")
+                        if cap:
+                            cap.release() # Release if not opened
+                
+                if cap and cap.isOpened():
                     st.session_state.cap = cap # Store camera object in session state
                     st.session_state.camera_started = True
                     st.session_state.start_time = time.time()
@@ -393,7 +403,7 @@ else:
                     st.session_state.feedback_type = "good"
                     st.rerun() # Rerun to start the actual camera stream
                 else:
-                    st.warning("⚠️ Could not access camera. Please ensure it's connected and not in use by another application.")
+                    st.error("⚠️ Failed to access any camera. Please ensure your camera is connected, drivers are updated, and no other applications are using it.")
                     st.session_state.camera_started = False # Ensure it's false if camera failed
                     st.session_state.cap = None # Explicitly set cap to None
                     st.rerun()
