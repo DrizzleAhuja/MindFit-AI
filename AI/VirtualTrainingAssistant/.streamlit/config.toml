@@ -4,3 +4,6 @@ address = "0.0.0.0"
 
 [browser]
 gatherUsageStats = false
+
+[client]
+toolbar.enable = false
