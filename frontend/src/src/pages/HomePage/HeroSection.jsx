@@ -17,7 +17,7 @@ const HeroSection = () => {
           </div>
           <h1 className={`text-4xl md:text-6xl font-extrabold mb-6 leading-tight ${darkMode ? 'text-white' : 'text-gray-900'}`}>
             <span className={`bg-clip-text text-transparent ${darkMode ? 'bg-gradient-to-r from-green-400 to-blue-500' : 'bg-gradient-to-r from-green-600 to-blue-800'}`}>
-              MindFit AI
+              GenFit AI
             </span>
             : Train Your Mind, Optimize Your Life
           </h1>

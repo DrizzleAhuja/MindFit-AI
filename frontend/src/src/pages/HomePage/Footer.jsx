@@ -55,7 +55,7 @@ export default function Footer() {
               <Brain className={`w-8 h-8 ${darkMode ? 'text-green-400' : 'text-green-600'} mr-1`} />
               <Sparkles className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />
               <span className={`bg-clip-text text-transparent ${darkMode ? 'bg-gradient-to-r from-green-400 to-blue-500' : 'bg-gradient-to-r from-green-600 to-blue-800'}`}>
-                MindFit AI
+                GenFit AI
               </span>
             </NavLink>
             <p className={`mt-4 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -115,8 +115,8 @@ export default function Footer() {
             </div>
             <div className={`flex items-center ${darkMode ? 'text-gray-400' : 'text-gray-700'}`}>
               <FaEnvelope className="mr-2" />
-              <a href="mailto:mindfitai@example.com" className="hover:underline">
-                mindfitai@example.com
+              <a href="mailto:genfitai@example.com" className="hover:underline">
+                genfitai@example.com
               </a>
             </div>
           </div>
@@ -125,7 +125,7 @@ export default function Footer() {
         <div className={`border-t mt-12 pt-8 ${darkMode ? 'border-gray-700' : 'border-gray-300'}`}>
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className={`text-sm mb-4 md:mb-0 ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>
-              &copy; {new Date().getFullYear()} MindFit AI. All rights reserved.
+              &copy; {new Date().getFullYear()} GenFit AI. All rights reserved.
             </p>
             <div className="flex space-x-6">
               <a href="#" className={`text-sm ${darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-700 hover:text-gray-900'} transition-colors`}>
