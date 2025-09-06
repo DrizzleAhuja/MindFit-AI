@@ -379,122 +379,92 @@ else:
 
         model = load_model()
 
-        # Start button to initiate camera
-        if not st.session_state.camera_started:
-            if st.button("Start Camera"):
-                cap = None
-                for i in range(5):  # Try camera indices from 0 to 4
-                    cap = cv2.VideoCapture(i)
-                    if cap.isOpened():
-                        st.success(f"Successfully opened camera with index {i}")
-                        break
-                    else:
-                        st.warning(f"Could not open camera with index {i}. Trying next...")
-                        if cap:
-                            cap.release() # Release if not opened
-                
-                if cap and cap.isOpened():
-                    st.session_state.cap = cap # Store camera object in session state
-                    st.session_state.camera_started = True
-                    st.session_state.start_time = time.time()
-                    st.session_state.counter = 0
-                    st.session_state.direction = "up"
-                    st.session_state.feedback = "Starting exercise..."
-                    st.session_state.feedback_type = "good"
-                    st.rerun() # Rerun to start the actual camera stream
-                else:
-                    st.error("⚠️ Failed to access any camera. Please ensure your camera is connected, drivers are updated, and no other applications are using it.")
-                    st.session_state.camera_started = False # Ensure it's false if camera failed
-                    st.session_state.cap = None # Explicitly set cap to None
-                    st.rerun()
-        
-        if st.session_state.camera_started and st.session_state.cap is not None:
-            # Video capture - uses the stored camera object
-            cap = st.session_state.cap
-            frame_placeholder = st.empty()
-            feedback_placeholder = st.empty()
-            stop_button = st.button("Stop")
+        # Camera input for exercise tracking
+        st.subheader("Webcam Input")
+        picture = st.camer-input("Take a picture for pose estimation")
 
-            while cap.isOpened() and not stop_button:
-                ret, frame = cap.read()
-                if not ret:
-                    st.warning("Unable to access camera. Please check your camera connection.")
-                    break
+        if picture:
+            # Convert the BytesIO object to a numpy array
+            file_bytes = np.asarray(bytearray(picture.read()), dtype=np.uint8)
+            frame = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
 
-                # Increase frame size for better posture visibility
-                frame = cv2.resize(frame, (800, 600))  # Adjusted to 800x600
+            if frame is not None:
+                # Process the captured frame
+                frame = cv2.resize(frame, (800, 600))
                 frame = process_frame(frame, model, app_mode)
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                frame_placeholder.image(frame, channels="RGB")
-                
+                st.image(frame, channels="RGB", caption="Processed Image")
+
                 # Display feedback
                 feedback_class = "feedback-good" if st.session_state.feedback_type == "good" else "feedback-bad"
-                feedback_placeholder.markdown(
-                    f"<div class='{feedback_class}'>{st.session_state.feedback}</div>", 
+                st.markdown(
+                    f"<div class='{feedback_class}'>{st.session_state.feedback}</div>",
                     unsafe_allow_html=True
                 )
+            else:
+                st.warning("Failed to decode image from camera input.")
 
-            if stop_button or not cap.isOpened():
-                cap.release()
-                st.session_state.cap = None
-                st.session_state.camera_started = False
-                st.rerun()
-                
-            # Workout Summary for camera mode
-            if st.session_state.start_time is not None:
-                duration = time.time() - st.session_state.start_time
-                if app_mode in ["Left Dumbbell", "Right Dumbbell"]:
-                    calories_burned = 0.25 * st.session_state.counter
-                elif app_mode in ["Lateral Raises", "Front Raises"]:
-                    calories_burned = 0.3 * st.session_state.counter
-                elif app_mode == "Triceps Kickbacks":
-                    calories_burned = 0.2 * st.session_state.counter
-                else:
-                    calories_burned = 0
+            # Workout Summary for camera mode (for a single picture, it's a snapshot)
+            # You might want to adjust how 'duration' and 'calories_burned' are calculated
+            # for a single image vs. a continuous stream. For now, we'll keep the existing logic.
+            if st.session_state.start_time is None:
+                st.session_state.start_time = time.time() # Start timer on first image
+            
+            duration = time.time() - st.session_state.start_time
+            
+            if app_mode in ["Left Dumbbell", "Right Dumbbell"]:
+                calories_burned = 0.25 * st.session_state.counter
+            elif app_mode in ["Lateral Raises", "Front Raises"]:
+                calories_burned = 0.3 * st.session_state.counter
+            elif app_mode == "Triceps Kickbacks":
+                calories_burned = 0.2 * st.session_state.counter
+            else:
+                calories_burned = 0
 
-                st.write("---")
-                st.write("## Workout Summary")
-                st.write(f"Total Reps: {int(st.session_state.counter)}")
-                st.write(f"Duration: {int(duration)} seconds")
-                st.write(f"Calories Burned: {calories_burned:.2f} kcal")
+            st.write("---")
+            st.write("## Workout Summary (Snapshot)")
+            st.write(f"Total Reps: {int(st.session_state.counter)}")
+            st.write(f"Duration: {int(duration)} seconds (since first picture)")
+            st.write(f"Calories Burned: {calories_burned:.2f} kcal")
 
-                # Create progress chart
-                fig = go.Figure()
-                fig.add_trace(go.Bar(
-                    x=['Calories'],
-                    y=[calories_burned],
-                    name='Calories Burned',
-                    marker_color='rgb(26, 118, 255)'
-                ))
-                fig.add_trace(go.Bar(
-                    x=['Calories'],
-                    y=[goal_calories],
-                    name='Goal',
-                    marker_color='rgb(55, 83, 109)'
-                ))
+            # Create progress chart
+            fig = go.Figure()
+            fig.add_trace(go.Bar(
+                x=['Calories'],
+                y=[calories_burned],
+                name='Calories Burned',
+                marker_color='rgb(26, 118, 255)'
+            ))
+            fig.add_trace(go.Bar(
+                x=['Calories'],
+                y=[goal_calories],
+                name='Goal',
+                marker_color='rgb(55, 83, 109)'
+            ))
 
-                fig.update_layout(
-                    title='Workout Progress',
-                    xaxis_tickfont_size=14,
-                    yaxis=dict(
-                        title='Calories (kcal)',
-                        title_font_size=16,
-                        tickfont_size=14,
-                    ),
-                    legend=dict(
-                        x=0,
-                        y=1.0,
-                        bgcolor='rgba(255, 255, 255, 0)',
-                        bordercolor='rgba(255, 255, 255, 0)'
-                    ),
-                    barmode='group',
-                    bargap=0.15,
-                    bargroupgap=0.1
-                )
+            fig.update_layout(
+                title='Workout Progress',
+                xaxis_tickfont_size=14,
+                yaxis=dict(
+                    title='Calories (kcal)',
+                    title_font_size=16,
+                    tickfont_size=14,
+                ),
+                legend=dict(
+                    x=0,
+                    y=1.0,
+                    bgcolor='rgba(255, 255, 255, 0)',
+                    bordercolor='rgba(255, 255, 255, 0)'
+                ),
+                barmode='group',
+                bargap=0.15,
+                bargroupgap=0.1
+            )
 
-                st.plotly_chart(fig)
-        
-            st.info("Click 'Stop' to end tracking or 'Start Camera' to begin a new session.")
+            st.plotly_chart(fig)
+            st.info("Take another picture to continue tracking.")
+        else:
+            st.info("Click the 'Take a picture' button to start your exercise session.")
 
     else: # Fallback to manual mode when OpenCV is not available
         st.warning("⚠️ Camera functionality not available. Using manual tracking mode.")
