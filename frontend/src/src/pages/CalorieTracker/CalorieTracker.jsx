@@ -298,39 +298,44 @@ const CalorieTracker = () => {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg">
-                <Zap className="w-6 h-6 text-white" />
+                <Camera className="w-6 h-6 text-white" />
               </div>
-              <h3 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                AI Food Recognition
-              </h3>
+              <div>
+                <h3 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                  📸 AI Food Photo Scanner
+                </h3>
+                <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  Take a photo of your food to get instant calorie count and health analysis
+                </p>
+              </div>
             </div>
             <button
               onClick={() => setShowCamera(!showCamera)}
-              className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-4 py-2 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 flex items-center gap-2"
+              className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 flex items-center gap-2"
             >
-              <Camera className="w-4 h-4" />
-              {showCamera ? 'Hide Camera' : 'Show Camera'}
+              <Camera className="w-5 h-5" />
+              {showCamera ? 'Hide Scanner' : 'Open Scanner'}
             </button>
           </div>
 
           {showCamera && (
             <div className={`p-4 rounded-lg border-2 border-dashed ${darkMode ? 'border-purple-600 bg-gray-900/50' : 'border-purple-400 bg-purple-50'}`}>
-              <div className="flex flex-wrap justify-center gap-4 mb-4">
+              <div className="flex flex-wrap justify-center gap-4 mb-6">
                 {!isStreaming && !capturedImage && (
                   <>
                     <button
                       onClick={startCamera}
-                      className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 flex items-center gap-2"
+                      className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 flex items-center gap-3"
                     >
-                      <Camera className="w-5 h-5" />
-                      Start Camera
+                      <Camera className="w-6 h-6" />
+                      📸 Take Photo
                     </button>
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 flex items-center gap-2"
+                      className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 flex items-center gap-3"
                     >
-                      <Upload className="w-5 h-5" />
-                      Upload Photo
+                      <Upload className="w-6 h-6" />
+                      📁 Upload Photo
                     </button>
                   </>
                 )}
@@ -339,9 +344,9 @@ const CalorieTracker = () => {
                   <>
                     <button
                       onClick={capturePhoto}
-                      className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200"
+                      className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 flex items-center gap-3"
                     >
-                      📸 Capture Photo
+                      📸 CAPTURE FOOD PHOTO
                     </button>
                     <button
                       onClick={stopCamera}
@@ -420,10 +425,12 @@ const CalorieTracker = () => {
               {analysisResult && (
                 <div className={`p-6 rounded-xl shadow-xl border ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-white border-gray-200'}`}>
                   <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-xl font-bold">AI Analysis Results</h4>
+                    <h4 className="text-xl font-bold">🍽️ AI Food Analysis Results</h4>
                     <div className="flex items-center gap-2">
                       <span className={`px-3 py-1 rounded-full text-sm font-semibold capitalize border ${getCategoryColor(analysisResult.category)}`}>
-                        {analysisResult.category}
+                        {analysisResult.category === 'junk' ? '🍟 Junk Food' : 
+                         analysisResult.category === 'healthy' ? '🥗 Healthy Food' : 
+                         '⚖️ Moderate Food'}
                       </span>
                       <div className={`px-2 py-1 rounded-full text-sm font-bold ${getHealthScoreColor(analysisResult.healthScore)}`}>
                         {analysisResult.healthScore}/100
@@ -431,41 +438,107 @@ const CalorieTracker = () => {
                     </div>
                   </div>
                   
-                  <div className="grid md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <h5 className="text-lg font-semibold capitalize mb-2">
-                        {analysisResult.foodName}
-                      </h5>
-                      <p className="text-sm opacity-75 mb-3">
-                        Confidence: {analysisResult.confidence.toFixed(1)}%
+                  {/* Food Name and Confidence */}
+                  <div className="mb-4">
+                    <h5 className="text-xl font-bold capitalize mb-2 text-center">
+                      {analysisResult.foodName}
+                    </h5>
+                    <p className="text-sm opacity-75 text-center mb-3">
+                      AI Confidence: {analysisResult.confidence.toFixed(1)}%
+                    </p>
+                  </div>
+
+                  {/* Calorie Information - Prominent Display */}
+                  <div className={`mb-6 p-4 rounded-lg text-center ${darkMode ? 'bg-purple-900/30 border border-purple-600' : 'bg-purple-50 border border-purple-200'}`}>
+                    <div className="text-3xl font-bold text-purple-400 mb-2">
+                      {analysisResult.calories.toFixed(0)} Calories
+                    </div>
+                    <div className="text-sm opacity-75">
+                      Per 100g serving
+                    </div>
+                    {analysisResult.calories > 300 && (
+                      <div className="text-sm text-orange-400 mt-2">
+                        ⚠️ High calorie content
+                      </div>
+                    )}
+                    {analysisResult.calories < 100 && (
+                      <div className="text-sm text-green-400 mt-2">
+                        ✅ Low calorie content
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Junk Food Detection */}
+                  {analysisResult.category === 'junk' && (
+                    <div className={`mb-4 p-4 rounded-lg border-2 border-red-500 ${darkMode ? 'bg-red-900/20' : 'bg-red-50'}`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <AlertCircle className="w-5 h-5 text-red-400" />
+                        <span className="font-bold text-red-400">Junk Food Detected!</span>
+                      </div>
+                      <p className="text-sm text-red-300">
+                        This food is high in calories, sugar, or fat. Consider healthier alternatives.
                       </p>
+                    </div>
+                  )}
+
+                  {/* Healthy Food Detection */}
+                  {analysisResult.category === 'healthy' && (
+                    <div className={`mb-4 p-4 rounded-lg border-2 border-green-500 ${darkMode ? 'bg-green-900/20' : 'bg-green-50'}`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <CheckCircle className="w-5 h-5 text-green-400" />
+                        <span className="font-bold text-green-400">Healthy Food Detected!</span>
+                      </div>
+                      <p className="text-sm text-green-300">
+                        Great choice! This food is nutritious and good for your health.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Nutritional Breakdown */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                    <div className={`rounded-lg p-3 text-center ${darkMode ? 'bg-green-900/30' : 'bg-green-50'}`}>
+                      <div className="text-lg font-bold text-green-400">{analysisResult.protein.toFixed(1)}g</div>
+                      <div className="text-xs opacity-75">Protein</div>
+                    </div>
+                    <div className={`rounded-lg p-3 text-center ${darkMode ? 'bg-blue-900/30' : 'bg-blue-50'}`}>
+                      <div className="text-lg font-bold text-blue-400">{analysisResult.carbs.toFixed(1)}g</div>
+                      <div className="text-xs opacity-75">Carbs</div>
+                    </div>
+                    <div className={`rounded-lg p-3 text-center ${darkMode ? 'bg-orange-900/30' : 'bg-orange-50'}`}>
+                      <div className="text-lg font-bold text-orange-400">{analysisResult.fat.toFixed(1)}g</div>
+                      <div className="text-xs opacity-75">Fat</div>
+                    </div>
+                    <div className={`rounded-lg p-3 text-center ${darkMode ? 'bg-pink-900/30' : 'bg-pink-50'}`}>
+                      <div className="text-lg font-bold text-pink-400">{analysisResult.sugar.toFixed(1)}g</div>
+                      <div className="text-xs opacity-75">Sugar</div>
+                    </div>
+                  </div>
+
+                  {/* Health Insights */}
+                  {analysisResult.healthInsights && analysisResult.healthInsights.length > 0 && (
+                    <div className="mb-4">
+                      <h6 className="font-semibold mb-2">💡 Health Insights:</h6>
                       <div className="space-y-1">
-                        {analysisResult.recommendations.map((rec, index) => (
+                        {analysisResult.healthInsights.map((insight, index) => (
                           <div key={index} className="text-sm opacity-75 flex items-center gap-2">
-                            <div className="w-1 h-1 bg-current rounded-full"></div>
-                            {rec}
+                            <span>{insight.icon}</span>
+                            <span>{insight.message}</span>
                           </div>
                         ))}
                       </div>
                     </div>
-                    
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className={`rounded-lg p-3 text-center ${darkMode ? 'bg-purple-900/30' : 'bg-purple-50'}`}>
-                        <div className="text-lg font-bold text-purple-400">{analysisResult.calories.toFixed(0)}</div>
-                        <div className="text-xs opacity-75">Calories</div>
-                      </div>
-                      <div className={`rounded-lg p-3 text-center ${darkMode ? 'bg-green-900/30' : 'bg-green-50'}`}>
-                        <div className="text-lg font-bold text-green-400">{analysisResult.protein.toFixed(1)}g</div>
-                        <div className="text-xs opacity-75">Protein</div>
-                      </div>
-                      <div className={`rounded-lg p-3 text-center ${darkMode ? 'bg-blue-900/30' : 'bg-blue-50'}`}>
-                        <div className="text-lg font-bold text-blue-400">{analysisResult.carbs.toFixed(1)}g</div>
-                        <div className="text-xs opacity-75">Carbs</div>
-                      </div>
-                      <div className={`rounded-lg p-3 text-center ${darkMode ? 'bg-orange-900/30' : 'bg-orange-50'}`}>
-                        <div className="text-lg font-bold text-orange-400">{analysisResult.fat.toFixed(1)}g</div>
-                        <div className="text-xs opacity-75">Fat</div>
-                      </div>
+                  )}
+
+                  {/* Recommendations */}
+                  <div className="mb-4">
+                    <h6 className="font-semibold mb-2">📋 Recommendations:</h6>
+                    <div className="space-y-1">
+                      {analysisResult.recommendations.slice(0, 3).map((rec, index) => (
+                        <div key={index} className="text-sm opacity-75 flex items-center gap-2">
+                          <div className="w-1 h-1 bg-current rounded-full"></div>
+                          {rec}
+                        </div>
+                      ))}
                     </div>
                   </div>
                   
@@ -475,7 +548,7 @@ const CalorieTracker = () => {
                       className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 flex items-center gap-2 mx-auto"
                     >
                       <CheckCircle className="w-5 h-5" />
-                      Add to Selection
+                      Add to My Food List
                     </button>
                   </div>
                 </div>
