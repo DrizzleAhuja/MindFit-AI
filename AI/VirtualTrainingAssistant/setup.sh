@@ -78,6 +78,15 @@ setup_python_env() {
     
     # Check Python version
     python3 --version
+
+    # Ensure Python version is 3.10 or above
+    PYTHON_MAJOR=$(python3 -c "import sys; print(sys.version_info.major)")
+    PYTHON_MINOR=$(python3 -c "import sys; print(sys.version_info.minor)")
+
+    if [ "$PYTHON_MAJOR" -lt 3 ] || ([ "$PYTHON_MAJOR" -eq 3 ] && [ "$PYTHON_MINOR" -lt 10 ]); then
+        echo "Error: Python 3.10 or higher is required."
+        exit 1
+    fi
     
     # Create virtual environment if it doesn't exist
     if [ ! -d "venv" ]; then
