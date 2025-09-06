@@ -9,24 +9,16 @@ try:
     import cv2
     from ultralytics import YOLO
     OPENCV_AVAILABLE = True
-    # Additional check: try to open camera to confirm actual availability
-    cap_test = cv2.VideoCapture(0)
-    if not cap_test.isOpened():
-        st.error("Camera device (cv2.VideoCapture(0)) is not available.")
-        OPENCV_AVAILABLE = False
-    else:
-        cap_test.release()
 except ImportError as e:
     st.error(f"OpenCV or YOLO not available: {e}")
     st.info("Switching to demo mode without camera functionality...")
-    OPENCV_AVAILABLE = False
 
 if OPENCV_AVAILABLE:
     st.write(f"DEBUG: OpenCV imported successfully, version: {cv2.__version__}")
 else:
     st.write(f"DEBUG: OPENCV_AVAILABLE is {OPENCV_AVAILABLE}")
 # Page configuration - MUST BE FIRST COMMAND
-st.set_page_config(page_title="Fitness Tracker", layout="wide")
+st.set_page_config(page_title="GenFit AI", layout="wide")
 
 # Custom CSS for styling
 st.markdown("""
@@ -54,7 +46,7 @@ st.markdown("""
 # Header
 st.markdown("""
     <div style="background-color:#025246; padding:10px">
-        <h2 style="color:white; text-align:center;">Train Here</h2>
+        <h2 style="color:white; text-align:center;">GenFit AI</h2>
     </div>
     """, unsafe_allow_html=True)
 
@@ -302,7 +294,7 @@ if app_mode == "About":
     col1, col2 = st.columns(2)
 
     with col1:
-        st.markdown("## Welcome to the Training Arena")
+        st.markdown("## Welcome to GenFit AI - Your Training Arena")
         st.markdown("Choose the workout you wish to do from the sidebar")
         st.write("""
         Here are few general instructions to follow while doing the workout:
@@ -384,17 +376,26 @@ else:
 
         # Start button to initiate camera
         if not st.session_state.camera_started:
-            if OPENCV_AVAILABLE and st.button("Start Camera"):
-                st.session_state.camera_started = True
-                st.session_state.start_time = time.time()
-                st.session_state.counter = 0
-                st.session_state.direction = "up"
-                st.session_state.feedback = "Starting exercise..."
-                st.session_state.feedback_type = "good"
-
-        if st.session_state.camera_started:
-            # Video capture
-            cap = cv2.VideoCapture(0)
+            if st.button("Start Camera"):
+                cap = cv2.VideoCapture(0) # Attempt to open camera
+                if cap.isOpened():
+                    st.session_state.cap = cap # Store camera object in session state
+                    st.session_state.camera_started = True
+                    st.session_state.start_time = time.time()
+                    st.session_state.counter = 0
+                    st.session_state.direction = "up"
+                    st.session_state.feedback = "Starting exercise..."
+                    st.session_state.feedback_type = "good"
+                    st.rerun() # Rerun to start the actual camera stream
+                else:
+                    st.warning("⚠️ Could not access camera. Please ensure it's connected and not in use by another application.")
+                    st.session_state.camera_started = False # Ensure it's false if camera failed
+                    st.session_state.cap = None # Explicitly set cap to None
+                    st.rerun()
+        
+        if st.session_state.camera_started and st.session_state.cap is not None:
+            # Video capture - uses the stored camera object
+            cap = st.session_state.cap
             frame_placeholder = st.empty()
             feedback_placeholder = st.empty()
             stop_button = st.button("Stop")
@@ -420,16 +421,21 @@ else:
 
             if stop_button or not cap.isOpened():
                 cap.release()
-
-                # Calculate workout statistics
+                st.session_state.cap = None
+                st.session_state.camera_started = False
+                st.rerun()
+                
+            # Workout Summary for camera mode
+            if st.session_state.start_time is not None:
                 duration = time.time() - st.session_state.start_time
-                # Different calorie calculations for different exercises
                 if app_mode in ["Left Dumbbell", "Right Dumbbell"]:
                     calories_burned = 0.25 * st.session_state.counter
                 elif app_mode in ["Lateral Raises", "Front Raises"]:
                     calories_burned = 0.3 * st.session_state.counter
                 elif app_mode == "Triceps Kickbacks":
                     calories_burned = 0.2 * st.session_state.counter
+                else:
+                    calories_burned = 0
 
                 st.write("---")
                 st.write("## Workout Summary")
@@ -472,14 +478,10 @@ else:
                 )
 
                 st.plotly_chart(fig)
+        
+            st.info("Click 'Stop' to end tracking or 'Start Camera' to begin a new session.")
 
-                # Reset session state for next workout
-                st.session_state.counter = 0
-                st.session_state.direction = "up"
-                st.session_state.start_time = None
-                st.session_state.camera_started = False
-    else:
-        # Fallback to manual mode when OpenCV is not available
+    else: # Fallback to manual mode when OpenCV is not available
         st.warning("⚠️ Camera functionality not available. Using manual tracking mode.")
         
         # Manual rep counter
@@ -571,3 +573,9 @@ else:
                 st.warning("🔥 Keep pushing! You can do it!")
         else:
             st.info("Click 'Start Workout' to begin tracking your exercise!")
+
+st.markdown("""
+    <div style="position: fixed; bottom: 0; left: 0; width: 100%; background-color: #025246; color: white; text-align: center; padding: 10px;">
+        <p style="margin: 0;">© 2025 GenFit AI. All rights reserved.</p>
+    </div>
+    """, unsafe_allow_html=True)
