@@ -12,6 +12,11 @@ try:
 except ImportError as e:
     st.error(f"OpenCV or YOLO not available: {e}")
     st.info("Switching to demo mode without camera functionality...")
+    OPENCV_AVAILABLE = False # Ensure this is explicitly set to False
+except Exception as e:
+    st.error(f"An unexpected error occurred during OpenCV/YOLO import: {e}")
+    st.info("Switching to demo mode without camera functionality due to unexpected error...")
+    OPENCV_AVAILABLE = False
 
 if OPENCV_AVAILABLE:
     st.write(f"DEBUG: OpenCV imported successfully, version: {cv2.__version__}")

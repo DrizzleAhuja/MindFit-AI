@@ -6,4 +6,3 @@ wheel
 numpy>=1.25.0 # Ensure numpy is installed first
 opencv-python-headless>=4.8.1.78 # Explicitly use headless version
 ultralytics
-streamlit_camera_input_live
