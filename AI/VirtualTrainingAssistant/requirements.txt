@@ -7,4 +7,4 @@ ultralytics==8.0.186
 plotly==5.17.0
 Pillow
 torch==2.8.0
-torchvision==0.17.0
+torchvision==0.23.0
