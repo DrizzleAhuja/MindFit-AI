@@ -5,6 +5,8 @@ import FOUND from "../../Images/FOUND1.png";
 import LOSTSMALL from '../../Images/LOST-SMALL.jpg';
 import FOUNDSMALL from "../../Images/FOUND-SMALL.jpg"
 import './Section.css';
+import { Brain, Sparkles } from 'lucide-react'; // Import Lucide icons for logo
+import { useTheme } from '../../context/ThemeContext'; // Import useTheme
 
 const Section1 = ({ darkMode }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -52,6 +54,13 @@ const Section1 = ({ darkMode }) => {
 
   return (
     <div className={`section-container ${darkMode ? "dark" : "light"} min-h-screen p-8`}>
+      <div className="flex justify-center items-center mb-6">
+        <Brain className={`w-8 h-8 ${darkMode ? 'text-green-400' : 'text-green-600'} mr-1`} />
+        <Sparkles className={`w-5 h-5 ${darkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />
+        <span className={`bg-clip-text text-transparent ${darkMode ? 'bg-gradient-to-r from-green-400 to-blue-500' : 'bg-gradient-to-r from-green-600 to-blue-800'}`}>
+          GenFit AI
+        </span>
+      </div>
       <div className="text-center mb-8">
         <div>
           <h1 className="text-3xl font-bold mb-4">
