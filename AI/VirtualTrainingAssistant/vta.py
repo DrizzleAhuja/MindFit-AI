@@ -381,7 +381,7 @@ else:
 
         # Camera input for exercise tracking
         st.subheader("Webcam Input")
-        picture = st.camer_input("Take a picture for pose estimation")
+        picture = st.camera_input("Take a picture for pose estimation")
 
         if picture:
             # Convert the BytesIO object to a numpy array
