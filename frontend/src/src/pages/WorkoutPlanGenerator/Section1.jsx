@@ -3,7 +3,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
-import { FiCopy, FiRefreshCw, FiClock, FiCalendar } from "react-icons/fi";
+import { FiCopy, FiRefreshCw, FiClock, FiCalendar, FiSave } from "react-icons/fi"; // Added FiSave
+import { ToastContainer, toast } from "react-toastify"; // Added ToastContainer and toast
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom"; // Added useNavigate
 import {
   FaDumbbell,
   FaHeartbeat,
@@ -20,17 +23,18 @@ const WorkoutPlanGenerator = () => {
     intensity: "", // beginner, intermediate, advanced
     equipment: "", // none, basic, full_gym
     daysPerWeek: 0,
+    durationWeeks: 4, // Added durationWeeks with a default of 4
   });
   const user = useSelector(selectUser);
-  const [plan, setPlan] = useState("");
-  const [history, setHistory] = useState([]);
+  const [plan, setPlan] = useState(null); // Changed to null to hold structured plan
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("generate");
   const [bmiData, setBmiData] = useState(null);
 
+  const navigate = useNavigate(); // Initialize useNavigate
+
   useEffect(() => {
     if (user?.email) {
-      fetchWorkoutHistory();
       fetchBMIData();
     }
   }, [user]);
@@ -49,19 +53,7 @@ const WorkoutPlanGenerator = () => {
     }
   };
 
-  const fetchWorkoutHistory = async () => {
-    try {
-      const res = await axios.get(
-        `${API_BASE_URL}${API_ENDPOINTS.AUTH}/history`,
-        {
-          params: { email: user.email },
-        }
-      );
-      setHistory(res.data.history);
-    } catch (error) {
-      console.error("Error fetching workout history:", error);
-    }
-  };
+  // Removed fetchWorkoutHistory as it's no longer needed here
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -90,6 +82,7 @@ const WorkoutPlanGenerator = () => {
       formData.daysPerWeek === 0
     ) {
       console.error("Please fill all fields");
+      toast.error("Please fill all fields");
       return;
     }
 
@@ -97,23 +90,25 @@ const WorkoutPlanGenerator = () => {
       console.error(
         "Please calculate your BMI first to get personalized workout plans"
       );
+      toast.error(
+        "Please calculate your BMI first to get personalized workout plans"
+      );
       return;
     }
 
     setLoading(true);
     try {
-      // Map our form data to backend expected format
       const requestData = {
         email: user.email,
-        fitnessGoal: bmiData.selectedPlan || "General Fitness", // Use BMI plan or default
-        gender: "Not specified", // Backend requires this field
-        trainingMethod: `${formData.workoutType} Training`, // Map workout type to training method
-        workoutType: formData.equipment, // Map equipment to workout type
-        strengthLevel: formData.intensity, // Map intensity to strength level
-        // Additional data for personalization
+        fitnessGoal: bmiData.selectedPlan || "General Fitness",
+        gender: user.gender || "Not specified", // Use user gender from profile if available
+        trainingMethod: `${formData.workoutType} Training`,
+        workoutType: formData.equipment,
+        strengthLevel: formData.intensity,
         timeCommitment: formData.timeCommitment,
         daysPerWeek: formData.daysPerWeek,
         bmiData: bmiData,
+        durationWeeks: formData.durationWeeks, // Pass durationWeeks to backend
       };
 
       console.log("Sending workout plan request:", requestData);
@@ -125,40 +120,106 @@ const WorkoutPlanGenerator = () => {
 
       console.log("Full API response:", response.data);
       console.log("Plan content:", response.data.plan);
-      console.log("Plan length:", response.data.plan?.length);
 
       setPlan(response.data.plan);
-      fetchWorkoutHistory();
-      console.log("Workout plan generated successfully!");
+      toast.success("Workout plan generated successfully!");
     } catch (error) {
       console.error("Failed to generate plan:", error);
-      if (error.response) {
-        console.error("Error response:", error.response.data);
+      let errorMessage = "Failed to generate plan.";
+      if (error.response && error.response.data && error.response.data.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.message) {
+        errorMessage = error.message;
       }
+      toast.error(errorMessage);
+    }
+    setLoading(false);
+  };
+
+  const savePlan = async () => {
+    if (!user || !plan) {
+      toast.error("Please generate a plan first.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const planName = prompt("Give your workout plan a name:", `My ${formData.workoutType} Plan (${formData.durationWeeks} Weeks)`);
+      if (!planName) {
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.post(
+        `${API_BASE_URL}${API_ENDPOINTS.AUTH}/workout-plan/save`,
+        {
+          userId: user._id,
+          name: planName,
+          description: `Personalized ${formData.workoutType} plan for ${formData.intensity} level over ${formData.durationWeeks} weeks.`, // Updated description
+          planContent: plan, // Structured plan
+          generatedParams: formData, // Save original form data for regeneration/reference
+          durationWeeks: formData.durationWeeks, // Pass durationWeeks to backend
+        }
+      );
+
+      if (response.data.success) {
+        toast.success("Workout plan saved successfully!");
+        // Optionally navigate to the my-workout-plan page or history
+        navigate("/my-workout-plan");
+      } else {
+        toast.error("Failed to save workout plan.");
+      }
+    } catch (error) {
+      console.error("Error saving workout plan:", error);
+      let errorMessage = "Failed to save workout plan.";
+      if (error.response && error.response.data && error.response.data.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      toast.error(errorMessage);
     }
     setLoading(false);
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(cleanPlanContent(plan));
-    console.log("Plan copied to clipboard!");
+    if (plan) {
+      // Convert structured plan to a readable string for clipboard
+      const planString = plan.map(day => {
+        const exercises = day.exercises.map(ex => 
+          `- ${ex.name}: ${ex.sets} sets of ${ex.reps} (${ex.weight}, ${ex.rest} rest)`
+        ).join('\n');
+        return `Day: ${day.day}${day.focus ? ` (${day.focus})` : ''}\nWarmup: ${day.warmup || 'N/A'}\n${exercises}\nCooldown: ${day.cooldown || 'N/A'}\n`;
+      }).join('\n---\n');
+      navigator.clipboard.writeText(planString);
+      toast.success("Plan copied to clipboard!");
+    } else {
+      toast.error("No plan to copy.");
+    }
   };
 
   const regeneratePlan = async () => {
-    if (!plan) return;
+    if (!formData.timeCommitment || !formData.workoutType || !formData.intensity || !formData.equipment || formData.daysPerWeek === 0) {
+        toast.error("Please fill all fields to regenerate the plan.");
+        return;
+    }
+    if (!bmiData) {
+        toast.error("Please calculate your BMI first to get personalized workout plans.");
+        return;
+    }
     setLoading(true);
     try {
-      // Map our form data to backend expected format
       const requestData = {
         email: user.email,
         fitnessGoal: bmiData?.selectedPlan || "General Fitness",
-        gender: "Not specified",
+        gender: user.gender || "Not specified",
         trainingMethod: `${formData.workoutType} Training`,
         workoutType: formData.equipment,
         strengthLevel: formData.intensity,
         timeCommitment: formData.timeCommitment,
         daysPerWeek: formData.daysPerWeek,
         bmiData: bmiData,
+        durationWeeks: formData.durationWeeks, // Pass durationWeeks to backend
       };
 
       const response = await axios.post(
@@ -166,15 +227,23 @@ const WorkoutPlanGenerator = () => {
         requestData
       );
       setPlan(response.data.plan);
-      console.log("New plan generated!");
+      toast.success("New plan generated!");
     } catch (error) {
       console.error("Failed to regenerate plan:", error);
+      let errorMessage = "Failed to regenerate plan.";
+      if (error.response && error.response.data && error.response.data.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      toast.error(errorMessage);
     }
     setLoading(false);
   };
 
   return (
     <div className="min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 text-gray-100">
+       <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">
@@ -198,14 +267,14 @@ const WorkoutPlanGenerator = () => {
             <FaDumbbell className="mr-2" /> Generate Plan
           </button>
           <button
-            onClick={() => setActiveTab("history")}
+            onClick={() => navigate("/my-workout-plan")}
             className={`px-6 py-3 font-medium rounded-t-lg flex items-center ${
               activeTab === "history"
                 ? "bg-gray-800 text-green-400 border-t-2 border-green-500 shadow-sm"
                 : "text-gray-400 hover:text-gray-200"
             }`}
           >
-            <FiClock className="mr-2" /> My History
+            <FiClock className="mr-2" /> My Plans
           </button>
         </div>
 
@@ -387,7 +456,7 @@ const WorkoutPlanGenerator = () => {
                           formData.intensity === "beginner"
                             ? "bg-green-700 border-green-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
-                        }`}
+                          }`}
                       >
                         Beginner
                       </button>
@@ -403,7 +472,7 @@ const WorkoutPlanGenerator = () => {
                           formData.intensity === "intermediate"
                             ? "bg-green-700 border-green-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
-                        }`}
+                          }`}
                       >
                         Intermediate
                       </button>
@@ -416,7 +485,7 @@ const WorkoutPlanGenerator = () => {
                           formData.intensity === "advanced"
                             ? "bg-green-700 border-green-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
-                        }`}
+                          }`}
                       >
                         Advanced
                       </button>
@@ -438,7 +507,7 @@ const WorkoutPlanGenerator = () => {
                           formData.equipment === "none"
                             ? "bg-green-700 border-green-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
-                        }`}
+                          }`}
                       >
                         No Equipment (Bodyweight Only)
                       </button>
@@ -451,7 +520,7 @@ const WorkoutPlanGenerator = () => {
                           formData.equipment === "basic"
                             ? "bg-green-700 border-green-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
-                        }`}
+                          }`}
                       >
                         Basic (Dumbbells, Resistance Bands)
                       </button>
@@ -464,7 +533,7 @@ const WorkoutPlanGenerator = () => {
                           formData.equipment === "full_gym"
                             ? "bg-green-700 border-green-500"
                             : "bg-gray-700 border-gray-600 hover:border-gray-500"
-                        }`}
+                          }`}
                       >
                         Full Gym Access
                       </button>
@@ -491,6 +560,31 @@ const WorkoutPlanGenerator = () => {
                           }`}
                         >
                           {days}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Plan Duration in Weeks */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      For how many weeks should this plan last?
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[2, 4, 8, 12].map((weeks) => (
+                        <button
+                          key={weeks}
+                          type="button"
+                          onClick={() =>
+                            setFormData({ ...formData, durationWeeks: weeks })
+                          }
+                          className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
+                            formData.durationWeeks === weeks
+                              ? "bg-green-700 border-green-500"
+                              : "bg-gray-700 border-gray-600 hover:border-gray-500"
+                          }`}
+                        >
+                          {weeks} weeks
                         </button>
                       ))}
                     </div>
@@ -563,6 +657,14 @@ const WorkoutPlanGenerator = () => {
                             }`}
                           />
                         </button>
+                        <button
+                          onClick={savePlan}
+                          disabled={loading}
+                          className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition disabled:opacity-50"
+                          title="Save plan"
+                        >
+                          <FiSave className="text-lg" />
+                        </button>
                       </div>
                     </div>
                     <div className="mt-4 flex flex-wrap gap-4 text-sm">
@@ -581,11 +683,41 @@ const WorkoutPlanGenerator = () => {
                     </div>
                   </div>
                   <div className="p-6 max-h-screen overflow-y-auto">
-                    <div className="prose max-w-none">
-                      <div className="whitespace-pre-wrap font-sans text-gray-100 bg-gray-700 p-8 rounded-lg text-base leading-relaxed min-h-96">
-                        {cleanPlanContent(plan)}
+                    {plan.map((dayPlan, dayIndex) => (
+                      <div key={dayIndex} className="mb-8 p-4 bg-gray-700 rounded-lg shadow-md border border-gray-600">
+                        <h3 className="text-xl font-bold text-white mb-3 flex items-center">
+                          <FiCalendar className="mr-2" /> {dayPlan.day} {dayPlan.focus && ` - ${dayPlan.focus}`}
+                        </h3>
+                        {dayPlan.warmup && (
+                          <p className="text-gray-300 mb-2">
+                            <span className="font-semibold">Warmup:</span> {dayPlan.warmup}
+                          </p>
+                        )}
+                        <ul className="space-y-3">
+                          {dayPlan.exercises.map((exercise, exIndex) => (
+                            <li key={exIndex} className="bg-gray-600 p-3 rounded-md border border-gray-500">
+                              <p className="font-semibold text-white">{exercise.name}</p>
+                              <p className="text-gray-300 text-sm">
+                                Sets: {exercise.sets}, Reps: {exercise.reps}, Weight: {exercise.weight || 'N/A'}, Rest: {exercise.rest || 'N/A'}
+                              </p>
+                              {exercise.notes && (
+                                <p className="text-gray-400 text-xs mt-1">Notes: {exercise.notes}</p>
+                              )}
+                              {exercise.demonstrationLink && (
+                                <a href={exercise.demonstrationLink} target="_blank" rel="noopener noreferrer" className="text-blue-400 text-xs hover:underline mt-1 block">
+                                  Watch Demo
+                                </a>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                        {dayPlan.cooldown && (
+                          <p className="text-gray-300 mt-3">
+                            <span className="font-semibold">Cooldown:</span> {dayPlan.cooldown}
+                          </p>
+                        )}
                       </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               ) : (
@@ -604,69 +736,20 @@ const WorkoutPlanGenerator = () => {
             </div>
           </div>
         ) : (
-          <div className="bg-gray-800 rounded-xl shadow-md border border-gray-700 overflow-hidden">
-            <div className="bg-gradient-to-r from-green-600 to-blue-700 p-6 text-white">
-              <h2 className="text-2xl font-bold flex items-center">
-                <FiCalendar className="mr-3" /> Workout History
-              </h2>
-            </div>
-            <div className="p-6">
-              {history.length > 0 ? (
-                <div className="space-y-4">
-                  {history.map((item, index) => (
-                    <div
-                      key={index}
-                      className="bg-gray-700 rounded-lg p-5 border border-gray-600 hover:border-green-300 transition cursor-pointer"
-                    >
-                      <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-3">
-                        <div>
-                          <h3 className="font-bold text-lg text-white">
-                            {item.workoutType} Plan ({item.intensity})
-                          </h3>
-                          <p className="text-sm text-gray-400">
-                            {new Date(item.createdAt).toLocaleDateString(
-                              "en-US",
-                              {
-                                weekday: "long",
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              }
-                            )}
-                          </p>
-                        </div>
-                        <div className="flex space-x-2 mt-2 md:mt-0">
-                          <span className="px-3 py-1 text-xs rounded-full bg-green-800 text-green-100">
-                            {item.timeCommitment} min
-                          </span>
-                          <span className="px-3 py-1 text-xs rounded-full bg-blue-800 text-blue-100">
-                            {item.daysPerWeek} days/week
-                          </span>
-                          <span className="px-3 py-1 text-xs rounded-full bg-purple-800 text-purple-100">
-                            {item.equipment}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="prose max-w-none">
-                        <div className="whitespace-pre-wrap font-sans text-gray-100 text-sm bg-gray-900 p-4 rounded border border-gray-700 max-h-64 overflow-y-auto">
-                          {cleanPlanContent(item.plan)}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <FiClock className="text-5xl text-gray-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-medium text-gray-400">
-                    No Workout History
-                  </h3>
-                  <p className="text-gray-500 mt-2">
-                    Generate your first workout plan to see it appear here.
-                  </p>
-                </div>
-              )}
-            </div>
+          // Placeholder for the new "My Workout Plan" component
+          <div className="bg-gray-800 rounded-xl shadow-md border border-gray-700 overflow-hidden p-6 text-center">
+            <h2 className="text-2xl font-bold text-white mb-4">
+              View Your Saved Workout Plans
+            </h2>
+            <p className="text-gray-400 mb-6">
+              Navigate to the "My Plans" section to see your active and historical workout plans.
+            </p>
+            <button
+              onClick={() => navigate("/my-workout-plan")}
+              className="bg-green-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-green-700 transition"
+            >
+              Go to My Plans
+            </button>
           </div>
         )}
       </div>

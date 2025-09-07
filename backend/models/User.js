@@ -26,6 +26,18 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false, // Add role field, required
   },
+  workoutPlans: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'WorkoutPlan',
+    },
+  ],
+  workoutSessionLogs: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'WorkoutSessionLog',
+    },
+  ],
 });
 
 const User = mongoose.model("User", userSchema);

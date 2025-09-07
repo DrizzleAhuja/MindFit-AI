@@ -21,6 +21,7 @@ import Contactus from "./pages/ContactusPage/Contactus.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx"; // Import ThemeProvider
 import About from "./pages/AboutPage/About.jsx"; // Import About component
 import Features from "./pages/FeaturesPage/Features.jsx"; // Import Features component
+import MyWorkoutPlan from "./pages/WorkoutPlanGenerator/MyWorkoutPlan.jsx";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     const savedLoginStatus = localStorage.getItem("isLoggedIn");
@@ -54,6 +55,14 @@ function App() {
           <Route path="/UserLogs" element={<UserLogsPage />} />
           <Route path="/calorie-tracker" element={<CalorieTracker />} />
           <Route path="/AllUsersLogs" element={<AllUserLogsPage />} />
+          <Route path="/my-workout-plan" element={<MyWorkoutPlan />} />
+          {/* <Route path="/admin-calorie-tracker" element={<CalorieTracker />} />
+          <Route path="/admin-calorie-tracker" element={<CalorieTracker />} />
+          <Route path="/admin-calorie-tracker" element={<CalorieTracker />} />
+          <Route path="/admin-calorie-tracker" element={<CalorieTracker />} />
+          <Route path="/admin-calorie-tracker" element={<CalorieTracker />} />
+          <Route path="/admin-calorie-tracker" element={<CalorieTracker />} />
+          <Route path="/admin-calorie */}
           <Route
             path="/admin-calorie-tracker"
             // element={
