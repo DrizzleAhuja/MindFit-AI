@@ -1,14 +1,23 @@
 import { useState } from "react";
 import { useTheme } from "../../context/ThemeContext";
+import { useMarketplace } from "../../context/MarketplaceContext";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 
 export default function SearchAndFilter() {
   const { darkMode } = useTheme();
-  const [searchTerm, setSearchTerm] = useState("");
+  const {
+    searchTerm,
+    setSearchTerm,
+    priceRange,
+    setPriceRange,
+    selectedBrands,
+    setSelectedBrands,
+    selectedRating,
+    setSelectedRating,
+    clearFilters,
+  } = useMarketplace();
+
   const [showFilters, setShowFilters] = useState(false);
-  const [priceRange, setPriceRange] = useState([0, 2000]);
-  const [selectedBrands, setSelectedBrands] = useState([]);
-  const [selectedRating, setSelectedRating] = useState(0);
 
   const brands = [
     "FitPro",
@@ -23,13 +32,6 @@ export default function SearchAndFilter() {
     setSelectedBrands((prev) =>
       prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
     );
-  };
-
-  const clearFilters = () => {
-    setSearchTerm("");
-    setPriceRange([0, 2000]);
-    setSelectedBrands([]);
-    setSelectedRating(0);
   };
 
   return (

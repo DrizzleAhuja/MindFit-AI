@@ -1,12 +1,17 @@
-import { useState } from "react";
 import { useTheme } from "../../context/ThemeContext";
+import { useMarketplace } from "../../context/MarketplaceContext";
 import { Filter, Grid, List } from "lucide-react";
 
 export default function CategoryFilter() {
   const { darkMode } = useTheme();
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [viewMode, setViewMode] = useState("grid");
-  const [sortBy, setSortBy] = useState("name");
+  const {
+    selectedCategory,
+    setSelectedCategory,
+    sortBy,
+    setSortBy,
+    viewMode,
+    setViewMode,
+  } = useMarketplace();
 
   const categories = [
     "All",

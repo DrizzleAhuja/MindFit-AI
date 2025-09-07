@@ -5,6 +5,7 @@ import ProductGrid from "./ProductGrid";
 import CategoryFilter from "./CategoryFilter";
 import SearchAndFilter from "./SearchAndFilter";
 import { useTheme } from "../../context/ThemeContext";
+import { MarketplaceProvider } from "../../context/MarketplaceContext";
 
 export default function Marketplace() {
   const { darkMode } = useTheme();
@@ -18,11 +19,13 @@ export default function Marketplace() {
       <NavBar />
       <div className="pt-8">
         <MarketplaceHero />
-        <div className="container mx-auto px-4 py-8">
-          <SearchAndFilter />
-          <CategoryFilter />
-          <ProductGrid />
-        </div>
+        <MarketplaceProvider>
+          <div className="container mx-auto px-4 py-8">
+            <SearchAndFilter />
+            <CategoryFilter />
+            <ProductGrid />
+          </div>
+        </MarketplaceProvider>
       </div>
       <Footer />
     </div>
