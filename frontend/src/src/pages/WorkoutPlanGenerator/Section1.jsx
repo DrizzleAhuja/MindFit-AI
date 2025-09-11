@@ -6,7 +6,7 @@ import { selectUser } from "../../redux/userSlice";
 import { FiCopy, FiRefreshCw, FiClock, FiCalendar, FiSave } from "react-icons/fi"; // Added FiSave
 import { ToastContainer, toast } from "react-toastify"; // Added ToastContainer and toast
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom"; // Added useNavigate
+import { useNavigate, useLocation } from "react-router-dom"; // Added useNavigate, useLocation
 import {
   FaDumbbell,
   FaHeartbeat,
@@ -23,21 +23,30 @@ const WorkoutPlanGenerator = () => {
     intensity: "", // beginner, intermediate, advanced
     equipment: "", // none, basic, full_gym
     daysPerWeek: 0,
-    durationWeeks: 4, // Added durationWeeks with a default of 4
+    goal: "", // new: lose_weight, gain_weight, build_muscles
+    currentWeight: "", // new: from BMI data
+    targetWeight: "", // new: for lose/gain weight goals
   });
   const user = useSelector(selectUser);
   const [plan, setPlan] = useState(null); // Changed to null to hold structured plan
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("generate");
   const [bmiData, setBmiData] = useState(null);
+  const [bmiResult, setBmiResult] = useState(null); // To store bmi result from navigation
 
   const navigate = useNavigate(); // Initialize useNavigate
+  const location = useLocation(); // Initialize useLocation
 
   useEffect(() => {
-    if (user?.email) {
-      fetchBMIData();
+    if (location.state?.bmiData && location.state?.bmiResult) {
+      setBmiData(location.state.bmiData);
+      setBmiResult(location.state.bmiResult);
+      setFormData(prev => ({ ...prev, currentWeight: location.state.bmiData.weight }));
+      toast.success("BMI data loaded for personalized plan generation!");
+    } else if (user?.email) {
+      fetchBMIData(); // Fetch from backend if not from navigation state
     }
-  }, [user]);
+  }, [user, location.state]);
 
   const fetchBMIData = async () => {
     try {
@@ -46,7 +55,10 @@ const WorkoutPlanGenerator = () => {
         { params: { email: user.email } }
       );
       if (res.data.length > 0) {
-        setBmiData(res.data[0]); // Get latest BMI data
+        const latestBmi = res.data[0];
+        setBmiData(latestBmi);
+        setBmiResult({ bmi: latestBmi.bmi, category: latestBmi.category });
+        setFormData(prev => ({ ...prev, currentWeight: latestBmi.weight }));
       }
     } catch (error) {
       console.error("Error fetching BMI data", error);
@@ -79,10 +91,13 @@ const WorkoutPlanGenerator = () => {
       !formData.workoutType ||
       !formData.intensity ||
       !formData.equipment ||
-      formData.daysPerWeek === 0
+      formData.daysPerWeek === 0 ||
+      !formData.goal || // New validation for goal
+      !formData.currentWeight || // New validation for current weight
+      ((formData.goal === "lose_weight" || formData.goal === "gain_weight") && !formData.targetWeight) // Target weight required for specific goals
     ) {
       console.error("Please fill all fields");
-      toast.error("Please fill all fields");
+      toast.error("Please fill all required details for your plan.");
       return;
     }
 
@@ -98,17 +113,27 @@ const WorkoutPlanGenerator = () => {
 
     setLoading(true);
     try {
+      // Calculate durationWeeks dynamically
+      const calculatedDurationWeeks = calculateDurationWeeks(
+        formData.currentWeight,
+        formData.targetWeight,
+        formData.goal,
+        bmiData.age // Assuming age is in bmiData
+      );
+
       const requestData = {
         email: user.email,
-        fitnessGoal: bmiData.selectedPlan || "General Fitness",
-        gender: user.gender || "Not specified", // Use user gender from profile if available
+        fitnessGoal: formData.goal, // Use new goal
+        gender: user.gender || "Not specified",
         trainingMethod: `${formData.workoutType} Training`,
         workoutType: formData.equipment,
         strengthLevel: formData.intensity,
         timeCommitment: formData.timeCommitment,
         daysPerWeek: formData.daysPerWeek,
-        bmiData: bmiData,
-        durationWeeks: formData.durationWeeks, // Pass durationWeeks to backend
+        bmiData: bmiData, // Pass full BMI data
+        durationWeeks: calculatedDurationWeeks, // Use calculated duration
+        targetWeight: formData.targetWeight, // Pass target weight
+        currentWeight: formData.currentWeight, // Pass current weight
       };
 
       console.log("Sending workout plan request:", requestData);
@@ -144,21 +169,29 @@ const WorkoutPlanGenerator = () => {
 
     setLoading(true);
     try {
-      const planName = prompt("Give your workout plan a name:", `My ${formData.workoutType} Plan (${formData.durationWeeks} Weeks)`);
+      const planName = prompt("Give your workout plan a name:", `My ${formData.goal.replace(/_/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')} Plan`);
       if (!planName) {
         setLoading(false);
         return;
       }
+
+      // Recalculate durationWeeks for saving, ensure consistency
+      const calculatedDurationWeeks = calculateDurationWeeks(
+        formData.currentWeight,
+        formData.targetWeight,
+        formData.goal,
+        bmiData.age
+      );
 
       const response = await axios.post(
         `${API_BASE_URL}${API_ENDPOINTS.AUTH}/workout-plan/save`,
         {
           userId: user._id,
           name: planName,
-          description: `Personalized ${formData.workoutType} plan for ${formData.intensity} level over ${formData.durationWeeks} weeks.`, // Updated description
+          description: `Personalized ${formData.goal.replace(/_/g, ' ')} plan for ${formData.intensity} level, targeting ${formData.targetWeight ? `${formData.targetWeight}kg` : 'maintenance'} over ${calculatedDurationWeeks} weeks.`, // Updated description with new goal and calculated duration
           planContent: plan, // Structured plan
-          generatedParams: formData, // Save original form data for regeneration/reference
-          durationWeeks: formData.durationWeeks, // Pass durationWeeks to backend
+          generatedParams: { ...formData, bmiData, durationWeeks: calculatedDurationWeeks }, // Include BMI snapshot, new goal fields and calculated duration with params for personalization
+          durationWeeks: calculatedDurationWeeks, // Pass calculated duration to backend
         }
       );
 
@@ -199,8 +232,8 @@ const WorkoutPlanGenerator = () => {
   };
 
   const regeneratePlan = async () => {
-    if (!formData.timeCommitment || !formData.workoutType || !formData.intensity || !formData.equipment || formData.daysPerWeek === 0) {
-        toast.error("Please fill all fields to regenerate the plan.");
+    if (!formData.timeCommitment || !formData.workoutType || !formData.intensity || !formData.equipment || formData.daysPerWeek === 0 || !formData.goal || !formData.currentWeight || ((formData.goal === "lose_weight" || formData.goal === "gain_weight") && !formData.targetWeight)) {
+        toast.error("Please fill all required fields to regenerate the plan.");
         return;
     }
     if (!bmiData) {
@@ -209,9 +242,17 @@ const WorkoutPlanGenerator = () => {
     }
     setLoading(true);
     try {
+      // Recalculate durationWeeks for regenerating, ensure consistency
+      const calculatedDurationWeeks = calculateDurationWeeks(
+        formData.currentWeight,
+        formData.targetWeight,
+        formData.goal,
+        bmiData.age
+      );
+
       const requestData = {
         email: user.email,
-        fitnessGoal: bmiData?.selectedPlan || "General Fitness",
+        fitnessGoal: formData.goal, // Use new goal
         gender: user.gender || "Not specified",
         trainingMethod: `${formData.workoutType} Training`,
         workoutType: formData.equipment,
@@ -219,7 +260,9 @@ const WorkoutPlanGenerator = () => {
         timeCommitment: formData.timeCommitment,
         daysPerWeek: formData.daysPerWeek,
         bmiData: bmiData,
-        durationWeeks: formData.durationWeeks, // Pass durationWeeks to backend
+        durationWeeks: calculatedDurationWeeks, // Use calculated duration
+        targetWeight: formData.targetWeight,
+        currentWeight: formData.currentWeight,
       };
 
       const response = await axios.post(
@@ -255,6 +298,7 @@ const WorkoutPlanGenerator = () => {
           </p>
         </div>
 
+        {/* Tabs for Generate Plan and My Plans */}
         <div className="flex overflow-x-auto pb-2 mb-8 scrollbar-hide">
           <button
             onClick={() => setActiveTab("generate")}
@@ -325,26 +369,92 @@ const WorkoutPlanGenerator = () => {
                         </p>
                       </div>
                     </div>
-                    {bmiData.selectedPlan && (
-                      <p className="text-gray-300 mt-2">
-                        Plan:{" "}
-                        <span className="font-bold text-green-400 capitalize">
-                          {bmiData.selectedPlan.replace("_", " ")}
-                        </span>
-                      </p>
-                    )}
                   </div>
                 ) : (
                   <div className="bg-red-900/20 p-4 border-b border-red-600">
                     <p className="text-red-300 text-sm">
                       <FaHeartbeat className="inline mr-2" />
-                      Please calculate your BMI first to get personalized
-                      workout plans
+                      Please go to BMI Calculator to input your data first.
                     </p>
+                    <button
+                      onClick={() => navigate("/CurrentBMI")}
+                      className="mt-2 bg-blue-600 text-white py-1 px-3 rounded-lg text-xs hover:bg-blue-700 transition"
+                    >
+                      Go to BMI Calculator
+                    </button>
                   </div>
                 )}
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                  {/* Goal Selection */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      What is your main fitness goal?
+                    </label>
+                    <div className="grid grid-cols-1 gap-3">
+                      {[{
+                        value: "build_muscles",
+                        label: "Gain Muscles",
+                        icon: <GiWeightLiftingUp className="text-xl mb-1" />
+                      },
+                      {
+                        value: "lose_weight",
+                        label: "Lose Weight",
+                        icon: <GiRunningShoe className="text-xl mb-1" />
+                      },
+                      {
+                        value: "gain_weight",
+                        label: "Gain Weight",
+                        icon: <FaUtensils className="text-xl mb-1" />
+                      }].map((goalOption) => (
+                        <button
+                          key={goalOption.value}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, goal: goalOption.value })}
+                          className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
+                            formData.goal === goalOption.value
+                              ? "bg-green-700 border-green-500"
+                              : "bg-gray-700 border-gray-600 hover:border-gray-500"
+                          }`}
+                        >
+                          {goalOption.icon} <span>{goalOption.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Current and Target Weight Inputs for specific goals */}
+                  {(formData.goal === "lose_weight" || formData.goal === "gain_weight") && (
+                    <div className="space-y-4 bg-gray-700 p-4 rounded-lg border border-gray-600">
+                      <h3 className="text-lg font-semibold text-white">Weight Goals</h3>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          Your Current Weight (kg)
+                        </label>
+                        <input
+                          type="number"
+                          placeholder="Enter your current weight"
+                          value={formData.currentWeight}
+                          onChange={(e) => setFormData({ ...formData, currentWeight: e.target.value })}
+                          className="w-full p-3 rounded-lg bg-gray-600 border border-gray-500 focus:border-green-500 focus:ring-1 focus:ring-green-500 text-white"
+                          disabled={true} // Current weight comes from BMI, user can't change it here
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                          Target Weight (kg)
+                        </label>
+                        <input
+                          type="number"
+                          placeholder="Enter your target weight"
+                          value={formData.targetWeight}
+                          onChange={(e) => setFormData({ ...formData, targetWeight: e.target.value })}
+                          className="w-full p-3 rounded-lg bg-gray-600 border border-gray-500 focus:border-green-500 focus:ring-1 focus:ring-green-500 text-white"
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   {/* Time Commitment */}
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -565,30 +675,20 @@ const WorkoutPlanGenerator = () => {
                     </div>
                   </div>
 
-                  {/* Plan Duration in Weeks */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      For how many weeks should this plan last?
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {[2, 4, 8, 12].map((weeks) => (
-                        <button
-                          key={weeks}
-                          type="button"
-                          onClick={() =>
-                            setFormData({ ...formData, durationWeeks: weeks })
-                          }
-                          className={`p-3 rounded-lg border flex items-center justify-center text-gray-200 ${
-                            formData.durationWeeks === weeks
-                              ? "bg-green-700 border-green-500"
-                              : "bg-gray-700 border-gray-600 hover:border-gray-500"
-                          }`}
-                        >
-                          {weeks} weeks
-                        </button>
-                      ))}
+                  {/* Suggested Duration Display */}
+                  {formData.goal && formData.currentWeight && (formData.goal === "build_muscles" || formData.targetWeight) && (
+                    <div className="bg-gray-700 p-4 rounded-lg border border-gray-600">
+                      <h3 className="text-lg font-semibold text-white mb-2">Suggested Plan Duration:</h3>
+                      <p className="text-gray-300">
+                        {calculateDurationWeeks(
+                          formData.currentWeight,
+                          formData.targetWeight,
+                          formData.goal,
+                          bmiData?.age || 25 // Default age if not available
+                        )} weeks
+                      </p>
                     </div>
-                  </div>
+                  )}
 
                   <button
                     type="submit"
@@ -680,6 +780,21 @@ const WorkoutPlanGenerator = () => {
                       <span className="bg-white/20 px-3 py-1 rounded-full">
                         {formData.intensity} level
                       </span>
+                      {formData.goal && (
+                        <span className="bg-white/20 px-3 py-1 rounded-full capitalize">
+                          Goal: {formData.goal.replace(/_/g, ' ')}
+                        </span>
+                      )}
+                      {(formData.goal === "lose_weight" || formData.goal === "gain_weight") && formData.targetWeight && (
+                        <span className="bg-white/20 px-3 py-1 rounded-full">
+                          Target: {formData.targetWeight} kg
+                        </span>
+                      )}
+                      {formData.currentWeight && (formData.goal === "build_muscles" || formData.targetWeight) && (
+                        <span className="bg-white/20 px-3 py-1 rounded-full">
+                          Duration: {calculateDurationWeeks(formData.currentWeight, formData.targetWeight, formData.goal, bmiData?.age || 25)} weeks
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="p-6 max-h-screen overflow-y-auto">
@@ -728,9 +843,17 @@ const WorkoutPlanGenerator = () => {
                   </h3>
                   <p className="text-gray-500 max-w-md">
                     {!bmiData
-                      ? "Please calculate your BMI first, then fill out the form to create your personalized fitness routine."
+                      ? "Please go to BMI Calculator to input your data first."
                       : "Fill out the form and click 'Generate Workout Plan' to create your personalized fitness routine."}
                   </p>
+                  {!bmiData && (
+                    <button
+                      onClick={() => navigate("/CurrentBMI")}
+                      className="mt-4 bg-blue-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-blue-700 transition"
+                    >
+                      Go to BMI Calculator
+                    </button>
+                  )}
                 </div>
               )}
             </div>
@@ -755,6 +878,36 @@ const WorkoutPlanGenerator = () => {
       </div>
     </div>
   );
+};
+
+// New function to calculate durationWeeks dynamically
+const calculateDurationWeeks = (currentWeight, targetWeight, goal, age) => {
+  const currentW = parseFloat(currentWeight);
+  const targetW = parseFloat(targetWeight);
+  const currentAge = parseInt(age);
+
+  let weeklyRateKg;
+  let defaultDurationWeeks = 12; // Default for muscle building or general fitness
+
+  if (goal === "lose_weight") {
+    weeklyRateKg = currentAge < 30 ? 0.7 : 0.5; // kg per week
+    const weightDiff = currentW - targetW;
+    if (weightDiff <= 0) return 4; // Already at or below target, suggest short maintenance
+    const weeks = Math.ceil(weightDiff / weeklyRateKg);
+    return Math.min(weeks, 52); // Cap at 52 weeks (1 year)
+  } else if (goal === "gain_weight") {
+    weeklyRateKg = currentAge < 30 ? 0.4 : 0.3; // kg per week
+    const weightDiff = targetW - currentW;
+    if (weightDiff <= 0) return 4; // Already at or above target, suggest short maintenance
+    const weeks = Math.ceil(weightDiff / weeklyRateKg);
+    return Math.min(weeks, 52); // Cap at 52 weeks (1 year)
+  } else if (goal === "build_muscles") {
+    // Muscle gain is slower and less about specific target weight over short term
+    // Suggest longer durations, 12-24 weeks commonly for noticeable muscle gain cycles
+    return 24; // Default to 24 weeks for muscle building
+  }
+
+  return defaultDurationWeeks; // Fallback
 };
 
 export default WorkoutPlanGenerator;

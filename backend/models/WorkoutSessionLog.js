@@ -5,6 +5,10 @@ const WorkoutSessionLogSchema = new mongoose.Schema(
         userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
         workoutPlanId: { type: mongoose.Schema.Types.ObjectId, ref: 'WorkoutPlan', required: true },
         date: { type: Date, default: Date.now },
+        // Identify which planned day this session corresponds to
+        dayIndex: { type: Number }, // 0-based index within planContent
+        weekNumber: { type: Number }, // 1-based week within the plan duration
+        allExercisesCompleted: { type: Boolean, default: false },
         workoutDetails: {
             type: [
                 {

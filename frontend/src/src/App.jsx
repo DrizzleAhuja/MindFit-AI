@@ -9,8 +9,6 @@ import LostItems from "./pages/FitBot/LostItems.jsx";
 import FoundItems from "./pages/VirtualTrainingAssistant/FoundItems.jsx";
 import EditProfile from "./pages/EditProfilePage/EditProfile";
 import MyListings from "./pages/WorkoutPlanGenerator/MyReports.jsx";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import NotificationsPage from "./pages/NotificationsPage/NotificationsPage";
 import VerificationPage from "./pages/VerficationPage/VerificationPage";
 import UserLogsPage from "./pages/UserLogsPage/UserLogsPage.jsx";
@@ -72,18 +70,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/features" element={<Features />} />
         </Routes>
-        <ToastContainer
-          theme="dark"
-          position="bottom-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
+        {/* Removed ToastContainer from here */}
       </div>
     </ThemeProvider>
   );

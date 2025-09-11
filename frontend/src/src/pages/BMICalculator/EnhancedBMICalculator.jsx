@@ -25,12 +25,12 @@ import {
 } from "react-icons/fa";
 import { GiBodyHeight, GiWeightLiftingUp } from "react-icons/gi";
 import { API_BASE_URL, API_ENDPOINTS } from "../../../config/api";
+import { useNavigate } from "react-router-dom";
 
 export default function EnhancedBMICalculator() {
   const user = useSelector(selectUser);
   const [activeTab, setActiveTab] = useState("calculator");
   const [isEditing, setIsEditing] = useState(false);
-  const [showPlanSelection, setShowPlanSelection] = useState(false);
 
   // Form data
   const [formData, setFormData] = useState({
@@ -40,20 +40,12 @@ export default function EnhancedBMICalculator() {
     age: "",
     diseases: [],
     allergies: [],
-    selectedPlan: "",
-    targetWeight: "",
-    targetTimeline: "",
   });
 
   // BMI results
   const [bmiResult, setBmiResult] = useState(null);
   const [aiSuggestions, setAiSuggestions] = useState("");
   const [history, setHistory] = useState([]);
-  const [progress, setProgress] = useState({
-    message: "",
-    weightChange: 0,
-    bmiChange: 0,
-  });
 
   // UI states
   const [loading, setLoading] = useState(false);
@@ -113,10 +105,11 @@ export default function EnhancedBMICalculator() {
     "Celery",
   ];
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (user?.email) {
       fetchBMIHistory();
-      fetchProgress();
     }
   }, [user]);
 
@@ -156,9 +149,6 @@ export default function EnhancedBMICalculator() {
           age: latest.age?.toString() || "",
           diseases: latest.diseases || [],
           allergies: latest.allergies || [],
-          selectedPlan: latest.selectedPlan || "",
-          targetWeight: latest.targetWeight?.toString() || "",
-          targetTimeline: latest.targetTimeline || "",
         });
         setBmiResult({
           bmi: latest.bmi,
@@ -170,30 +160,6 @@ export default function EnhancedBMICalculator() {
       console.error("Error fetching BMI history", error);
       // Set empty history on error
       setHistory([]);
-    }
-  };
-
-  const fetchProgress = async () => {
-    try {
-      const res = await axios.get(
-        `${API_BASE_URL}${API_ENDPOINTS.BMI}/progress`,
-        { params: { email: user.email, period: "month" } }
-      );
-      setProgress(
-        res.data.progress || {
-          message: "",
-          weightChange: 0,
-          bmiChange: 0,
-        }
-      );
-    } catch (error) {
-      console.error("Error fetching progress", error);
-      // Set default progress values on error
-      setProgress({
-        message: "",
-        weightChange: 0,
-        bmiChange: 0,
-      });
     }
   };
 
@@ -225,44 +191,6 @@ export default function EnhancedBMICalculator() {
       else if (calculatedBMI < 35) bmiCategory = "Obese";
       else bmiCategory = "Morbid obesity";
 
-      setBmiResult({ bmi: calculatedBMI, category: bmiCategory });
-      setShowPlanSelection(true);
-      toast.success(
-        "BMI calculated successfully! Now choose your personalized plan."
-      );
-    } catch (error) {
-      console.error("Error calculating BMI", error);
-      toast.error("Failed to calculate BMI");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const selectPlanAndSave = async (selectedPlan) => {
-    setLoading(true);
-    try {
-      // Check if user is logged in
-      if (!user || !user.email) {
-        toast.error("Please log in to save your BMI data");
-        setLoading(false);
-        return;
-      }
-      // Calculate BMI again to ensure we have the latest data
-      const totalHeightInInches =
-        parseInt(formData.heightFeet) * 12 + parseInt(formData.heightInches);
-      const heightInMeters = totalHeightInInches * 0.0254;
-      const calculatedBMI = (
-        formData.weight /
-        (heightInMeters * heightInMeters)
-      ).toFixed(2);
-
-      let bmiCategory = "";
-      if (calculatedBMI < 18.5) bmiCategory = "Underweight";
-      else if (calculatedBMI < 24.9) bmiCategory = "Normal weight";
-      else if (calculatedBMI < 29.9) bmiCategory = "Overweight";
-      else if (calculatedBMI < 35) bmiCategory = "Obese";
-      else bmiCategory = "Morbid obesity";
-
       const requestData = {
         email: user.email,
         heightFeet: formData.heightFeet,
@@ -273,61 +201,25 @@ export default function EnhancedBMICalculator() {
         allergies: formData.allergies,
         bmi: calculatedBMI,
         category: bmiCategory,
-        selectedPlan: selectedPlan,
-        targetWeight: formData.targetWeight,
-        targetTimeline: formData.targetTimeline,
       };
-
-      console.log("=== BMI SAVE DEBUG ===");
-      console.log("API Base URL:", API_BASE_URL);
-      console.log("BMI Endpoint:", API_ENDPOINTS.BMI);
-      console.log("Full URL:", `${API_BASE_URL}${API_ENDPOINTS.BMI}/save`);
-      console.log("User object:", user);
-      console.log("User email:", user?.email);
-      console.log("User email type:", typeof user?.email);
-      console.log("Request Data:", requestData);
 
       const res = await axios.post(
         `${API_BASE_URL}${API_ENDPOINTS.BMI}/save`,
         requestData
       );
 
-      setFormData({ ...formData, selectedPlan });
+      setFormData({ ...formData });
       setBmiResult({ bmi: calculatedBMI, category: bmiCategory });
       setAiSuggestions(res.data.aiSuggestions || "");
-      setShowPlanSelection(false);
-      setActiveTab("plans"); // Switch to plans tab to show AI insights
-      toast.success(
-        "Plan selected and BMI saved successfully! Check your personalized plan below."
-      );
+      toast.success("BMI saved successfully! You can now proceed to Workout Plan Generator.");
 
       fetchBMIHistory();
-      fetchProgress();
-    } catch (error) {
-      console.error("=== BMI SAVE ERROR ===");
-      console.error("Full error object:", error);
-      console.error("Error message:", error.message);
-      console.error("Error code:", error.code);
 
-      if (error.response) {
-        console.error("Response status:", error.response.status);
-        console.error("Response data:", error.response.data);
-        console.error("Response headers:", error.response.headers);
-        toast.error(
-          `Server error: ${error.response.status} - ${
-            error.response.data?.error || error.response.statusText
-          }`
-        );
-      } else if (error.request) {
-        console.error("Request was made but no response received");
-        console.error("Request details:", error.request);
-        toast.error(
-          "Cannot connect to server. Please check if backend is running on port 8000."
-        );
-      } else {
-        console.error("Error setting up request:", error.message);
-        toast.error("Failed to save BMI with plan");
-      }
+      // Navigate to Workout Plan Generator with BMI data
+      navigate("/workout", { state: { bmiData: requestData, bmiResult: { bmi: calculatedBMI, category: bmiCategory } } });
+    } catch (error) {
+      console.error("Error calculating BMI", error);
+      toast.error("Failed to calculate BMI");
     } finally {
       setLoading(false);
     }
@@ -377,11 +269,6 @@ export default function EnhancedBMICalculator() {
           age: parseInt(formData.age),
           diseases: formData.diseases,
           allergies: formData.allergies,
-          selectedPlan: formData.selectedPlan,
-          targetWeight: formData.targetWeight
-            ? parseFloat(formData.targetWeight)
-            : null,
-          targetTimeline: formData.targetTimeline,
         }
       );
 
@@ -394,7 +281,6 @@ export default function EnhancedBMICalculator() {
       toast.success("BMI updated successfully");
 
       fetchBMIHistory();
-      fetchProgress();
     } catch (error) {
       console.error("=== UPDATE BMI ERROR ===");
       console.error("Full error object:", error);
@@ -496,179 +382,6 @@ export default function EnhancedBMICalculator() {
     return { minWeight, maxWeight };
   };
 
-  // Generate realistic timeline based on current weight, target weight, and plan
-  const generateRealisticTimeline = (
-    currentWeight,
-    targetWeight,
-    selectedPlan,
-    age
-  ) => {
-    const weightDiff = Math.abs(
-      parseFloat(currentWeight) - parseFloat(targetWeight)
-    );
-    const currentAge = parseInt(age);
-
-    // Safe weight loss/gain rates (kg per week)
-    let weeklyRate;
-    if (selectedPlan === "lose_weight") {
-      weeklyRate = currentAge < 30 ? 0.5 : 0.4; // Younger people can lose slightly faster
-    } else if (selectedPlan === "gain_weight") {
-      weeklyRate = currentAge < 30 ? 0.3 : 0.25; // Slower for muscle gain
-    } else if (selectedPlan === "build_muscles") {
-      weeklyRate = 0.2; // Very slow for muscle building
-    } else {
-      weeklyRate = 0.4; // Default moderate rate
-    }
-
-    const weeksNeeded = Math.ceil(weightDiff / weeklyRate);
-    const monthsNeeded = Math.ceil(weeksNeeded / 4);
-
-    // Cap at reasonable limits
-    const maxMonths = selectedPlan === "build_muscles" ? 24 : 12;
-    const finalMonths = Math.min(monthsNeeded, maxMonths);
-
-    return `${finalMonths} month${finalMonths > 1 ? "s" : ""}`;
-  };
-
-  // AI-powered plan suggestions based on BMI category
-  const getRecommendedPlans = (bmi, age, diseases, allergies) => {
-    const bmiValue = parseFloat(bmi);
-    const currentAge = parseInt(age);
-    const hasHealthIssues = diseases.length > 0 || allergies.length > 0;
-
-    let recommendedPlans = [];
-
-    if (bmiValue < 18.5) {
-      // Underweight - focus on healthy weight gain and muscle building
-      recommendedPlans = [
-        {
-          value: "gain_weight",
-          label: "Healthy Weight Gain",
-          icon: <FaAppleAlt className="mr-2" />,
-          color: "bg-green-500",
-          priority: 1,
-          description:
-            "Focus on nutritious calorie-dense foods and gradual weight gain",
-        },
-        {
-          value: "build_muscles",
-          label: "Build Muscles",
-          icon: <FaDumbbell className="mr-2" />,
-          color: "bg-blue-500",
-          priority: 2,
-          description: "Strength training to build lean muscle mass",
-        },
-      ];
-    } else if (bmiValue >= 18.5 && bmiValue < 24.9) {
-      // Normal weight - focus on maintenance and muscle building
-      recommendedPlans = [
-        {
-          value: "build_muscles",
-          label: "Build Muscles",
-          icon: <FaDumbbell className="mr-2" />,
-          color: "bg-blue-500",
-          priority: 1,
-          description: "Maintain current weight while building lean muscle",
-        },
-        {
-          value: "lose_weight",
-          label: "Tone & Define",
-          icon: <FaRunning className="mr-2" />,
-          color: "bg-orange-500",
-          priority: 2,
-          description: "Slight weight loss for better muscle definition",
-        },
-      ];
-    } else if (bmiValue >= 24.9 && bmiValue < 29.9) {
-      // Overweight - focus on weight loss
-      recommendedPlans = [
-        {
-          value: "lose_weight",
-          label: "Lose Weight",
-          icon: <FaRunning className="mr-2" />,
-          color: "bg-red-500",
-          priority: 1,
-          description: "Healthy weight loss through diet and exercise",
-        },
-        {
-          value: "build_muscles",
-          label: "Build Muscles",
-          icon: <FaDumbbell className="mr-2" />,
-          color: "bg-blue-500",
-          priority: 2,
-          description: "Combine weight loss with muscle building",
-        },
-      ];
-    } else if (bmiValue >= 29.9 && bmiValue < 35) {
-      // Obese - focus on weight loss
-      recommendedPlans = [
-        {
-          value: "lose_weight",
-          label: "Lose Weight",
-          icon: <FaRunning className="mr-2" />,
-          color: "bg-red-500",
-          priority: 1,
-          description: "Priority weight loss for better health",
-        },
-      ];
-    } else {
-      // Morbid obesity - focus on weight loss
-      recommendedPlans = [
-        {
-          value: "lose_weight",
-          label: "Lose Weight",
-          icon: <FaRunning className="mr-2" />,
-          color: "bg-red-500",
-          priority: 1,
-          description:
-            "Medical supervision recommended for significant weight loss",
-        },
-      ];
-    }
-
-    // Adjust recommendations based on age and health conditions
-    if (currentAge > 50) {
-      // For older adults, prioritize gentle approaches
-      recommendedPlans = recommendedPlans.map((plan) => ({
-        ...plan,
-        description: plan.description + " (Gentle approach for your age group)",
-      }));
-    }
-
-    if (hasHealthIssues) {
-      // Add health consideration note
-      recommendedPlans = recommendedPlans.map((plan) => ({
-        ...plan,
-        description:
-          plan.description +
-          " (Consult healthcare provider due to existing conditions)",
-      }));
-    }
-
-    return recommendedPlans.sort((a, b) => a.priority - b.priority);
-  };
-
-  const planOptions = [
-    {
-      value: "lose_weight",
-      label: "Lose Weight",
-      icon: <FaRunning className="mr-2" />,
-      color: "bg-red-500",
-    },
-    {
-      value: "gain_weight",
-      label: "Gain Weight",
-      icon: <FaAppleAlt className="mr-2" />,
-      color: "bg-green-500",
-    },
-    {
-      value: "build_muscles",
-      label: "Build Muscles",
-      icon: <FaDumbbell className="mr-2" />,
-      color: "bg-blue-500",
-    },
-  ];
-
   return (
     <div className="dark">
       <NavBar />
@@ -684,41 +397,6 @@ export default function EnhancedBMICalculator() {
             </p>
           </div>
 
-          {/* Progress Summary */}
-          {progress && progress.message && (
-            <div className="mb-8 bg-gray-800 rounded-xl p-6 border border-gray-700">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <FaChartLine className="text-green-400 mr-3 text-2xl" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-green-400">
-                      Progress Update
-                    </h3>
-                    <p className="text-gray-300">{progress.message}</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  {progress.weightChange && (
-                    <div className="flex items-center">
-                      {getProgressIcon(parseFloat(progress.weightChange))}
-                      <span className="ml-2 text-sm">
-                        {Math.abs(progress.weightChange)} kg
-                      </span>
-                    </div>
-                  )}
-                  {progress.bmiChange && (
-                    <div className="flex items-center">
-                      {getProgressIcon(parseFloat(progress.bmiChange))}
-                      <span className="ml-2 text-sm">
-                        {Math.abs(progress.bmiChange)} BMI
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Tab Navigation */}
           <div className="flex flex-wrap justify-center mb-8">
             {[
@@ -728,13 +406,13 @@ export default function EnhancedBMICalculator() {
                 icon: <FaWeight className="mr-2" />,
               },
               {
-                id: "plans",
-                label: "Personalized Plans",
-                icon: <FaDumbbell className="mr-2" />,
+                id: "ai-insights",
+                label: "AI Insights",
+                icon: <FaBrain className="mr-2" />,
               },
               {
                 id: "history",
-                label: "History & Progress",
+                label: "History",
                 icon: <FaHistory className="mr-2" />,
               },
             ].map((tab) => (
@@ -856,114 +534,6 @@ export default function EnhancedBMICalculator() {
                       className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-green-500 focus:ring-1 focus:ring-green-500 text-white"
                     />
                   </div>
-
-                  {/* Target Weight & Timeline */}
-                  {formData.heightFeet &&
-                    formData.heightInches &&
-                    formData.weight &&
-                    formData.age && (
-                      <div className="bg-gray-700 rounded-lg p-4 border border-gray-600">
-                        <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
-                          <FaChartLine className="mr-2 text-green-400" />
-                          Goal Setting
-                        </h3>
-
-                        {/* Ideal Weight Range */}
-                        <div className="mb-4">
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
-                            Ideal Weight Range (kg)
-                          </label>
-                          <div className="text-sm text-gray-400">
-                            {(() => {
-                              const range = calculateIdealWeightRange(
-                                formData.heightFeet,
-                                formData.heightInches
-                              );
-                              return `${range.minWeight} - ${range.maxWeight} kg`;
-                            })()}
-                          </div>
-                        </div>
-
-                        {/* Target Weight */}
-                        <div className="mb-4">
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
-                            Target Weight (kg)
-                          </label>
-                          <input
-                            type="number"
-                            placeholder="Enter your target weight"
-                            value={formData.targetWeight}
-                            onChange={(e) => {
-                              const targetWeight = e.target.value;
-                              setFormData({ ...formData, targetWeight });
-
-                              // Auto-generate timeline when target weight changes
-                              if (targetWeight && formData.selectedPlan) {
-                                const timeline = generateRealisticTimeline(
-                                  formData.weight,
-                                  targetWeight,
-                                  formData.selectedPlan,
-                                  formData.age
-                                );
-                                setFormData((prev) => ({
-                                  ...prev,
-                                  targetTimeline: timeline,
-                                }));
-                              }
-                            }}
-                            className="w-full p-3 rounded-lg bg-gray-600 border border-gray-500 focus:border-green-500 focus:ring-1 focus:ring-green-500 text-white"
-                          />
-                        </div>
-
-                        {/* Timeline */}
-                        <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
-                            Target Timeline
-                          </label>
-                          <div className="flex gap-2">
-                            <input
-                              type="text"
-                              placeholder="AI will suggest timeline"
-                              value={formData.targetTimeline}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  targetTimeline: e.target.value,
-                                })
-                              }
-                              className="flex-1 p-3 rounded-lg bg-gray-600 border border-gray-500 focus:border-green-500 focus:ring-1 focus:ring-green-500 text-white"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (
-                                  formData.targetWeight &&
-                                  formData.selectedPlan
-                                ) {
-                                  const timeline = generateRealisticTimeline(
-                                    formData.weight,
-                                    formData.targetWeight,
-                                    formData.selectedPlan,
-                                    formData.age
-                                  );
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    targetTimeline: timeline,
-                                  }));
-                                }
-                              }}
-                              className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
-                            >
-                              AI Suggest
-                            </button>
-                          </div>
-                          <p className="text-xs text-gray-400 mt-1">
-                            AI will suggest a realistic timeline based on your
-                            plan and goals
-                          </p>
-                        </div>
-                      </div>
-                    )}
 
                   {/* Diseases */}
                   <div>
@@ -1185,246 +755,39 @@ export default function EnhancedBMICalculator() {
                     </div>
                   </div>
                 )}
-
-                {/* Plan Selection Modal */}
-                {showPlanSelection && (
-                  <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-6">
-                    <h3 className="text-2xl font-bold mb-4 flex items-center">
-                      <FaBrain className="mr-3 text-purple-400" />
-                      AI-Recommended Plans
-                    </h3>
-                    <p className="text-gray-300 mb-6">
-                      Based on your BMI of{" "}
-                      <span className="font-semibold text-white">
-                        {bmiResult.bmi}
-                      </span>{" "}
-                      ({bmiResult.category}), age, and health conditions, here
-                      are the most suitable plans for you:
-                    </p>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {getRecommendedPlans(
-                        bmiResult.bmi,
-                        formData.age,
-                        formData.diseases,
-                        formData.allergies
-                      ).map((plan) => (
-                        <div
-                          key={plan.value}
-                          className={`p-4 rounded-lg border-2 transition-all cursor-pointer ${
-                            formData.selectedPlan === plan.value
-                              ? "border-green-500 bg-green-900/20"
-                              : "border-gray-600 hover:border-gray-500"
-                          }`}
-                          onClick={() => {
-                            const newFormData = {
-                              ...formData,
-                              selectedPlan: plan.value,
-                            };
-
-                            // Auto-generate timeline if target weight is set
-                            if (formData.targetWeight) {
-                              const timeline = generateRealisticTimeline(
-                                formData.weight,
-                                formData.targetWeight,
-                                plan.value,
-                                formData.age
-                              );
-                              newFormData.targetTimeline = timeline;
-                            }
-
-                            setFormData(newFormData);
-                          }}
-                        >
-                          <div
-                            className={`w-12 h-12 ${plan.color} rounded-full flex items-center justify-center mb-3`}
-                          >
-                            {plan.icon}
-                          </div>
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="text-lg font-bold">{plan.label}</h4>
-                            <span className="text-xs bg-purple-600 text-white px-2 py-1 rounded-full">
-                              AI Recommended
-                            </span>
-                          </div>
-                          <p className="text-gray-400 text-sm mb-3">
-                            {plan.description}
-                          </p>
-                          {formData.selectedPlan === plan.value && (
-                            <div className="flex items-center text-green-400 text-sm">
-                              <FaCheckCircle className="mr-2" />
-                              Selected
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="flex space-x-4 mt-6">
-                      <button
-                        onClick={() => selectPlanAndSave(formData.selectedPlan)}
-                        disabled={loading || !formData.selectedPlan}
-                        className="flex-1 bg-gradient-to-r from-green-500 to-blue-600 text-white py-3 rounded-lg font-medium hover:opacity-90 transition-all disabled:opacity-50"
-                      >
-                        {loading ? "Saving..." : "Save Plan & View AI Insights"}
-                      </button>
-                      <button
-                        onClick={() => setShowPlanSelection(false)}
-                        className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-                      >
-                        Skip for Now
-                      </button>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           )}
 
-          {/* Plans Tab */}
-          {activeTab === "plans" && (
+          {/* AI Insights Tab */}
+          {activeTab === "ai-insights" && (
             <div className="bg-gray-800 rounded-xl shadow-xl border border-gray-700 p-8">
               <h2 className="text-3xl font-bold mb-8 text-center flex items-center justify-center">
-                <FaDumbbell className="mr-3 text-green-400" />
-                Your Health Plan
+                <FaBrain className="mr-3 text-purple-400" />
+                AI Health Insights
               </h2>
 
-              {!bmiResult ? (
+              {!aiSuggestions ? (
                 <div className="text-center py-12">
-                  <FaDumbbell className="text-6xl text-gray-600 mx-auto mb-4" />
+                  <FaBrain className="text-6xl text-gray-600 mx-auto mb-4" />
                   <p className="text-xl text-gray-400 mb-2">
-                    No BMI calculated yet
+                    No AI Insights yet
                   </p>
                   <p className="text-gray-500">
-                    Calculate your BMI first to get personalized plan
-                    recommendations
+                    Calculate your BMI to get personalized insights.
                   </p>
-                </div>
-              ) : !formData.selectedPlan ? (
-                <div className="text-center py-12">
-                  <FaDumbbell className="text-6xl text-gray-600 mx-auto mb-4" />
-                  <p className="text-xl text-gray-400 mb-2">
-                    No plan selected yet
-                  </p>
-                  <p className="text-gray-500 mb-6">
-                    Go to the BMI Calculator tab to select your personalized
-                    plan
-                  </p>
-
-                  {/* Show AI insights even without a plan if available */}
-                  {aiSuggestions && (
-                    <div className="mt-6 bg-gray-700 rounded-lg p-6 text-left">
-                      <h3 className="text-2xl font-bold mb-4 flex items-center">
-                        <FaBrain className="mr-3 text-purple-400" />
-                        AI Health Insights
-                      </h3>
-                      <div className="prose prose-invert max-w-none">
-                        <p className="text-gray-300 leading-relaxed whitespace-pre-line">
-                          {aiSuggestions}
-                        </p>
-                      </div>
-                    </div>
-                  )}
                 </div>
               ) : (
-                <div className="space-y-6">
-                  <div className="text-center mb-8">
-                    <div
-                      className={`inline-flex items-center justify-center w-20 h-20 ${getBMIBgColor(
-                        bmiResult.bmi
-                      )} rounded-full mb-4`}
-                    >
-                      <span className="text-2xl font-bold text-white">
-                        {bmiResult.bmi}
-                      </span>
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-2">
-                      Your Current Plan
-                    </h3>
-                    <p className="text-gray-400">
-                      Based on your BMI: {bmiResult.category}
-                    </p>
-
-                    {/* Target Weight & Timeline */}
-                    {(formData.targetWeight || formData.targetTimeline) && (
-                      <div className="mt-4 p-4 bg-gray-600 rounded-lg">
-                        <h4 className="text-lg font-semibold text-white mb-2">
-                          Your Goals
-                        </h4>
-                        {formData.targetWeight && (
-                          <p className="text-gray-300 mb-1">
-                            <span className="font-medium">Target Weight:</span>{" "}
-                            {formData.targetWeight} kg
-                          </p>
-                        )}
-                        {formData.targetTimeline && (
-                          <p className="text-gray-300">
-                            <span className="font-medium">Timeline:</span>{" "}
-                            {formData.targetTimeline}
-                          </p>
-                        )}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="bg-gray-700 rounded-lg p-6">
-                    <div className="flex items-center mb-4">
-                      <div
-                        className={`w-12 h-12 ${
-                          planOptions.find(
-                            (p) => p.value === formData.selectedPlan
-                          )?.color
-                        } rounded-full flex items-center justify-center mr-4`}
-                      >
-                        {
-                          planOptions.find(
-                            (p) => p.value === formData.selectedPlan
-                          )?.icon
-                        }
-                      </div>
-                      <div>
-                        <h4 className="text-xl font-bold text-white">
-                          {
-                            planOptions.find(
-                              (p) => p.value === formData.selectedPlan
-                            )?.label
-                          }
-                        </h4>
-                        <p className="text-gray-400">
-                          {formData.selectedPlan === "lose_weight" &&
-                            "Focus on calorie deficit and cardio exercises"}
-                          {formData.selectedPlan === "gain_weight" &&
-                            "Increase caloric intake with healthy foods"}
-                          {formData.selectedPlan === "build_muscles" &&
-                            "Strength training and protein-rich diet"}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mt-4">
-                      <button
-                        onClick={() => setActiveTab("calculator")}
-                        className="bg-gradient-to-r from-green-500 to-blue-600 text-white px-6 py-2 rounded-lg hover:opacity-90 transition-all"
-                      >
-                        Change Plan
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* AI Health Insights */}
-                  {aiSuggestions && (
-                    <div className="mt-6 bg-gray-700 rounded-lg p-6">
-                      <h3 className="text-2xl font-bold mb-4 flex items-center">
-                        <FaBrain className="mr-3 text-purple-400" />
-                        AI Health Insights
-                      </h3>
-                      <div className="prose prose-invert max-w-none">
-                        <p className="text-gray-300 leading-relaxed whitespace-pre-line">
-                          {aiSuggestions}
-                        </p>
-                      </div>
-                    </div>
-                  )}
+                <div className="prose prose-invert max-w-none text-center">
+                  <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+                    {aiSuggestions}
+                  </p>
+                  <button
+                    onClick={() => navigate("/workout", { state: { bmiData: formData, bmiResult: bmiResult } })}
+                    className="mt-6 bg-gradient-to-r from-green-500 to-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-all"
+                  >
+                    Proceed to Workout Plan Generator
+                  </button>
                 </div>
               )}
             </div>

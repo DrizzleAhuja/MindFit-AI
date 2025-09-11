@@ -8,7 +8,7 @@ const ExerciseSchema = new mongoose.Schema({
     rest: { type: String }, // '60 seconds', '2 minutes'
     notes: { type: String },
     demonstrationLink: { type: String }, // Optional link to exercise video
-});
+}, { _id: false }); // Disable _id for subdocuments
 
 const WorkoutDaySchema = new mongoose.Schema({
     day: { type: String, required: true }, // e.g., 'Monday', 'Day 1'
@@ -16,7 +16,7 @@ const WorkoutDaySchema = new mongoose.Schema({
     exercises: [ExerciseSchema],
     warmup: { type: String },
     cooldown: { type: String },
-});
+}, { _id: false }); // Disable _id for subdocuments
 
 const WorkoutPlanSchema = new mongoose.Schema(
     {
@@ -29,6 +29,14 @@ const WorkoutPlanSchema = new mongoose.Schema(
         durationWeeks: { type: Number, default: 4 }, // Default to 4 weeks
         // Optional: track progress per week if needed, e.g., an array of completion status for each week
         // weeklyProgress: [{ weekNumber: Number, completedDays: [String] }],
+        currentWeek: { type: Number, default: 1 }, // Track current week for the plan
+        completed: { type: Boolean, default: false },
+        closedAt: { type: Date },
+        weeklyContentOverrides: {
+            type: Map, // Map from weekNumber (string) to array of WorkoutDaySchema
+            of: [WorkoutDaySchema],
+            default: {},
+        },
         generatedParams: {
             timeCommitment: { type: String, required: true },
             workoutType: { type: String, required: true },
@@ -42,6 +50,22 @@ const WorkoutPlanSchema = new mongoose.Schema(
             bmiData: { type: Object }, // Store BMI data at the time of generation
         },
         planContent: [WorkoutDaySchema], // Structured plan content
+        // Progress tracking
+        completedDayCount: { type: Number, default: 0 },
+        dayCompletions: {
+            type: [
+                new mongoose.Schema(
+                    {
+                        weekNumber: { type: Number, required: true },
+                        dayIndex: { type: Number, required: true },
+                        sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'WorkoutSessionLog' },
+                        date: { type: Date, default: Date.now },
+                    },
+                    { _id: false }
+                ),
+            ],
+            default: [],
+        },
     },
     { timestamps: true }
 );
