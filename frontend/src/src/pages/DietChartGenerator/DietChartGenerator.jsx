@@ -81,7 +81,7 @@ export default function DietChartGenerator()  {
             `${API_BASE_URL}${API_ENDPOINTS.AUTH}/diet-chart/${user._id}/${activeWorkoutPlan._id}`
           );
           if (response.data.success && response.data.dietChart) {
-            setSavedDietChart(response.data.dietChart);
+            setSavedDietChart(response.data.dietChart.dietChart);
           }
         } catch (error) {
           console.error("Error checking existing diet chart:", error);
@@ -129,22 +129,36 @@ export default function DietChartGenerator()  {
 
     setLoading(true);
     try {
+      let fitnessGoal = activeWorkoutPlan?.generatedParams?.fitnessGoal;
+      if (!fitnessGoal && activeWorkoutPlan?.name) {
+        // Attempt to derive fitnessGoal from workout plan name if not explicitly present
+        if (activeWorkoutPlan.name.toLowerCase().includes("lose weight")) {
+          fitnessGoal = "lose_weight";
+        } else if (activeWorkoutPlan.name.toLowerCase().includes("gain weight")) {
+          fitnessGoal = "gain_weight";
+        } else if (activeWorkoutPlan.name.toLowerCase().includes("build muscles")) {
+          fitnessGoal = "build_muscles";
+        }
+      }
+
+      const targetWeight = activeWorkoutPlan?.generatedParams?.targetWeight || bmiData.targetWeight;
+
       const calculatedDurationWeeks = calculateDurationWeeks(
         activeWorkoutPlan.generatedParams.currentWeight || bmiData.weight,
-        activeWorkoutPlan.generatedParams.targetWeight || bmiData.targetWeight,
-        activeWorkoutPlan.generatedParams.fitnessGoal,
+        targetWeight,
+        fitnessGoal,
         bmiData.age
       );
 
       const requestData = {
         userId: user._id,
         durationWeeks: calculatedDurationWeeks,
-        fitnessGoal: activeWorkoutPlan.generatedParams.fitnessGoal,
+        fitnessGoal: fitnessGoal,
         currentWeight: activeWorkoutPlan.generatedParams.currentWeight || bmiData.weight,
-        targetWeight: activeWorkoutPlan.generatedParams.targetWeight || bmiData.targetWeight,
+        targetWeight: targetWeight,
         diseases: user.diseases || [],
         allergies: user.allergies || [],
-        activeWorkoutPlan: activeWorkoutPlan, // Send the full activeWorkoutPlan object
+        activeWorkoutPlan: activeWorkoutPlan,
       };
 
       const response = await axios.post(
@@ -153,7 +167,7 @@ export default function DietChartGenerator()  {
       );
 
       if (response.data.success) {
-        setDietChart(response.data.dietChart);
+        setDietChart(response.data.dietChart.dietChart);
         toast.success("Diet chart generated successfully!");
       } else {
         toast.error("Failed to generate diet chart.");

@@ -743,7 +743,6 @@ router.post("/chat", async (req, res) => {
 // New endpoint to generate a diet chart
 router.post("/generate-diet-chart", async (req, res) => {
   try {
-    console.log("Received generate-diet-chart request body:", req.body);
     const { userId, durationWeeks, fitnessGoal, currentWeight, targetWeight, diseases, allergies, activeWorkoutPlan } = req.body;
 
     if (!userId || !durationWeeks || !fitnessGoal || !currentWeight) {
@@ -865,8 +864,6 @@ router.post("/diet-chart/save", async (req, res) => {
 // Get diet chart for a specific workout plan
 router.get("/diet-chart/:userId/:workoutPlanId", async (req, res) => {
   try {
-    console.log("Received diet-chart GET request. Params:", req.params);
-    console.log("Received diet-chart GET request. Query:", req.query);
     const { userId, workoutPlanId } = req.params;
 
     const dietChart = await DietChart.findOne({
