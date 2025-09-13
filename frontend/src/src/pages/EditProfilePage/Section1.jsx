@@ -16,6 +16,8 @@ export default function EditProfile() {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
+    diseases: "", // New field for diseases
+    allergies: "", // New field for allergies
   });
 
   useEffect(() => {
@@ -23,6 +25,8 @@ export default function EditProfile() {
       setFormData({
         firstName: user.firstName,
         lastName: user.lastName,
+        diseases: user.diseases ? user.diseases.join(', ') : '', // Initialize diseases
+        allergies: user.allergies ? user.allergies.join(', ') : '', // Initialize allergies
       });
     }
   }, [user]);
@@ -40,7 +44,11 @@ export default function EditProfile() {
     try {
       const res = await axios.put(
         `${API_BASE_URL}${API_ENDPOINTS.USERS}/${user._id}`,
-        formData
+        { 
+          ...formData,
+          diseases: formData.diseases.split(',').map(item => item.trim()).filter(item => item !== ''),
+          allergies: formData.allergies.split(',').map(item => item.trim()).filter(item => item !== ''),
+        }
       );
 
       // Update Redux store
@@ -137,6 +145,46 @@ export default function EditProfile() {
                     className="block w-full pl-10 pr-3 py-3 rounded-md bg-gray-700 border-gray-600 text-white placeholder-gray-400 border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Doe"
                   />
+                </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="diseases"
+                  className="block text-sm font-medium mb-2 text-gray-300"
+                >
+                  Diseases (comma-separated)
+                </label>
+                <div className="relative rounded-md shadow-sm">
+                  <textarea
+                    id="diseases"
+                    name="diseases"
+                    value={formData.diseases}
+                    onChange={handleChange}
+                    rows="3"
+                    className="block w-full pl-3 pr-3 py-3 rounded-md bg-gray-700 border-gray-600 text-white placeholder-gray-400 border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Diabetes, Hypertension, etc."
+                  ></textarea>
+                </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="allergies"
+                  className="block text-sm font-medium mb-2 text-gray-300"
+                >
+                  Allergies (comma-separated)
+                </label>
+                <div className="relative rounded-md shadow-sm">
+                  <textarea
+                    id="allergies"
+                    name="allergies"
+                    value={formData.allergies}
+                    onChange={handleChange}
+                    rows="3"
+                    className="block w-full pl-3 pr-3 py-3 rounded-md bg-gray-700 border-gray-600 text-white placeholder-gray-400 border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Pollen, Peanuts, etc."
+                  ></textarea>
                 </div>
               </div>
 

@@ -114,6 +114,7 @@ export default function NavBar() {
           { path: "/CurrentBMI", label: "CURRENT BMI" },
           { path: "/calorie-tracker", label: "CALORIE TRACKER" },
           { path: "/Workout", label: "WORKOUT" },
+          { path: "/diet-chart", label: "DIET CHART" },
         ]),
   ];
 
@@ -197,7 +198,7 @@ export default function NavBar() {
                     <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 z-50 bg-gray-800 border border-gray-700">
                       <NavLink
                         to="/EditProfile"
-                        className="block px-4 py-2 text-sm flex items-center text-gray-200 hover:bg-gray-700"
+                        className="flex px-4 py-2 text-sm items-center text-gray-200 hover:bg-gray-700"
                         onClick={() => setDropdownOpen(false)}
                       >
                         <FiEdit2 className="mr-2" /> Edit Profile

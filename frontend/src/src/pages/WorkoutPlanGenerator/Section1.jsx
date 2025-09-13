@@ -10,7 +10,6 @@ import { useNavigate, useLocation } from "react-router-dom"; // Added useNavigat
 import {
   FaDumbbell,
   FaHeartbeat,
-  FaUtensils,
   FaChartLine,
 } from "react-icons/fa";
 import { GiWeightLiftingUp, GiRunningShoe } from "react-icons/gi";
@@ -47,6 +46,7 @@ const WorkoutPlanGenerator = () => {
       fetchBMIData(); // Fetch from backend if not from navigation state
     }
   }, [user, location.state]);
+
 
   const fetchBMIData = async () => {
     try {
@@ -134,6 +134,8 @@ const WorkoutPlanGenerator = () => {
         durationWeeks: calculatedDurationWeeks, // Use calculated duration
         targetWeight: formData.targetWeight, // Pass target weight
         currentWeight: formData.currentWeight, // Pass current weight
+        diseases: user.diseases || [], // Pass user diseases
+        allergies: user.allergies || [], // Pass user allergies
       };
 
       console.log("Sending workout plan request:", requestData);
@@ -263,6 +265,8 @@ const WorkoutPlanGenerator = () => {
         durationWeeks: calculatedDurationWeeks, // Use calculated duration
         targetWeight: formData.targetWeight,
         currentWeight: formData.currentWeight,
+        diseases: user.diseases || [], // Pass user diseases
+        allergies: user.allergies || [], // Pass user allergies
       };
 
       const response = await axios.post(
@@ -283,6 +287,7 @@ const WorkoutPlanGenerator = () => {
     }
     setLoading(false);
   };
+
 
   return (
     <div className="min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 text-gray-100">
@@ -339,7 +344,7 @@ const WorkoutPlanGenerator = () => {
                     <h3 className="text-lg font-semibold text-white mb-2">
                       Your BMI Data
                     </h3>
-                    <div className="flex items-center justify-between">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <p className="text-gray-300">
                           BMI:{" "}
@@ -353,8 +358,6 @@ const WorkoutPlanGenerator = () => {
                             {bmiData.category}
                           </span>
                         </p>
-                      </div>
-                      <div className="text-right">
                         <p className="text-gray-300">
                           Weight:{" "}
                           <span className="font-bold text-white">
@@ -367,6 +370,48 @@ const WorkoutPlanGenerator = () => {
                             {bmiData.heightFeet}'{bmiData.heightInches}"
                           </span>
                         </p>
+                        {bmiData.age && (
+                          <p className="text-gray-300">
+                            Age:{" "}
+                            <span className="font-bold text-white">
+                              {bmiData.age} years
+                            </span>
+                          </p>
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-gray-300">
+                          Diseases:{" "}
+                          <span className="font-bold text-white">
+                            {user?.diseases && user.diseases.length > 0 
+                              ? user.diseases.join(", ") 
+                              : "None"}
+                          </span>
+                        </p>
+                        <p className="text-gray-300">
+                          Allergies:{" "}
+                          <span className="font-bold text-white">
+                            {user?.allergies && user.allergies.length > 0 
+                              ? user.allergies.join(", ") 
+                              : "None"}
+                          </span>
+                        </p>
+                        {bmiData.targetWeight && (
+                          <p className="text-gray-300">
+                            Target Weight:{" "}
+                            <span className="font-bold text-white">
+                              {bmiData.targetWeight}kg
+                            </span>
+                          </p>
+                        )}
+                        {bmiData.targetTimeline && (
+                          <p className="text-gray-300">
+                            Target Timeline:{" "}
+                            <span className="font-bold text-white">
+                              {bmiData.targetTimeline}
+                            </span>
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -405,7 +450,7 @@ const WorkoutPlanGenerator = () => {
                       {
                         value: "gain_weight",
                         label: "Gain Weight",
-                        icon: <FaUtensils className="text-xl mb-1" />
+                        icon: <GiWeightLiftingUp className="text-xl mb-1" />
                       }].map((goalOption) => (
                         <button
                           key={goalOption.value}
@@ -797,6 +842,31 @@ const WorkoutPlanGenerator = () => {
                       )}
                     </div>
                   </div>
+                  
+                  {/* Start This Plan Button */}
+                  <div className="px-6 py-4 border-b border-gray-600">
+                    <button
+                      onClick={savePlan}
+                      disabled={loading}
+                      className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50 flex items-center justify-center"
+                    >
+                      {loading ? (
+                        <>
+                          <FiRefreshCw className="animate-spin mr-2" />
+                          Starting Plan...
+                        </>
+                      ) : (
+                        <>
+                          <FiSave className="mr-2" />
+                          Start This Plan
+                        </>
+                      )}
+                    </button>
+                    <p className="text-gray-400 text-sm text-center mt-2">
+                      This will save and activate this workout plan as your current active plan
+                    </p>
+                  </div>
+                  
                   <div className="p-6 max-h-screen overflow-y-auto">
                     {plan.map((dayPlan, dayIndex) => (
                       <div key={dayIndex} className="mb-8 p-4 bg-gray-700 rounded-lg shadow-md border border-gray-600">

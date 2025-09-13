@@ -24,20 +24,39 @@ const FitBot = () => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [activeWorkoutPlan, setActiveWorkoutPlan] = useState(null); // New state for active workout plan
 
   // Update initial message when user data changes
   useEffect(() => {
+    const fetchActiveWorkoutPlan = async () => {
+      if (user && user._id) {
+        try {
+          const response = await axios.get(`${API_BASE_URL}/api/auth/workout-plan/active/${user._id}`);
+          if (response.data.success) {
+            setActiveWorkoutPlan(response.data.plan);
+          }
+        } catch (err) {
+          console.error("Error fetching active workout plan:", err);
+          setActiveWorkoutPlan(null);
+        }
+      }
+    };
+
+    fetchActiveWorkoutPlan();
+  }, [user]);
+
+  // Update initial message when user data or activeWorkoutPlan changes
+  useEffect(() => {
     if (user && messages.length === 1) {
+      const personalizedMessage = `Hi ${user.firstName || "there"}! I'm FitBot, your AI fitness assistant. I have access to your BMI data and workout plan, so I can provide personalized advice. ${activeWorkoutPlan ? `Your current active plan is: ${activeWorkoutPlan.name}.` : ""} How can I help you today? 💪`;
       setMessages([
         {
           role: "assistant",
-          content: `Hi ${
-            user.firstName || "there"
-          }! I'm FitBot, your AI fitness assistant. I have access to your BMI data and workout plan, so I can provide personalized advice. How can I help you today? 💪`,
+          content: personalizedMessage,
         },
       ]);
     }
-  }, [user]);
+  }, [user, activeWorkoutPlan]);
 
   // FitBot.js (Frontend)
   const sendMessage = async () => {

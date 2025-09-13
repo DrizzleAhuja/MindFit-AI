@@ -38,6 +38,14 @@ const userSchema = new mongoose.Schema({
       ref: 'WorkoutSessionLog',
     },
   ],
+  diseases: {
+    type: [String],
+    default: [],
+  },
+  allergies: {
+    type: [String],
+    default: [],
+  },
 });
 
 const User = mongoose.model("User", userSchema);

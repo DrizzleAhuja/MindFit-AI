@@ -5,6 +5,7 @@ const User = require("../models/User");
 const BMI = require("../models/BMI");
 const WorkoutPlan = require("../models/WorkoutPlan").default; // Correct import for default export
 const WorkoutSessionLog = require("../models/WorkoutSessionLog").default; // Correct import for default export
+const DietChart = require("../models/DietChart");
 const axios = require("axios");
 const { login } = require("../controllers/authController");
 const {
@@ -28,6 +29,8 @@ router.post("/generate-plan", async (req, res) => {
       durationWeeks, // Dynamically calculated duration from frontend
       currentWeight,
       targetWeight,
+      diseases, // Add diseases
+      allergies, // Add allergies
     } = req.body;
 
     // Validate required fields (updated to include new fields)
@@ -67,6 +70,8 @@ router.post("/generate-plan", async (req, res) => {
     ${specificGoalInstruction}
     The user's BMI data is: ${JSON.stringify(bmiData)}.
     Consider any health conditions from bmiData.diseases or bmiData.allergies to make the plan safe and effective. 
+    The user also has the following diseases: ${diseases.join(', ') || "None"}.
+    The user also has the following allergies: ${allergies.join(', ') || "None"}.
 
     OUTPUT REQUIREMENTS (STRICT):
     - Return a JSON ARRAY with EXACTLY ${daysPerWeek} objects (representing ONE week's schedule). No more, no less.
@@ -200,12 +205,20 @@ router.post("/workout-plan/save", async (req, res) => {
     // Deactivate any existing active plans for this user
     await WorkoutPlan.updateMany({ userId: userId, isActive: true }, { isActive: false });
 
+    // Deactivate any existing active diet charts for this user
+    await DietChart.updateMany({ userId: userId, isActive: true }, { isActive: false });
+
     const workoutPlan = new WorkoutPlan({
       userId,
       name,
       description,
       planContent,
-      generatedParams: { ...generatedParams, durationWeeks }, // Ensure durationWeeks is explicitly saved in generatedParams
+      generatedParams: {
+        ...generatedParams,
+        durationWeeks,
+        diseases: generatedParams.diseases, // Store diseases
+        allergies: generatedParams.allergies, // Store allergies
+      }, // Ensure durationWeeks is explicitly saved in generatedParams
       durationWeeks,
       isActive: true, // Mark the new plan as active
       endDate: new Date(new Date().setDate(new Date().getDate() + (durationWeeks * 7))), // Calculate endDate
@@ -568,6 +581,8 @@ router.put("/workout-plan/update/:planId", async (req, res) => {
       // If setting this plan to active, deactivate all other plans for the user
       if (isActive) {
         await WorkoutPlan.updateMany({ userId: workoutPlan.userId, isActive: true }, { isActive: false });
+        // Deactivate any existing active diet charts for this user
+        await DietChart.updateMany({ userId: workoutPlan.userId, isActive: true }, { isActive: false });
       }
       workoutPlan.isActive = isActive;
     }
@@ -599,6 +614,9 @@ router.delete("/workout-plan/delete/:planId", async (req, res) => {
     // Delete associated workout session logs
     await WorkoutSessionLog.deleteMany({ workoutPlanId: planId });
 
+    // Delete associated diet charts
+    await DietChart.deleteMany({ workoutPlanId: planId });
+
     // Remove plan from user's workoutPlans array
     await User.updateOne(
       { _id: workoutPlan.userId },
@@ -608,7 +626,7 @@ router.delete("/workout-plan/delete/:planId", async (req, res) => {
     // Delete the workout plan itself
     await workoutPlan.deleteOne();
 
-    res.status(200).json({ success: true, message: "Workout plan and associated logs deleted successfully" });
+    res.status(200).json({ success: true, message: "Workout plan, associated logs, and diet charts deleted successfully" });
   } catch (error) {
     console.error("Error deleting workout plan:", error);
     res.status(500).json({
@@ -650,11 +668,11 @@ router.post("/chat", async (req, res) => {
             .lean();
 
           if (latestBMI) {
-            userContext += `\n\nUser's Health Profile:\n   632|- BMI: ${latestBMI.bmi} (${latestBMI.category})\n   633|- Age: ${latestBMI.age}\n   634|- Height: ${latestBMI.heightFeet}'${latestBMI.heightInches}"\n   635|- Weight: ${latestBMI.weight}kg\n   636|- Target Weight: ${latestBMI.targetWeight || "Not set"}kg\n   637|- Target Timeline: ${latestBMI.targetTimeline || "Not set"}\n   638|- Diseases: ${latestBMI.diseases?.join(", ") || "None"}\n   639|- Allergies: ${latestBMI.allergies?.join(", ") || "None"}`;
+            userContext += `\n\nUser's Health Profile:\n   645|- BMI: ${latestBMI.bmi} (${latestBMI.category})\n   646|- Age: ${latestBMI.age}\n   647|- Height: ${latestBMI.heightFeet}'${latestBMI.heightInches}"\n   648|- Weight: ${latestBMI.weight}kg\n   649|- Target Weight: ${latestBMI.targetWeight || "Not set"}kg\n   650|- Target Timeline: ${latestBMI.targetTimeline || "Not set"}\n   651|- Diseases: ${user.diseases?.join(", ") || "None"}\n   652|- Allergies: ${user.allergies?.join(", ") || "None"}`;
           }
 
           if (activeWorkoutPlan) {
-            userContext += `\n\nUser's Current Active Workout Plan (${activeWorkoutPlan.name}):\n   642|- Goal: ${activeWorkoutPlan.generatedParams.fitnessGoal?.replace(/_/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') || "N/A"}\n   643|- Current Weight: ${activeWorkoutPlan.generatedParams.currentWeight || "N/A"}kg\n   644|- Target Weight: ${activeWorkoutPlan.generatedParams.targetWeight || "N/A"}kg\n   645|- Workout Type: ${activeWorkoutPlan.generatedParams.workoutType || "N/A"}\n   646|- Training Method: ${activeWorkoutPlan.generatedParams.trainingMethod || "N/A"}\n   647|- Strength Level: ${activeWorkoutPlan.generatedParams.strengthLevel || "N/A"}\n   648|- Time Commitment: ${activeWorkoutPlan.generatedParams.timeCommitment || "N/A"} min\n   649|- Days Per Week: ${activeWorkoutPlan.generatedParams.daysPerWeek || "N/A"}\n   650|- Duration: ${activeWorkoutPlan.generatedParams.durationWeeks || "N/A"} weeks\n   651|- Plan Details (first day): ${JSON.stringify(activeWorkoutPlan.planContent[0])}...`;
+            userContext += `\n\nUser's Current Active Workout Plan (${activeWorkoutPlan.name}):\n   657|- Goal: ${activeWorkoutPlan.generatedParams.fitnessGoal?.replace(/_/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') || "N/A"}\n   658|- Current Weight: ${activeWorkoutPlan.generatedParams.currentWeight || "N/A"}kg\n   659|- Target Weight: ${activeWorkoutPlan.generatedParams.targetWeight || "N/A"}kg\n   660|- Workout Type: ${activeWorkoutPlan.generatedParams.workoutType || "N/A"}\n   661|- Training Method: ${activeWorkoutPlan.generatedParams.trainingMethod || "N/A"}\n   662|- Strength Level: ${activeWorkoutPlan.generatedParams.strengthLevel || "N/A"}\n   663|- Time Commitment: ${activeWorkoutPlan.generatedParams.timeCommitment || "N/A"} min\n   664|- Days Per Week: ${activeWorkoutPlan.generatedParams.daysPerWeek || "N/A"}\n   665|- Duration: ${activeWorkoutPlan.generatedParams.durationWeeks || "N/A"} weeks\n   666|- Plan Details (first day): ${JSON.stringify(activeWorkoutPlan.planContent[0])}...`;
           }
         }
       } catch (contextError) {
@@ -717,6 +735,209 @@ router.post("/chat", async (req, res) => {
     }
     res.status(500).json({
       error: "Failed to process chat message",
+      details: error.message,
+    });
+  }
+});
+
+// New endpoint to generate a diet chart
+router.post("/generate-diet-chart", async (req, res) => {
+  try {
+    console.log("Received generate-diet-chart request body:", req.body);
+    const { userId, durationWeeks, fitnessGoal, currentWeight, targetWeight, diseases, allergies, activeWorkoutPlan } = req.body;
+
+    if (!userId || !durationWeeks || !fitnessGoal || !currentWeight) {
+      return res.status(400).json({ error: "Missing required fields for diet chart generation" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const latestBMI = await BMI.findOne({ userId }).sort({ date: -1 });
+
+    let dietChartPrompt = `Generate a ${durationWeeks}-week diet chart for a user with the following details:
+    - Fitness Goal: ${fitnessGoal}
+    - Current Weight: ${currentWeight}kg
+    - Target Weight: ${targetWeight || "Not specified"}kg
+    - Diseases: ${diseases?.join(", ") || "None"}
+    - Allergies: ${allergies?.join(", ") || "None"}
+    `;
+
+    if (latestBMI) {
+      dietChartPrompt += `\n- BMI: ${latestBMI.bmi} (${latestBMI.category})\n- Age: ${latestBMI.age}\n- Height: ${latestBMI.heightFeet}'${latestBMI.heightInches}"`;
+    }
+
+    if (activeWorkoutPlan) {
+      dietChartPrompt += `\n\nUser's Current Active Workout Plan (ID: ${activeWorkoutPlan._id}):\n- Name: ${activeWorkoutPlan.name}\n- Goal: ${activeWorkoutPlan.generatedParams.fitnessGoal?.replace(/_/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') || "N/A"}\n- Days Per Week: ${activeWorkoutPlan.generatedParams.daysPerWeek || "N/A"}\n- Workout Type: ${activeWorkoutPlan.generatedParams.workoutType || "N/A"}\n- Intensity: ${activeWorkoutPlan.generatedParams.intensity || "N/A"}\n- Time Commitment: ${activeWorkoutPlan.generatedParams.timeCommitment || "N/A"} minutes\n- Current Week: ${activeWorkoutPlan.currentWeek || "N/A"} of ${activeWorkoutPlan.durationWeeks || "N/A"} weeks`;
+    }
+
+    dietChartPrompt += `\n\nProvide a detailed meal plan for each day of the week, including breakfast, lunch, dinner, and snacks. Specify portion sizes and calorie estimates. Ensure the plan is healthy, balanced, and considers the user's health conditions, fitness goal, and active workout plan. The diet chart should be suitable for the entire ${durationWeeks}-week duration, with general guidelines for variation week-to-week.`;
+
+    const response = await axios.post(
+      `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
+      {
+        contents: [
+          {
+            parts: [
+              {
+                text: dietChartPrompt,
+              },
+            ],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.8,
+          maxOutputTokens: 8000,
+          topP: 0.9,
+          topK: 20,
+        },
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: 25000,
+      }
+    );
+
+    let dietChartContent = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "Failed to generate diet chart.";
+
+    // Optional: Parse and structure the diet chart if a specific JSON format is desired from Gemini
+    // For now, sending as plain text/markdown string.
+
+    res.status(200).json({
+      success: true,
+      dietChart: dietChartContent,
+    });
+  } catch (error) {
+    console.error("Error generating diet chart:", error);
+    if (error.response) {
+      console.error("Gemini API response error:", error.response.data);
+    }
+    res.status(500).json({
+      error: "Failed to generate diet chart",
+      details: error.message,
+    });
+  }
+});
+
+// Save diet chart
+router.post("/diet-chart/save", async (req, res) => {
+  try {
+    const { userId, workoutPlanId, dietChart, durationWeeks } = req.body;
+
+    if (!userId || !workoutPlanId || !dietChart) {
+      return res.status(400).json({
+        error: "Missing required fields: userId, workoutPlanId, and dietChart",
+      });
+    }
+
+    // Deactivate any existing diet charts for this workout plan
+    await DietChart.updateMany(
+      { userId: userId, workoutPlanId: workoutPlanId },
+      { isActive: false }
+    );
+
+    const newDietChart = new DietChart({
+      userId,
+      workoutPlanId,
+      dietChart,
+      durationWeeks,
+      isActive: true,
+    });
+
+    await newDietChart.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Diet chart saved successfully",
+      dietChart: newDietChart,
+    });
+  } catch (error) {
+    console.error("Error saving diet chart:", error);
+    res.status(500).json({
+      error: "Failed to save diet chart",
+      details: error.message,
+    });
+  }
+});
+
+// Get diet chart for a specific workout plan
+router.get("/diet-chart/:userId/:workoutPlanId", async (req, res) => {
+  try {
+    console.log("Received diet-chart GET request. Params:", req.params);
+    console.log("Received diet-chart GET request. Query:", req.query);
+    const { userId, workoutPlanId } = req.params;
+
+    const dietChart = await DietChart.findOne({
+      userId: userId,
+      workoutPlanId: workoutPlanId,
+      isActive: true,
+    });
+
+    if (!dietChart) {
+      return res.status(404).json({
+        error: "No active diet chart found for this workout plan",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      dietChart: dietChart,
+    });
+  } catch (error) {
+    console.error("Error fetching diet chart:", error);
+    res.status(500).json({
+      error: "Failed to fetch diet chart",
+      details: error.message,
+    });
+  }
+});
+
+// Get all diet charts for a user
+router.get("/diet-charts/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const dietCharts = await DietChart.find({ userId: userId })
+      .populate("workoutPlanId", "name description")
+      .sort({ generatedAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      dietCharts: dietCharts,
+    });
+  } catch (error) {
+    console.error("Error fetching diet charts:", error);
+    res.status(500).json({
+      error: "Failed to fetch diet charts",
+      details: error.message,
+    });
+  }
+});
+
+// Delete diet chart
+router.delete("/diet-chart/:dietChartId", async (req, res) => {
+  try {
+    const { dietChartId } = req.params;
+
+    const dietChart = await DietChart.findById(dietChartId);
+    if (!dietChart) {
+      return res.status(404).json({
+        error: "Diet chart not found",
+      });
+    }
+
+    await DietChart.findByIdAndDelete(dietChartId);
+
+    res.status(200).json({
+      success: true,
+      message: "Diet chart deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting diet chart:", error);
+    res.status(500).json({
+      error: "Failed to delete diet chart",
       details: error.message,
     });
   }
