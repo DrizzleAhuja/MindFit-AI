@@ -72,6 +72,11 @@ export default function DietChartGenerator()  {
     fetchActiveWorkoutPlan();
   }, [user]);
 
+  // Clear savedDietChart when activeWorkoutPlan changes
+  useEffect(() => {
+    setSavedDietChart(null);
+  }, [activeWorkoutPlan]);
+
   // Check for existing diet chart
   useEffect(() => {
     const checkExistingDietChart = async () => {
@@ -459,16 +464,16 @@ export default function DietChartGenerator()  {
             </div>
             
             <div className="p-6 max-h-screen overflow-y-auto">
-              {savedDietChart ? (
-                <div className="prose prose-invert max-w-none">
-                  <div className="whitespace-pre-wrap text-gray-300 leading-relaxed">
-                    {savedDietChart}
-                  </div>
-                </div>
-              ) : dietChart ? (
+              {dietChart ? (
                 <div className="prose prose-invert max-w-none">
                   <div className="whitespace-pre-wrap text-gray-300 leading-relaxed">
                     {dietChart}
+                  </div>
+                </div>
+              ) : savedDietChart ? (
+                <div className="prose prose-invert max-w-none">
+                  <div className="whitespace-pre-wrap text-gray-300 leading-relaxed">
+                    {savedDietChart}
                   </div>
                 </div>
               ) : (
