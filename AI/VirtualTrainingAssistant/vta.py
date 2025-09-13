@@ -5,8 +5,9 @@ from ultralytics import YOLO
 import plotly.graph_objects as go
 import time
 import math
-import torch # Added import for torch
-from ultralytics.nn.tasks import PoseModel # Added import for PoseModel
+import torch
+from ultralytics.nn.tasks import PoseModel
+from torch.nn import Sequential
 
 # Page configuration - MUST BE FIRST COMMAND
 st.set_page_config(page_title="Fitness Tracker", layout="wide")
@@ -360,9 +361,9 @@ else:
     # Initialize YOLO model
     @st.cache_resource
     def load_model():
-        # Temporarily allowlist ultralytics.nn.tasks.PoseModel for safe loading
+        # Temporarily allowlist ultralytics.nn.tasks.PoseModel and torch.nn.modules.container.Sequential for safe loading
         # ONLY do this if you trust the source of yolov8n-pose.pt
-        torch.serialization.add_safe_globals([PoseModel]) # Use directly imported PoseModel
+        torch.serialization.add_safe_globals([PoseModel, Sequential])
         return YOLO('yolov8n-pose.pt')
 
     model = load_model()
