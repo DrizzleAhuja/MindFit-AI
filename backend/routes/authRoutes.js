@@ -46,9 +46,12 @@ router.post("/generate-plan", async (req, res) => {
       !bmiData ||
       !durationWeeks ||
       !currentWeight ||
-      ((fitnessGoal === "lose_weight" || fitnessGoal === "gain_weight") && !targetWeight)
+      ((fitnessGoal === "lose_weight" || fitnessGoal === "gain_weight") &&
+        !targetWeight)
     ) {
-      return res.status(400).json({ error: "All required fields are missing or invalid" });
+      return res
+        .status(400)
+        .json({ error: "All required fields are missing or invalid" });
     }
 
     // Find user by email
@@ -70,8 +73,10 @@ router.post("/generate-plan", async (req, res) => {
     ${specificGoalInstruction}
     The user's BMI data is: ${JSON.stringify(bmiData)}.
     Consider any health conditions from bmiData.diseases or bmiData.allergies to make the plan safe and effective. 
-    The user also has the following diseases: ${diseases.join(', ') || "None"}.
-    The user also has the following allergies: ${allergies.join(', ') || "None"}.
+    The user also has the following diseases: ${diseases.join(", ") || "None"}.
+    The user also has the following allergies: ${
+      allergies.join(", ") || "None"
+    }.
 
     OUTPUT REQUIREMENTS (STRICT):
     - Return a JSON ARRAY with EXACTLY ${daysPerWeek} objects (representing ONE week's schedule). No more, no less.
@@ -121,8 +126,7 @@ router.post("/generate-plan", async (req, res) => {
     );
 
     let planContentRaw =
-      response.data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "[]"; // Default to empty array if plan generation fails
+      response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "[]"; // Default to empty array if plan generation fails
 
     // Strip markdown code block delimiters if present
     if (planContentRaw.startsWith("```json")) {
@@ -135,12 +139,15 @@ router.post("/generate-plan", async (req, res) => {
 
     // Attempt to fix common JSON issues from AI, like unescaped quotes in strings
     // This is a heuristic and might not catch all cases, but addresses common ones.
-    planContentRaw = planContentRaw.replace(/"(\w+)":\s*"([^"]*)"([^",}\]]*)"([^"]*)"/g, (match, p1, p2, p3, p4) => {
-      // This regex tries to find an unescaped double quote within a string value.
-      // It's tricky to get perfectly right with regex, but this will help with basic cases.
-      // A more robust solution might involve a JSON linter/formatter library.
-      return `"${p1}": "${p2}\'${p3.replace(/'/g, "\\'")}\'${p4}"`;
-    });
+    planContentRaw = planContentRaw.replace(
+      /"(\w+)":\s*"([^"]*)"([^",}\]]*)"([^"]*)"/g,
+      (match, p1, p2, p3, p4) => {
+        // This regex tries to find an unescaped double quote within a string value.
+        // It's tricky to get perfectly right with regex, but this will help with basic cases.
+        // A more robust solution might involve a JSON linter/formatter library.
+        return `"${p1}": "${p2}\'${p3.replace(/'/g, "\\'")}\'${p4}"`;
+      }
+    );
 
     let planContent;
     try {
@@ -193,20 +200,41 @@ router.post("/generate-plan", async (req, res) => {
 // New endpoint to save a workout plan
 router.post("/workout-plan/save", async (req, res) => {
   try {
-    const { userId, name, description, planContent, generatedParams, durationWeeks } = req.body;
+    const {
+      userId,
+      name,
+      description,
+      planContent,
+      generatedParams,
+      durationWeeks,
+    } = req.body;
 
-    if (!userId || !name || !planContent || !generatedParams || !durationWeeks) {
-      return res.status(400).json({ error: "Missing required fields to save workout plan" });
+    if (
+      !userId ||
+      !name ||
+      !planContent ||
+      !generatedParams ||
+      !durationWeeks
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Missing required fields to save workout plan" });
     }
 
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     // Deactivate any existing active plans for this user
-    await WorkoutPlan.updateMany({ userId: userId, isActive: true }, { isActive: false });
+    await WorkoutPlan.updateMany(
+      { userId: userId, isActive: true },
+      { isActive: false }
+    );
 
     // Deactivate any existing active diet charts for this user
-    await DietChart.updateMany({ userId: userId, isActive: true }, { isActive: false });
+    await DietChart.updateMany(
+      { userId: userId, isActive: true },
+      { isActive: false }
+    );
 
     const workoutPlan = new WorkoutPlan({
       userId,
@@ -221,7 +249,9 @@ router.post("/workout-plan/save", async (req, res) => {
       }, // Ensure durationWeeks is explicitly saved in generatedParams
       durationWeeks,
       isActive: true, // Mark the new plan as active
-      endDate: new Date(new Date().setDate(new Date().getDate() + (durationWeeks * 7))), // Calculate endDate
+      endDate: new Date(
+        new Date().setDate(new Date().getDate() + durationWeeks * 7)
+      ), // Calculate endDate
       currentWeek: 1, // Initialize current week
       completed: false, // Initialize as not completed
       dayCompletions: [], // Initialize empty day completions
@@ -259,25 +289,45 @@ router.get("/workout-plan/active/:userId", async (req, res) => {
 
     if (!activePlan) {
       // Fallback: latest plan (even if completed), useful to show info when no active exists
-      activePlan = await WorkoutPlan.findOne({ userId }).sort({ createdAt: -1 });
+      activePlan = await WorkoutPlan.findOne({ userId }).sort({
+        createdAt: -1,
+      });
       if (!activePlan) {
-        return res.status(404).json({ error: "No active workout plan found for this user" });
+        return res
+          .status(404)
+          .json({ error: "No active workout plan found for this user" });
       }
     }
 
     // Fetch workout session logs for the active plan
-    const sessionLogs = await WorkoutSessionLog.find({ workoutPlanId: activePlan._id }).sort({ date: 1 });
+    const sessionLogs = await WorkoutSessionLog.find({
+      workoutPlanId: activePlan._id,
+    }).sort({ date: 1 });
 
-    console.log("Backend /workout-plan/active/:userId sending sessionLogs:", sessionLogs.map(log => ({ weekNumber: log.weekNumber, dayIndex: log.dayIndex, completedExercises: log.workoutDetails.filter(ex => ex.completed).map(ex => ex.exerciseName) })));
+    console.log(
+      "Backend /workout-plan/active/:userId sending sessionLogs:",
+      sessionLogs.map((log) => ({
+        weekNumber: log.weekNumber,
+        dayIndex: log.dayIndex,
+        completedExercises: log.workoutDetails
+          .filter((ex) => ex.completed)
+          .map((ex) => ex.exerciseName),
+      }))
+    );
 
     // Get the plan content for the current week, prioritizing overrides
-    const currentWeekPlanContent = activePlan.weeklyContentOverrides.get(activePlan.currentWeek.toString()) || activePlan.planContent;
+    const currentWeekPlanContent =
+      activePlan.weeklyContentOverrides.get(
+        activePlan.currentWeek.toString()
+      ) || activePlan.planContent;
 
     res.status(200).json({
-      success: true, plan: {
+      success: true,
+      plan: {
         ...activePlan.toObject(),
         planContent: currentWeekPlanContent, // Ensure we send the correct week's plan content
-      }, sessionLogs
+      },
+      sessionLogs,
     });
   } catch (error) {
     console.error("Error fetching active workout plan:", error);
@@ -293,7 +343,9 @@ router.get("/workout-plan/:planId/sessions", async (req, res) => {
   try {
     const { planId } = req.params;
 
-    const sessionLogs = await WorkoutSessionLog.find({ workoutPlanId: planId }).sort({ date: 1 });
+    const sessionLogs = await WorkoutSessionLog.find({
+      workoutPlanId: planId,
+    }).sort({ date: 1 });
 
     res.status(200).json({ success: true, sessionLogs });
   } catch (error) {
@@ -308,10 +360,27 @@ router.get("/workout-plan/:planId/sessions", async (req, res) => {
 // New endpoint to log a workout session
 router.post("/workout-session/log", async (req, res) => {
   try {
-    const { userId, workoutPlanId, workoutDetails, overallNotes, perceivedExertion, durationMinutes, dayIndex, date, weekNumber } = req.body;
+    const {
+      userId,
+      workoutPlanId,
+      workoutDetails,
+      overallNotes,
+      perceivedExertion,
+      durationMinutes,
+      dayIndex,
+      date,
+      weekNumber,
+    } = req.body;
 
-    if (!userId || !workoutPlanId || !workoutDetails || dayIndex === undefined) {
-      return res.status(400).json({ error: "Missing required fields to log workout session" });
+    if (
+      !userId ||
+      !workoutPlanId ||
+      !workoutDetails ||
+      dayIndex === undefined
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Missing required fields to log workout session" });
     }
 
     const user = await User.findById(userId);
@@ -320,7 +389,10 @@ router.post("/workout-session/log", async (req, res) => {
     const plan = await WorkoutPlan.findById(workoutPlanId);
     if (!plan) return res.status(404).json({ error: "Workout plan not found" });
     if (plan.completed || plan.isActive === false) {
-      return res.status(400).json({ error: "This workout plan is closed or completed. Activate a new plan to continue logging." });
+      return res.status(400).json({
+        error:
+          "This workout plan is closed or completed. Activate a new plan to continue logging.",
+      });
     }
 
     // Use weekNumber from req.body if provided, otherwise compute from date relative to plan.startDate
@@ -328,7 +400,8 @@ router.post("/workout-session/log", async (req, res) => {
     let actualWeekNumber = weekNumber;
     if (actualWeekNumber === undefined) {
       const msInWeek = 7 * 24 * 60 * 60 * 1000;
-      actualWeekNumber = Math.floor((sessionDate - new Date(plan.startDate)) / msInWeek) + 1;
+      actualWeekNumber =
+        Math.floor((sessionDate - new Date(plan.startDate)) / msInWeek) + 1;
     }
 
     console.log("Backend /workout-session/log received:", {
@@ -336,12 +409,18 @@ router.post("/workout-session/log", async (req, res) => {
       workoutPlanId,
       dayIndex,
       actualWeekNumber,
-      workoutDetails: workoutDetails.map(ex => ({ name: ex.exerciseName, completed: ex.completed })),
+      workoutDetails: workoutDetails.map((ex) => ({
+        name: ex.exerciseName,
+        completed: ex.completed,
+      })),
     });
 
     // Get the actual plan content for this specific week and dayIndex, prioritizing overrides
-    const currentWeekPlanContent = plan.weeklyContentOverrides.get(actualWeekNumber.toString()) || plan.planContent;
-    const plannedDayExercises = currentWeekPlanContent[dayIndex]?.exercises || [];
+    const currentWeekPlanContent =
+      plan.weeklyContentOverrides.get(actualWeekNumber.toString()) ||
+      plan.planContent;
+    const plannedDayExercises =
+      currentWeekPlanContent[dayIndex]?.exercises || [];
 
     // Find or create workout session log
     let workoutSession = await WorkoutSessionLog.findOne({
@@ -353,8 +432,10 @@ router.post("/workout-session/log", async (req, res) => {
 
     if (workoutSession) {
       // Merge existing workout details with new ones
-      const existingDetailsMap = new Map(workoutSession.workoutDetails.map(d => [d.exerciseName, d]));
-      workoutDetails.forEach(newDetail => {
+      const existingDetailsMap = new Map(
+        workoutSession.workoutDetails.map((d) => [d.exerciseName, d])
+      );
+      workoutDetails.forEach((newDetail) => {
         if (existingDetailsMap.has(newDetail.exerciseName)) {
           // Update existing exercise details
           const existingDetail = existingDetailsMap.get(newDetail.exerciseName);
@@ -390,12 +471,16 @@ router.post("/workout-session/log", async (req, res) => {
     }
 
     // Determine if all planned exercises for THIS DAY are completed within the workoutSession
-    let allPlannedExercisesCompletedForThisDay = plannedDayExercises.length > 0 && plannedDayExercises.every(plannedEx => {
-      return workoutSession.workoutDetails.some(loggedEx =>
-        loggedEx.exerciseName === plannedEx.name && loggedEx.completed
-      );
-    });
-    workoutSession.allExercisesCompleted = allPlannedExercisesCompletedForThisDay; // Update the session log's own completion status
+    let allPlannedExercisesCompletedForThisDay =
+      plannedDayExercises.length > 0 &&
+      plannedDayExercises.every((plannedEx) => {
+        return workoutSession.workoutDetails.some(
+          (loggedEx) =>
+            loggedEx.exerciseName === plannedEx.name && loggedEx.completed
+        );
+      });
+    workoutSession.allExercisesCompleted =
+      allPlannedExercisesCompletedForThisDay; // Update the session log's own completion status
 
     await workoutSession.save();
 
@@ -406,25 +491,44 @@ router.post("/workout-session/log", async (req, res) => {
     }
 
     let planUpdated = false;
-    const totalDaysPerWeek = plan.generatedParams?.daysPerWeek || plan.planContent.length;
+    const totalDaysPerWeek =
+      plan.generatedParams?.daysPerWeek || plan.planContent.length;
     // const uniqueDayCompletionId = `${weekNumber}-${dayIndex}`;
-    const wasDayAlreadyCompleted = plan.dayCompletions.some(dc => dc.weekNumber === actualWeekNumber && dc.dayIndex === dayIndex);
+    const wasDayAlreadyCompleted = plan.dayCompletions.some(
+      (dc) => dc.weekNumber === actualWeekNumber && dc.dayIndex === dayIndex
+    );
 
     if (allPlannedExercisesCompletedForThisDay && !wasDayAlreadyCompleted) {
       // Mark day as completed in the plan
-      plan.dayCompletions.push({ weekNumber: actualWeekNumber, dayIndex, sessionId: workoutSession._id, date: sessionDate });
+      plan.dayCompletions.push({
+        weekNumber: actualWeekNumber,
+        dayIndex,
+        sessionId: workoutSession._id,
+        date: sessionDate,
+      });
       plan.completedDayCount = (plan.completedDayCount || 0) + 1;
       planUpdated = true;
-    } else if (!allPlannedExercisesCompletedForThisDay && wasDayAlreadyCompleted) {
+    } else if (
+      !allPlannedExercisesCompletedForThisDay &&
+      wasDayAlreadyCompleted
+    ) {
       // If a day was previously completed but now some exercises are unchecked, unmark it
-      plan.dayCompletions = plan.dayCompletions.filter(dc => !(dc.weekNumber === actualWeekNumber && dc.dayIndex === dayIndex));
+      plan.dayCompletions = plan.dayCompletions.filter(
+        (dc) =>
+          !(dc.weekNumber === actualWeekNumber && dc.dayIndex === dayIndex)
+      );
       plan.completedDayCount = (plan.completedDayCount || 0) - 1;
       planUpdated = true;
     }
 
     // Check for weekly completion and potentially generate next week's plan
-    const currentWeekCompletions = plan.dayCompletions.filter(dc => dc.weekNumber === plan.currentWeek);
-    if (currentWeekCompletions.length >= totalDaysPerWeek && plan.currentWeek === actualWeekNumber) {
+    const currentWeekCompletions = plan.dayCompletions.filter(
+      (dc) => dc.weekNumber === plan.currentWeek
+    );
+    if (
+      currentWeekCompletions.length >= totalDaysPerWeek &&
+      plan.currentWeek === actualWeekNumber
+    ) {
       // Current week is completed
       if (plan.currentWeek < plan.durationWeeks) {
         // Move to the next week only if not the final week
@@ -449,28 +553,39 @@ router.post("/workout-session/log", async (req, res) => {
             targetWeight: gp.targetWeight, // Pass targetWeight for regeneration
           };
           console.log(`Generating plan for week ${plan.currentWeek}...`);
-          const generateResponse = await axios.post(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
-            contents: [
-              {
-                parts: [
-                  {
-                    text: `Create a varied workout plan for week ${plan.currentWeek} given the user's initial parameters: ${JSON.stringify(requestData)}. The previous week's plan content was: ${JSON.stringify(plan.planContent)}. Only return the JSON array for this week's plan.`, // Include previous plan content for variation
-                  },
-                ],
+          const generateResponse = await axios.post(
+            `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
+            {
+              contents: [
+                {
+                  parts: [
+                    {
+                      text: `Create a varied workout plan for week ${
+                        plan.currentWeek
+                      } given the user's initial parameters: ${JSON.stringify(
+                        requestData
+                      )}. The previous week's plan content was: ${JSON.stringify(
+                        plan.planContent
+                      )}. Only return the JSON array for this week's plan.`, // Include previous plan content for variation
+                    },
+                  ],
+                },
+              ],
+              generationConfig: {
+                temperature: 0.8,
+                maxOutputTokens: 8000,
+                topP: 0.9,
+                topK: 20,
               },
-            ],
-            generationConfig: {
-              temperature: 0.8,
-              maxOutputTokens: 8000,
-              topP: 0.9,
-              topK: 20,
             },
-          }, {
-            headers: { "Content-Type": "application/json" },
-            timeout: 30000,
-          });
+            {
+              headers: { "Content-Type": "application/json" },
+              timeout: 30000,
+            }
+          );
 
-          let newWeeklyPlanRaw = generateResponse.data?.candidates?.[0]?.content?.parts?.[0]?.text;
+          let newWeeklyPlanRaw =
+            generateResponse.data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
           // Strip markdown code fences if present
           if (newWeeklyPlanRaw.startsWith("```json")) {
@@ -486,15 +601,27 @@ router.post("/workout-session/log", async (req, res) => {
             // Attempt to parse the new plan content
             newWeeklyPlanContent = JSON.parse(newWeeklyPlanRaw);
             if (!Array.isArray(newWeeklyPlanContent)) {
-              throw new Error("AI did not return a valid JSON array for the new weekly plan.");
+              throw new Error(
+                "AI did not return a valid JSON array for the new weekly plan."
+              );
             }
             // Store the newly generated plan in weeklyContentOverrides
-            plan.weeklyContentOverrides.set(plan.currentWeek.toString(), newWeeklyPlanContent);
-            console.log(`Successfully generated and stored plan for week ${plan.currentWeek} in overrides.`);
-
+            plan.weeklyContentOverrides.set(
+              plan.currentWeek.toString(),
+              newWeeklyPlanContent
+            );
+            console.log(
+              `Successfully generated and stored plan for week ${plan.currentWeek} in overrides.`
+            );
           } catch (parseError) {
-            console.error(`Error parsing AI generated plan for week ${plan.currentWeek}:`, parseError.message);
-            console.error("Raw AI response for new weekly plan:", newWeeklyPlanRaw);
+            console.error(
+              `Error parsing AI generated plan for week ${plan.currentWeek}:`,
+              parseError.message
+            );
+            console.error(
+              "Raw AI response for new weekly plan:",
+              newWeeklyPlanRaw
+            );
             // If parsing fails, we should not proceed with an invalid plan
             // You might want to add more robust error handling here, e.g., keep the old plan or mark the week as problematic.
             return res.status(500).json({
@@ -506,16 +633,18 @@ router.post("/workout-session/log", async (req, res) => {
 
           // Do not overwrite plan.planContent directly here, as weeklyContentOverrides will now manage week-specific plans.
           // plan.planContent = newWeeklyPlanContent; // OLD: This line will be removed or commented out.
-
         } catch (aiError) {
-          console.error(`Error generating plan for week ${plan.currentWeek}:`, aiError);
+          console.error(
+            `Error generating plan for week ${plan.currentWeek}:`,
+            aiError
+          );
           // Continue without new plan
         }
       }
     }
 
     // Check overall plan completion based on completedDayCount
-    if (plan.completedDayCount >= (plan.durationWeeks * totalDaysPerWeek)) {
+    if (plan.completedDayCount >= plan.durationWeeks * totalDaysPerWeek) {
       plan.completed = true;
       plan.isActive = false;
       plan.closedAt = new Date();
@@ -525,7 +654,20 @@ router.post("/workout-session/log", async (req, res) => {
       await plan.save();
     }
 
-    res.status(201).json({ success: true, message: "Workout session logged successfully", session: workoutSession, planProgress: { completed: plan.completed, completedDayCount: plan.completedDayCount, totalDays: plan.durationWeeks * (plan.generatedParams?.daysPerWeek || plan.planContent.length || 0), currentWeek: plan.currentWeek, weeklyContentOverrides: Object.fromEntries(plan.weeklyContentOverrides) } });
+    res.status(201).json({
+      success: true,
+      message: "Workout session logged successfully",
+      session: workoutSession,
+      planProgress: {
+        completed: plan.completed,
+        completedDayCount: plan.completedDayCount,
+        totalDays:
+          plan.durationWeeks *
+          (plan.generatedParams?.daysPerWeek || plan.planContent.length || 0),
+        currentWeek: plan.currentWeek,
+        weeklyContentOverrides: Object.fromEntries(plan.weeklyContentOverrides),
+      },
+    });
   } catch (error) {
     console.error("Error logging workout session:", error);
     res.status(500).json({
@@ -572,17 +714,27 @@ router.put("/workout-plan/update/:planId", async (req, res) => {
     const { name, description, isActive } = req.body;
 
     const workoutPlan = await WorkoutPlan.findById(planId);
-    if (!workoutPlan) return res.status(404).json({ error: "Workout plan not found" });
+    if (!workoutPlan)
+      return res.status(404).json({ error: "Workout plan not found" });
 
     if (isActive !== undefined) {
       if (workoutPlan.completed && isActive) {
-        return res.status(400).json({ error: "Completed plans cannot be reactivated. Please create a new plan." });
+        return res.status(400).json({
+          error:
+            "Completed plans cannot be reactivated. Please create a new plan.",
+        });
       }
       // If setting this plan to active, deactivate all other plans for the user
       if (isActive) {
-        await WorkoutPlan.updateMany({ userId: workoutPlan.userId, isActive: true }, { isActive: false });
+        await WorkoutPlan.updateMany(
+          { userId: workoutPlan.userId, isActive: true },
+          { isActive: false }
+        );
         // Deactivate any existing active diet charts for this user
-        await DietChart.updateMany({ userId: workoutPlan.userId, isActive: true }, { isActive: false });
+        await DietChart.updateMany(
+          { userId: workoutPlan.userId, isActive: true },
+          { isActive: false }
+        );
       }
       workoutPlan.isActive = isActive;
     }
@@ -591,7 +743,11 @@ router.put("/workout-plan/update/:planId", async (req, res) => {
 
     await workoutPlan.save();
 
-    res.status(200).json({ success: true, message: "Workout plan updated successfully", plan: workoutPlan });
+    res.status(200).json({
+      success: true,
+      message: "Workout plan updated successfully",
+      plan: workoutPlan,
+    });
   } catch (error) {
     console.error("Error updating workout plan:", error);
     res.status(500).json({
@@ -609,7 +765,8 @@ router.delete("/workout-plan/delete/:planId", async (req, res) => {
     const { planId } = req.params;
 
     const workoutPlan = await WorkoutPlan.findById(planId);
-    if (!workoutPlan) return res.status(404).json({ error: "Workout plan not found" });
+    if (!workoutPlan)
+      return res.status(404).json({ error: "Workout plan not found" });
 
     // Delete associated workout session logs
     await WorkoutSessionLog.deleteMany({ workoutPlanId: planId });
@@ -626,7 +783,11 @@ router.delete("/workout-plan/delete/:planId", async (req, res) => {
     // Delete the workout plan itself
     await workoutPlan.deleteOne();
 
-    res.status(200).json({ success: true, message: "Workout plan, associated logs, and diet charts deleted successfully" });
+    res.status(200).json({
+      success: true,
+      message:
+        "Workout plan, associated logs, and diet charts deleted successfully",
+    });
   } catch (error) {
     console.error("Error deleting workout plan:", error);
     res.status(500).json({
@@ -663,16 +824,59 @@ router.post("/chat", async (req, res) => {
             .lean();
 
           // Get active workout plan from the new WorkoutPlan model
-          const activeWorkoutPlan = await WorkoutPlan.findOne({ userId: user._id, isActive: true })
+          const activeWorkoutPlan = await WorkoutPlan.findOne({
+            userId: user._id,
+            isActive: true,
+          })
             .sort({ createdAt: -1 })
             .lean();
 
           if (latestBMI) {
-            userContext += `\n\nUser's Health Profile:\n   645|- BMI: ${latestBMI.bmi} (${latestBMI.category})\n   646|- Age: ${latestBMI.age}\n   647|- Height: ${latestBMI.heightFeet}'${latestBMI.heightInches}"\n   648|- Weight: ${latestBMI.weight}kg\n   649|- Target Weight: ${latestBMI.targetWeight || "Not set"}kg\n   650|- Target Timeline: ${latestBMI.targetTimeline || "Not set"}\n   651|- Diseases: ${user.diseases?.join(", ") || "None"}\n   652|- Allergies: ${user.allergies?.join(", ") || "None"}`;
+            userContext += `\n\nUser's Health Profile:\n   645|- BMI: ${
+              latestBMI.bmi
+            } (${latestBMI.category})\n   646|- Age: ${
+              latestBMI.age
+            }\n   647|- Height: ${latestBMI.heightFeet}'${
+              latestBMI.heightInches
+            }"\n   648|- Weight: ${
+              latestBMI.weight
+            }kg\n   649|- Target Weight: ${
+              latestBMI.targetWeight || "Not set"
+            }kg\n   650|- Target Timeline: ${
+              latestBMI.targetTimeline || "Not set"
+            }\n   651|- Diseases: ${
+              user.diseases?.join(", ") || "None"
+            }\n   652|- Allergies: ${user.allergies?.join(", ") || "None"}`;
           }
 
           if (activeWorkoutPlan) {
-            userContext += `\n\nUser's Current Active Workout Plan (${activeWorkoutPlan.name}):\n   657|- Goal: ${activeWorkoutPlan.generatedParams.fitnessGoal?.replace(/_/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') || "N/A"}\n   658|- Current Weight: ${activeWorkoutPlan.generatedParams.currentWeight || "N/A"}kg\n   659|- Target Weight: ${activeWorkoutPlan.generatedParams.targetWeight || "N/A"}kg\n   660|- Workout Type: ${activeWorkoutPlan.generatedParams.workoutType || "N/A"}\n   661|- Training Method: ${activeWorkoutPlan.generatedParams.trainingMethod || "N/A"}\n   662|- Strength Level: ${activeWorkoutPlan.generatedParams.strengthLevel || "N/A"}\n   663|- Time Commitment: ${activeWorkoutPlan.generatedParams.timeCommitment || "N/A"} min\n   664|- Days Per Week: ${activeWorkoutPlan.generatedParams.daysPerWeek || "N/A"}\n   665|- Duration: ${activeWorkoutPlan.generatedParams.durationWeeks || "N/A"} weeks\n   666|- Plan Details (first day): ${JSON.stringify(activeWorkoutPlan.planContent[0])}...`;
+            userContext += `\n\nUser's Current Active Workout Plan (${
+              activeWorkoutPlan.name
+            }):\n   657|- Goal: ${
+              activeWorkoutPlan.generatedParams.fitnessGoal
+                ?.replace(/_/g, " ")
+                .split(" ")
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" ") || "N/A"
+            }\n   658|- Current Weight: ${
+              activeWorkoutPlan.generatedParams.currentWeight || "N/A"
+            }kg\n   659|- Target Weight: ${
+              activeWorkoutPlan.generatedParams.targetWeight || "N/A"
+            }kg\n   660|- Workout Type: ${
+              activeWorkoutPlan.generatedParams.workoutType || "N/A"
+            }\n   661|- Training Method: ${
+              activeWorkoutPlan.generatedParams.trainingMethod || "N/A"
+            }\n   662|- Strength Level: ${
+              activeWorkoutPlan.generatedParams.strengthLevel || "N/A"
+            }\n   663|- Time Commitment: ${
+              activeWorkoutPlan.generatedParams.timeCommitment || "N/A"
+            } min\n   664|- Days Per Week: ${
+              activeWorkoutPlan.generatedParams.daysPerWeek || "N/A"
+            }\n   665|- Duration: ${
+              activeWorkoutPlan.generatedParams.durationWeeks || "N/A"
+            } weeks\n   666|- Plan Details (first day): ${JSON.stringify(
+              activeWorkoutPlan.planContent[0]
+            )}...`;
           }
         }
       } catch (contextError) {
@@ -743,16 +947,53 @@ router.post("/chat", async (req, res) => {
 // New endpoint to generate a diet chart
 router.post("/generate-diet-chart", async (req, res) => {
   try {
-    const { userId, durationWeeks, fitnessGoal, currentWeight, targetWeight, diseases, allergies, activeWorkoutPlan } = req.body;
+    const {
+      userId,
+      durationWeeks,
+      fitnessGoal,
+      currentWeight,
+      targetWeight,
+      diseases,
+      allergies,
+      activeWorkoutPlan,
+    } = req.body;
+
+    console.log("🤖 [DIET CHART GENERATE] Request received:", {
+      userId,
+      durationWeeks,
+      fitnessGoal,
+      currentWeight,
+      targetWeight,
+      hasActiveWorkoutPlan: !!activeWorkoutPlan,
+      activeWorkoutPlanId: activeWorkoutPlan?._id,
+    });
 
     if (!userId || !durationWeeks || !fitnessGoal || !currentWeight) {
-      return res.status(400).json({ error: "Missing required fields for diet chart generation" });
+      console.log("❌ [DIET CHART GENERATE] Missing required fields:", {
+        hasUserId: !!userId,
+        hasDurationWeeks: !!durationWeeks,
+        hasFitnessGoal: !!fitnessGoal,
+        hasCurrentWeight: !!currentWeight,
+      });
+      return res
+        .status(400)
+        .json({ error: "Missing required fields for diet chart generation" });
     }
 
+    console.log("🔍 [DIET CHART GENERATE] Finding user...");
     const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ error: "User not found" });
+    if (!user) {
+      console.log("❌ [DIET CHART GENERATE] User not found:", userId);
+      return res.status(404).json({ error: "User not found" });
+    }
+    console.log("✅ [DIET CHART GENERATE] User found:", user.email);
 
+    console.log("🔍 [DIET CHART GENERATE] Finding latest BMI...");
     const latestBMI = await BMI.findOne({ userId }).sort({ date: -1 });
+    console.log(
+      "🔍 [DIET CHART GENERATE] Latest BMI:",
+      latestBMI ? "Found" : "Not found"
+    );
 
     let dietChartPrompt = `Generate a ${durationWeeks}-week diet chart for a user with the following details:
     - Fitness Goal: ${fitnessGoal}
@@ -767,10 +1008,34 @@ router.post("/generate-diet-chart", async (req, res) => {
     }
 
     if (activeWorkoutPlan) {
-      dietChartPrompt += `\n\nUser's Current Active Workout Plan (ID: ${activeWorkoutPlan._id}):\n- Name: ${activeWorkoutPlan.name}\n- Goal: ${activeWorkoutPlan.generatedParams.fitnessGoal?.replace(/_/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') || "N/A"}\n- Days Per Week: ${activeWorkoutPlan.generatedParams.daysPerWeek || "N/A"}\n- Workout Type: ${activeWorkoutPlan.generatedParams.workoutType || "N/A"}\n- Intensity: ${activeWorkoutPlan.generatedParams.intensity || "N/A"}\n- Time Commitment: ${activeWorkoutPlan.generatedParams.timeCommitment || "N/A"} minutes\n- Current Week: ${activeWorkoutPlan.currentWeek || "N/A"} of ${activeWorkoutPlan.durationWeeks || "N/A"} weeks`;
+      dietChartPrompt += `\n\nUser's Current Active Workout Plan (ID: ${
+        activeWorkoutPlan._id
+      }):\n- Name: ${activeWorkoutPlan.name}\n- Goal: ${
+        activeWorkoutPlan.generatedParams.fitnessGoal
+          ?.replace(/_/g, " ")
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ") || "N/A"
+      }\n- Days Per Week: ${
+        activeWorkoutPlan.generatedParams.daysPerWeek || "N/A"
+      }\n- Workout Type: ${
+        activeWorkoutPlan.generatedParams.workoutType || "N/A"
+      }\n- Intensity: ${
+        activeWorkoutPlan.generatedParams.intensity || "N/A"
+      }\n- Time Commitment: ${
+        activeWorkoutPlan.generatedParams.timeCommitment || "N/A"
+      } minutes\n- Current Week: ${activeWorkoutPlan.currentWeek || "N/A"} of ${
+        activeWorkoutPlan.durationWeeks || "N/A"
+      } weeks`;
     }
 
     dietChartPrompt += `\n\nProvide a detailed meal plan for each day of the week, including breakfast, lunch, dinner, and snacks. Specify portion sizes and calorie estimates. Ensure the plan is healthy, balanced, and considers the user's health conditions, fitness goal, and active workout plan. The diet chart should be suitable for the entire ${durationWeeks}-week duration, with general guidelines for variation week-to-week.`;
+
+    console.log("🤖 [DIET CHART GENERATE] Calling Gemini API...");
+    console.log(
+      "🤖 [DIET CHART GENERATE] Prompt length:",
+      dietChartPrompt.length
+    );
 
     const response = await axios.post(
       `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
@@ -799,14 +1064,31 @@ router.post("/generate-diet-chart", async (req, res) => {
       }
     );
 
-    let dietChartContent = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "Failed to generate diet chart.";
+    console.log("🤖 [DIET CHART GENERATE] Gemini API response received");
+    console.log("🤖 [DIET CHART GENERATE] Response status:", response.status);
+
+    let dietChartContent =
+      response.data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "Failed to generate diet chart.";
+
+    console.log(
+      "🤖 [DIET CHART GENERATE] Generated content length:",
+      dietChartContent.length
+    );
+    console.log(
+      "🤖 [DIET CHART GENERATE] Content preview:",
+      dietChartContent.substring(0, 200) + "..."
+    );
 
     // Optional: Parse and structure the diet chart if a specific JSON format is desired from Gemini
     // For now, sending as plain text/markdown string.
 
+    console.log("✅ [DIET CHART GENERATE] Sending response to frontend");
     res.status(200).json({
       success: true,
-      dietChart: dietChartContent,
+      dietChart: {
+        dietChart: dietChartContent,
+      },
     });
   } catch (error) {
     console.error("Error generating diet chart:", error);
@@ -824,19 +1106,37 @@ router.post("/generate-diet-chart", async (req, res) => {
 router.post("/diet-chart/save", async (req, res) => {
   try {
     const { userId, workoutPlanId, dietChart, durationWeeks } = req.body;
+    console.log("💾 [DIET CHART SAVE] Request received:", {
+      userId,
+      workoutPlanId,
+      hasDietChart: !!dietChart,
+      dietChartLength: dietChart?.length || 0,
+      durationWeeks,
+    });
 
     if (!userId || !workoutPlanId || !dietChart) {
+      console.log("❌ [DIET CHART SAVE] Missing required fields:", {
+        hasUserId: !!userId,
+        hasWorkoutPlanId: !!workoutPlanId,
+        hasDietChart: !!dietChart,
+      });
       return res.status(400).json({
         error: "Missing required fields: userId, workoutPlanId, and dietChart",
       });
     }
 
+    console.log("🔄 [DIET CHART SAVE] Deactivating existing diet charts...");
     // Deactivate any existing diet charts for this workout plan
-    await DietChart.updateMany(
+    const deactivateResult = await DietChart.updateMany(
       { userId: userId, workoutPlanId: workoutPlanId },
       { isActive: false }
     );
+    console.log(
+      "🔄 [DIET CHART SAVE] Deactivated existing charts:",
+      deactivateResult.modifiedCount
+    );
 
+    console.log("💾 [DIET CHART SAVE] Creating new diet chart...");
     const newDietChart = new DietChart({
       userId,
       workoutPlanId,
@@ -845,15 +1145,23 @@ router.post("/diet-chart/save", async (req, res) => {
       isActive: true,
     });
 
-    await newDietChart.save();
+    console.log("💾 [DIET CHART SAVE] Saving to database...");
+    const savedDietChart = await newDietChart.save();
+    console.log("✅ [DIET CHART SAVE] Successfully saved:", {
+      id: savedDietChart._id,
+      userId: savedDietChart.userId,
+      workoutPlanId: savedDietChart.workoutPlanId,
+      isActive: savedDietChart.isActive,
+      contentLength: savedDietChart.dietChart?.length || 0,
+    });
 
     res.status(201).json({
       success: true,
       message: "Diet chart saved successfully",
-      dietChart: newDietChart,
+      dietChart: savedDietChart,
     });
   } catch (error) {
-    console.error("Error saving diet chart:", error);
+    console.error("❌ [DIET CHART SAVE] Error saving diet chart:", error);
     res.status(500).json({
       error: "Failed to save diet chart",
       details: error.message,
@@ -865,6 +1173,10 @@ router.post("/diet-chart/save", async (req, res) => {
 router.get("/diet-chart/:userId/:workoutPlanId", async (req, res) => {
   try {
     const { userId, workoutPlanId } = req.params;
+    console.log("🔍 [DIET CHART GET] Request received:", {
+      userId,
+      workoutPlanId,
+    });
 
     const dietChart = await DietChart.findOne({
       userId: userId,
@@ -872,18 +1184,30 @@ router.get("/diet-chart/:userId/:workoutPlanId", async (req, res) => {
       isActive: true,
     });
 
+    console.log(
+      "🔍 [DIET CHART GET] Database query result:",
+      dietChart ? "Found" : "Not found"
+    );
+
     if (!dietChart) {
+      console.log("❌ [DIET CHART GET] No active diet chart found");
       return res.status(404).json({
         error: "No active diet chart found for this workout plan",
       });
     }
+
+    console.log("✅ [DIET CHART GET] Returning diet chart:", {
+      id: dietChart._id,
+      hasContent: !!dietChart.dietChart,
+      contentLength: dietChart.dietChart?.length || 0,
+    });
 
     res.status(200).json({
       success: true,
       dietChart: dietChart,
     });
   } catch (error) {
-    console.error("Error fetching diet chart:", error);
+    console.error("❌ [DIET CHART GET] Error fetching diet chart:", error);
     res.status(500).json({
       error: "Failed to fetch diet chart",
       details: error.message,
