@@ -355,7 +355,7 @@ export default function DietChartGenerator() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Left Side - Information and Controls */}
           <div className="lg:col-span-1 space-y-6">
             {/* BMI Data Display */}
@@ -601,7 +601,7 @@ export default function DietChartGenerator() {
           </div>
 
           {/* Right Side - Diet Chart Display */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-4">
             <div className="bg-gray-800 rounded-xl shadow-md border border-gray-700 h-full overflow-hidden w-full">
               <div className="bg-gradient-to-r from-orange-600 to-red-700 p-6 text-white">
                 <div className="flex justify-between items-center">
@@ -655,13 +655,13 @@ export default function DietChartGenerator() {
               <div className="p-6 max-h-96 overflow-y-auto w-full min-h-96">
                 {dietChart ? (
                   <div className="w-full">
-                    <div className="whitespace-pre-wrap text-gray-300 leading-relaxed text-sm">
+                    <div className="whitespace-pre-wrap text-gray-300 leading-relaxed text-sm w-full">
                       {formatDietChartContent(dietChart)}
                     </div>
                   </div>
                 ) : savedDietChart ? (
                   <div className="w-full">
-                    <div className="whitespace-pre-wrap text-gray-300 leading-relaxed text-sm">
+                    <div className="whitespace-pre-wrap text-gray-300 leading-relaxed text-sm w-full">
                       {formatDietChartContent(savedDietChart)}
                     </div>
                   </div>
