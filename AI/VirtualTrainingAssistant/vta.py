@@ -8,7 +8,8 @@ import math
 import torch
 from ultralytics.nn.tasks import PoseModel
 from torch.nn import Sequential
-from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode, ClientSettings # Added imports for streamlit_webrtc
+from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode
+from streamlit_webrtc.webrtc_streamer import ClientSettings # Corrected import path for ClientSettings
 
 # Page configuration - MUST BE FIRST COMMAND
 st.set_page_config(page_title="Fitness Tracker", layout="wide")
