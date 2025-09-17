@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Home from "./pages/HomePage/Home";
 import Signin from "./pages/SigninPage/Signin";
 import Report from "./pages/BMICalculator/Report.jsx";
@@ -72,7 +74,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/features" element={<Features />} />
         </Routes>
-        {/* Removed ToastContainer from here */}
+        <ToastContainer />
       </div>
     </ThemeProvider>
   );
