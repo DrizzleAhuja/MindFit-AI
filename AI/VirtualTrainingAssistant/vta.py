@@ -8,7 +8,7 @@ import math
 import torch
 from ultralytics.nn.tasks import PoseModel
 from torch.nn import Sequential
-from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode, ClientSettings
+from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode
 
 # Page configuration - MUST BE FIRST COMMAND
 st.set_page_config(page_title="Fitness Tracker", layout="wide")
@@ -358,10 +358,8 @@ else:
     ctx = webrtc_streamer(
         key="fitness-tracker",
         mode=WebRtcMode.SENDRECV,
-        client_settings=ClientSettings(
-            rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
-            media_stream_constraints={"video": True, "audio": False},
-        ),
+        rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+        media_stream_constraints={"video": True, "audio": False},
         video_processor_factory=lambda: VideoProcessor(app_mode),
         async_processing=True,
     )
