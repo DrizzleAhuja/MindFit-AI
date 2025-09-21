@@ -10,7 +10,7 @@ from ultralytics.nn.tasks import PoseModel
 from torch.nn import Sequential
 from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode
 
-torch.serialization.add_safe_globals([PoseModel])
+torch.serialization.add_safe_globals([PoseModel, Sequential])
 
 # Page configuration - MUST BE FIRST COMMAND
 st.set_page_config(page_title="Fitness Tracker", layout="wide")
