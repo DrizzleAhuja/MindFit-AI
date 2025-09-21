@@ -8,9 +8,10 @@ import math
 import torch
 from ultralytics.nn.tasks import PoseModel
 from torch.nn import Sequential
+from ultralytics.nn.modules.conv import Conv
 from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode
 
-torch.serialization.add_safe_globals([PoseModel, Sequential])
+torch.serialization.add_safe_globals([PoseModel, Sequential, Conv])
 
 # Page configuration - MUST BE FIRST COMMAND
 st.set_page_config(page_title="Fitness Tracker", layout="wide")
