@@ -8,7 +8,7 @@ import math
 import torch
 from ultralytics.nn.tasks import PoseModel
 from torch.nn import Sequential
-from torch.nn.modules.conv import Conv2d # Corrected import for Conv2d
+import ultralytics
 from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode
 
 torch.serialization.add_safe_globals([PoseModel, Sequential, ultralytics.nn.modules.conv.Conv]) # Added Conv2d
