@@ -11,7 +11,7 @@ from torch.nn import Sequential
 from torch.nn.modules.conv import Conv2d # Corrected import for Conv2d
 from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode
 
-torch.serialization.add_safe_globals([PoseModel, Sequential, Conv2d]) # Added Conv2d
+torch.serialization.add_safe_globals([PoseModel, Sequential, ultralytics.nn.modules.conv.Conv]) # Added Conv2d
 
 # Page configuration - MUST BE FIRST COMMAND
 st.set_page_config(page_title="Fitness Tracker", layout="wide")
