@@ -195,16 +195,12 @@ export default function DietChartGenerator() {
         activeWorkoutPlan?.generatedParams?.targetWeight ||
         bmiData.targetWeight;
 
-      const calculatedDurationWeeks = calculateDurationWeeks(
-        activeWorkoutPlan.generatedParams.currentWeight || bmiData.weight,
-        targetWeight,
-        fitnessGoal,
-        bmiData.age
-      );
+      // Use the same durationWeeks as the active workout plan
+      const durationWeeks = activeWorkoutPlan.durationWeeks;
 
       const requestData = {
         userId: user._id,
-        durationWeeks: calculatedDurationWeeks,
+        durationWeeks: durationWeeks,
         fitnessGoal: fitnessGoal,
         currentWeight:
           activeWorkoutPlan.generatedParams.currentWeight || bmiData.weight,
@@ -292,13 +288,7 @@ export default function DietChartGenerator() {
         userId: user._id,
         workoutPlanId: activeWorkoutPlan._id,
         dietChart: dietChart,
-        durationWeeks: calculateDurationWeeks(
-          activeWorkoutPlan.generatedParams.currentWeight || bmiData.weight,
-          activeWorkoutPlan.generatedParams.targetWeight ||
-            bmiData.targetWeight,
-          activeWorkoutPlan.generatedParams.fitnessGoal,
-          bmiData.age
-        ),
+        durationWeeks: activeWorkoutPlan.durationWeeks,
         activeWorkoutPlan: activeWorkoutPlan, // Send the full activeWorkoutPlan object
       };
 
