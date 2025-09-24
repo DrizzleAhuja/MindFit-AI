@@ -1,10 +1,12 @@
 setuptools==65.5.1
 wheel
-streamlit==1.28.1
-opencv-python-headless
+streamlit==1.36.0
+opencv-python==4.10.0.84
 numpy
-ultralytics==8.0.186
+ultralytics==8.2.56
 plotly==5.17.0
 Pillow
 torch==2.8.0
 torchvision==0.23.0
+python-dotenv==1.0.1
+streamlit-webrtc
