@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus, HelpCircle } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
 
 const faqs = [
   {
@@ -30,21 +31,24 @@ const faqs = [
 ];
 
 const HomeSec4 = () => {
+  const { darkMode } = useTheme();
   const [openIndex, setOpenIndex] = useState(null);
 
   return (
-    <section className="bg-[#020617] py-24 relative overflow-hidden">
+    <section className={`transition-colors duration-300 py-24 relative overflow-hidden ${darkMode ? "bg-[#020617]" : "bg-white"}`}>
       <div className="container mx-auto px-4 max-w-4xl relative z-10">
 
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8 font-black text-[#22D3EE] text-[10px] uppercase tracking-[0.2em]">
+          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-8 font-black text-[10px] uppercase tracking-[0.2em] ${
+            darkMode ? "bg-white/5 border-white/10 text-[#22D3EE]" : "bg-blue-50 border-blue-100 text-blue-600"
+          }`}>
             <HelpCircle size={14} />
             Support Center · 2026
           </div>
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-6 tracking-tighter leading-none">
+          <h2 className={`text-3xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tighter leading-none ${darkMode ? "text-white" : "text-gray-900"}`}>
             Everything you <br /> need to know.
           </h2>
-          <p className="text-gray-500 text-lg md:text-xl font-medium max-w-xl mx-auto leading-relaxed">
+          <p className={`text-lg md:text-xl font-medium max-w-xl mx-auto leading-relaxed ${darkMode ? "text-gray-500" : "text-gray-600"}`}>
             Quick answers to the questions we hear most from new athletes.
           </p>
         </div>
@@ -53,7 +57,9 @@ const HomeSec4 = () => {
           {faqs.map((faq, idx) => (
             <motion.div
               key={idx}
-              className="rounded-2xl border border-white/5 bg-white/[0.02] overflow-hidden hover:border-white/10 transition-all"
+              className={`rounded-2xl border overflow-hidden transition-all duration-300 ${
+                darkMode ? "border-white/5 bg-white/[0.02] hover:border-white/10" : "bg-gray-50 border-gray-100 hover:border-purple-200"
+              }`}
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -61,11 +67,13 @@ const HomeSec4 = () => {
             >
               <button
                 onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-                className="w-full p-6 text-left flex items-center justify-between hover:bg-white/[0.03] transition-colors gap-4"
+                className={`w-full p-6 text-left flex items-center justify-between transition-colors gap-4 ${
+                  darkMode ? "hover:bg-white/[0.03]" : "hover:bg-white"
+                }`}
               >
-                <span className="text-base font-semibold text-gray-200 leading-snug">{faq.q}</span>
-                <div className="p-2 rounded-full bg-white/5 flex-shrink-0">
-                  {openIndex === idx ? <Minus size={16} className="text-[#22D3EE]" /> : <Plus size={16} className="text-gray-500" />}
+                <span className={`text-base font-semibold leading-snug ${darkMode ? "text-gray-200" : "text-gray-900"}`}>{faq.q}</span>
+                <div className={`p-2 rounded-full flex-shrink-0 ${darkMode ? "bg-white/5" : "bg-gray-200/50"}`}>
+                  {openIndex === idx ? <Minus size={16} className="text-[#22D3EE]" /> : <Plus size={16} className={darkMode ? "text-gray-500" : "text-gray-400"} />}
                 </div>
               </button>
 
@@ -77,7 +85,9 @@ const HomeSec4 = () => {
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.25 }}
                   >
-                    <div className="px-6 pb-6 text-gray-400 text-sm leading-relaxed border-t border-white/5 pt-4">
+                    <div className={`px-6 pb-6 text-sm leading-relaxed border-t pt-4 ${
+                      darkMode ? "text-gray-400 border-white/5" : "text-gray-600 border-gray-100"
+                    }`}>
                       {faq.a}
                     </div>
                   </motion.div>

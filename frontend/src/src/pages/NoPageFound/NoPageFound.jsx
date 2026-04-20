@@ -22,7 +22,7 @@ export default function NoPageFound() {
       : "The page you’re looking for doesn’t exist.";
 
   return (
-    <div className={darkMode ? "bg-[#05010d] text-white min-h-screen" : "bg-[#020617] text-gray-100 min-h-screen"}>
+    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? "bg-[#05010d] text-white" : "bg-gray-50 text-gray-900"}`}>
       <NavBar />
       <main className="flex-grow flex items-center justify-center px-4 py-10">
         <div className="w-full max-w-xl text-center rounded-2xl border border-[#1F2937] bg-[#020617]/60 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] p-6">

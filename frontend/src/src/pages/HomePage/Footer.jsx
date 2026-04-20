@@ -225,18 +225,22 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-[#020617] border-t border-white/5 py-16">
+    <footer className={`border-t transition-colors duration-300 py-16 ${
+      darkMode ? "bg-[#020617] border-white/5" : "bg-white border-gray-100"
+    }`}>
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Brand & Social */}
           <div className="space-y-6">
             <GenFitLogo size="large" />
-            <p className="text-gray-400 text-sm max-w-xs leading-relaxed">
+            <p className={`text-sm max-w-xs leading-relaxed ${darkMode ? "text-gray-400" : "text-gray-500 font-medium"}`}>
               Precision coaching, posture tracking, and smart nutrition—powered by AI, designed for real humans.
             </p>
             <div className="flex space-x-4">
               {[FaFacebook, FaInstagram, FaLinkedin, FaEnvelope].map((Icon, i) => (
-                <a key={i} href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-gray-400 hover:bg-emerald-500/10 hover:text-[#10B981] transition-all border border-white/5">
+                <a key={i} href="#" className={`w-10 h-10 rounded-full flex items-center justify-center transition-all border ${
+                  darkMode ? "bg-white/5 text-gray-400 border-white/5 hover:bg-emerald-500/10 hover:text-[#10B981]" : "bg-gray-50 text-gray-400 border-gray-100 hover:bg-purple-50 hover:text-purple-600"
+                }`}>
                   <Icon size={18} />
                 </a>
               ))}
@@ -245,11 +249,13 @@ export default function Footer() {
 
           {/* Navigation */}
           <div>
-            <h5 className="text-white font-bold mb-6 tracking-tight">NAVIGATION</h5>
+            <h5 className={`font-bold mb-6 tracking-tight ${darkMode ? "text-white" : "text-gray-900"}`}>NAVIGATION</h5>
             <ul className="space-y-4">
               {navLinks.map((link) => (
                 <li key={link.path}>
-                  <NavLink to={link.path} className="text-gray-400 hover:text-[#10B981] text-sm font-medium transition-colors">
+                  <NavLink to={link.path} className={`text-sm font-medium transition-colors ${
+                    darkMode ? "text-gray-400 hover:text-[#10B981]" : "text-gray-500 hover:text-purple-600"
+                  }`}>
                     {link.label}
                   </NavLink>
                 </li>
@@ -259,21 +265,21 @@ export default function Footer() {
 
           {/* Contact Info */}
           <div>
-            <h5 className="text-white font-bold mb-6 tracking-tight">CONTACT INFO</h5>
+            <h5 className={`font-bold mb-6 tracking-tight ${darkMode ? "text-white" : "text-gray-900"}`}>CONTACT INFO</h5>
             <ul className="space-y-4 text-sm">
-              <li className="flex items-center text-gray-400 gap-3">
-                <FaEnvelope className="text-[#10B981]" />
+              <li className={`flex items-center gap-3 ${darkMode ? "text-gray-400" : "text-gray-500 font-medium"}`}>
+                <FaEnvelope className={darkMode ? "text-[#10B981]" : "text-purple-600"} />
                 <span>support@genfit.ai</span>
               </li>
-              <li className="flex items-center text-gray-400 gap-3">
-                <FaMapMarkerAlt className="text-[#10B981]" />
+              <li className={`flex items-center gap-3 ${darkMode ? "text-gray-400" : "text-gray-500 font-medium"}`}>
+                <FaMapMarkerAlt className={darkMode ? "text-[#10B981]" : "text-purple-600"} />
                 <span>Innovation Hub, Tech City</span>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className={`pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-6 ${darkMode ? "border-white/5" : "border-gray-100"}`}>
           <p className="text-gray-500 text-xs">
             &copy; {new Date().getFullYear()} GenFit AI. All rights reserved.
           </p>

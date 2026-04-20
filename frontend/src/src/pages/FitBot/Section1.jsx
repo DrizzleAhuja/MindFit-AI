@@ -256,7 +256,7 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`;
 
       {/* Floating widget panel */}
       {isOpen && (
-        <div className="fixed bottom-5 right-5 z-[9999] w-[92vw] max-w-[420px] h-[70vh] max-h-[620px] rounded-2xl border border-[#1F2937] bg-[#020617]/90 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.85)] overflow-hidden flex flex-col">
+        <div className={`fixed bottom-5 right-5 z-[9999] w-[92vw] max-w-[420px] h-[70vh] max-h-[620px] rounded-2xl border backdrop-blur-xl overflow-hidden flex flex-col ${darkMode ? 'border-[#1F2937] bg-[#020617]/90 shadow-[0_18px_45px_rgba(15,23,42,0.85)]' : 'border-gray-200 bg-white shadow-2xl'}`}>
         {/* Header */}
         <div className="bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE] p-4 text-white">
           <div className="flex items-center justify-between">
@@ -301,7 +301,7 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`;
         {/* Chat Container */}
         <div
           className={`flex-1 overflow-y-auto p-4 ${
-            darkMode ? "bg-[#05010d]" : "bg-[#020617]"
+            darkMode ? "bg-[#05010d]" : "bg-gray-50"
           }`}
         >
           {messages.map((msg, index) => (
@@ -315,7 +315,7 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`;
                 className={`max-w-xs md:max-w-md lg:max-w-lg rounded-2xl p-4 ${
                   msg.role === "user"
                     ? "bg-gradient-to-r from-[#22D3EE] to-[#0EA5E9] text-white rounded-br-none"
-                    : "bg-[#020617]/80 border border-[#1F2937] text-white shadow-sm rounded-bl-none"
+                    : darkMode ? "bg-[#020617]/80 border border-[#1F2937] text-white shadow-sm rounded-bl-none" : "bg-gray-100 border border-gray-200 text-gray-900 shadow-sm rounded-bl-none"
                 }`}
               >
                 <div className="flex items-center mb-1">
@@ -324,11 +324,11 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`;
                   ) : (
                     <div className="w-4 h-4 rounded-full bg-gray-500 mr-2"></div>
                   )}
-                  <span className="text-xs font-medium text-gray-200">
+                  <span className={`text-xs font-medium ${darkMode ? 'text-gray-200' : 'text-gray-500'}`}>
                     {msg.role === "user" ? "You" : "FitBot"}
                   </span>
                 </div>
-                <p className="whitespace-pre-wrap text-gray-100">
+                <p className={`whitespace-pre-wrap ${msg.role === 'user' ? 'text-white' : darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
                   {msg.content}
                 </p>
               </div>
@@ -344,7 +344,7 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`;
           )}
           {loading && (
             <div className="flex justify-start mb-4">
-              <div className="bg-[#020617]/80 border border-[#1F2937] text-gray-800 shadow-sm rounded-2xl rounded-bl-none p-4 max-w-xs">
+              <div className={`border shadow-sm rounded-2xl rounded-bl-none p-4 max-w-xs ${darkMode ? 'bg-[#020617]/80 border-[#1F2937]' : 'bg-gray-100 border-gray-200'}`}>
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                   <div
@@ -363,7 +363,7 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`;
         </div>
 
         {/* Input Area */}
-        <div className={`border-t border-[#1F2937] bg-[#020617]/80 p-4 relative`}>
+        <div className={`border-t p-4 relative ${darkMode ? 'border-[#1F2937] bg-[#020617]/80' : 'border-gray-200 bg-white'}`}>
           {isListening && interimInput && (
             <div className="absolute -top-12 left-4 bg-gradient-to-r from-[#8B5CF6] to-[#22D3EE] text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-2xl animate-pulse max-w-[85%] whitespace-nowrap overflow-hidden text-ellipsis z-50">
               🗣️ "{interimInput}"
@@ -374,7 +374,7 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`;
               {error}
             </div>
           )}
-          <div className="flex bg-[#020617]/80 rounded-lg border border-[#1F2937] focus-within:ring-2 focus-within:ring-[#22D3EE] focus-within:border-transparent items-center">
+          <div className={`flex rounded-lg border focus-within:ring-2 focus-within:ring-[#22D3EE] focus-within:border-transparent items-center ${darkMode ? 'bg-[#020617]/80 border-[#1F2937]' : 'bg-gray-50 border-gray-300'}`}>
             <button
               type="button"
               onClick={toggleListening}
@@ -404,7 +404,7 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`;
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="flex-1 px-2 py-3 bg-transparent text-white focus:outline-none"
+              className={`flex-1 px-2 py-3 bg-transparent focus:outline-none ${darkMode ? 'text-white' : 'text-gray-900'}`}
               placeholder={imageBase64 ? "Image attached. Add a message..." : "Ask FitBot..."}
               disabled={loading}
             />
@@ -453,7 +453,7 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`;
                 onClick={() => {
                   setInput(`Help me with ${a.label.toLowerCase()}.`);
                 }}
-                className="text-xs bg-[#020617]/80 border border-[#1F2937] hover:bg-[#020617] px-3 py-1 rounded-full flex items-center text-gray-200"
+                className={`text-xs border px-3 py-1 rounded-full flex items-center ${darkMode ? 'bg-[#020617]/80 border-[#1F2937] hover:bg-[#020617] text-gray-200' : 'bg-gray-100 border-gray-200 hover:bg-gray-200 text-gray-700'}`}
               >
                 {a.icon} {a.label}
               </button>

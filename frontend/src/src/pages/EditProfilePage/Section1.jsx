@@ -10,6 +10,7 @@ import { Activity, Heart, Zap, Moon, RefreshCw, Watch, Plus } from "lucide-react
 import { API_BASE_URL, API_ENDPOINTS } from "../../../config/api";
 import GamifyBadge from "../../Components/GamifyBadge";
 import { validateLength, LIMITS } from "../../utils/formValidation";
+import { useTheme } from "../../context/ThemeContext";
 
 const AVATARS = [
   "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
@@ -31,6 +32,7 @@ const AVATARS = [
 ];
 
 export default function EditProfile() {
+  const { darkMode } = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector(selectUser);
@@ -212,27 +214,27 @@ export default function EditProfile() {
 
   if (!user) {
     return (
-      <div className="flex justify-center items-center min-h-[60vh] bg-[#020617] text-gray-100">
+      <div className={`flex justify-center items-center min-h-[60vh] transition-colors duration-300 ${darkMode ? 'bg-[#020617] text-gray-100' : 'bg-gray-50 text-gray-600'}`}>
         <div className="animate-pulse text-lg text-gray-300">Loading user data...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#020617] pb-12">
+    <div className={`min-h-screen pb-12 transition-colors duration-300 ${darkMode ? 'bg-[#020617]' : 'bg-gray-50'}`}>
       {/* Background blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-24 -left-16 w-72 h-72 bg-[#8B5CF6] rounded-full blur-3xl opacity-30" />
-        <div className="absolute -bottom-28 right-0 w-80 h-80 bg-[#22D3EE] rounded-full blur-3xl opacity-25" />
+        <div className={`absolute -top-24 -left-16 w-72 h-72 bg-[#8B5CF6] rounded-full blur-3xl ${darkMode ? 'opacity-30' : 'opacity-10'}`} />
+        <div className={`absolute -bottom-28 right-0 w-80 h-80 bg-[#22D3EE] rounded-full blur-3xl ${darkMode ? 'opacity-25' : 'opacity-10'}`} />
       </div>
 
       <div className="relative z-10 max-w-2xl mx-auto pt-8 px-4 sm:px-6 lg:px-8">
-        <div className="relative rounded-xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl overflow-hidden shadow-[0_18px_45px_rgba(15,23,42,0.8)]">
+        <div className={`relative rounded-xl border backdrop-blur-xl overflow-hidden ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)]' : 'border-gray-200 bg-white shadow-lg'}`}>
           {/* Top gradient bar */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
 
           {/* Header */}
-          <div className="px-6 py-4 border-b border-[#1F2937]">
+          <div className={`px-6 py-4 border-b ${darkMode ? 'border-[#1F2937]' : 'border-gray-200'}`}>
             <div className="flex items-center">
               <button
                 onClick={() => navigate(-1)}
@@ -247,16 +249,16 @@ export default function EditProfile() {
           </div>
 
           {/* New Profile & Gamification Section */}
-          <div className="px-6 py-8 border-b border-[#1F2937] flex flex-col items-center relative overflow-hidden">
+          <div className={`px-6 py-8 border-b flex flex-col items-center relative overflow-hidden ${darkMode ? 'border-[#1F2937]' : 'border-gray-200'}`}>
              
              {/* Gamification Background Effects */}
              <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
-               <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#020617]"></div>
+               <div className={`absolute inset-0 bg-gradient-to-b from-transparent ${darkMode ? 'to-[#020617]' : 'to-gray-50'}`}></div>
              </div>
 
              <div className="relative mb-4">
                {formData.avatar ? (
-                 <img src={formData.avatar} alt="Avatar" className="w-24 h-24 rounded-full border-4 border-[#8B5CF6] object-cover shadow-[0_0_20px_rgba(139,92,246,0.3)] bg-[#0f172a]" />
+                 <img src={formData.avatar} alt="Avatar" className={`w-24 h-24 rounded-full border-4 border-[#8B5CF6] object-cover shadow-[0_0_20px_rgba(139,92,246,0.3)] ${darkMode ? 'bg-[#0f172a]' : 'bg-gray-100'}`} />
                ) : (
                  <div className="w-24 h-24 rounded-full flex items-center justify-center text-3xl font-bold bg-[#8B5CF6] text-white border-4 border-[#8B5CF6] shadow-[0_0_20px_rgba(139,92,246,0.3)]">
                    {user.firstName?.[0]}{user.lastName?.[0]}
@@ -264,8 +266,8 @@ export default function EditProfile() {
                )}
              </div>
              
-             <h3 className="text-2xl font-bold text-white mb-1">{user.firstName} {user.lastName}</h3>
-             <p className="text-sm text-gray-400 mb-5">{user.email}</p>
+             <h3 className={`text-2xl font-bold mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{user.firstName} {user.lastName}</h3>
+             <p className={`text-sm mb-5 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{user.email}</p>
 
              {/* Badges Display */}
              <div className="flex flex-wrap items-center justify-center gap-3 mb-8 min-h-[40px]">
@@ -280,17 +282,17 @@ export default function EditProfile() {
              </div>
 
              {/* Stats Display */}
-             <div className="flex gap-8 text-center bg-[#020617]/50 px-8 py-4 rounded-xl border border-white/5">
+             <div className={`flex gap-8 text-center px-8 py-4 rounded-xl border ${darkMode ? 'bg-[#020617]/50 border-white/5' : 'bg-gray-50 border-gray-200'}`}>
                <div>
                  <span className="block text-2xl font-black bg-gradient-to-r from-[#22D3EE] to-[#8B5CF6] bg-clip-text text-transparent">{stats.points || 0}</span>
-                 <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Points</span>
+                 <span className={`text-xs font-medium uppercase tracking-wider ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Points</span>
                </div>
-               <div className="w-px bg-white/10"></div>
+               <div className={`w-px ${darkMode ? 'bg-white/10' : 'bg-gray-200'}`}></div>
                <div>
                  <span className="block text-2xl font-black bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] bg-clip-text text-transparent">{rank ? `#${rank}` : '-'}</span>
-                 <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Rank</span>
+                 <span className={`text-xs font-medium uppercase tracking-wider ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Rank</span>
                </div>
-               <div className="w-px bg-white/10"></div>
+               <div className={`w-px ${darkMode ? 'bg-white/10' : 'bg-gray-200'}`}></div>
                <div>
                  <span className="block text-2xl font-black bg-gradient-to-r from-[#FACC15] to-[#F97316] bg-clip-text text-transparent">{stats.streakCount || 0}</span>
                  <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Day Streak</span>
@@ -301,10 +303,10 @@ export default function EditProfile() {
           {/* Form */}
           <div className="px-6 py-8">
             {/* Subscription Section */}
-            <div className="mb-6 p-4 rounded-xl bg-[#020617]/40 border border-[#1F2937] flex flex-col gap-4">
+            <div className={`mb-6 p-4 rounded-xl flex flex-col gap-4 border ${darkMode ? 'bg-[#020617]/40 border-[#1F2937]' : 'bg-gray-50 border-gray-200'}`}>
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-bold text-white flex items-center gap-2">
+                  <h4 className={`font-bold flex items-center gap-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                     Current Plan: <span className={`uppercase ${user?.plan === 'pro' ? 'text-yellow-400' : 'text-gray-400'}`}>{user?.plan === 'pro' ? 'Pro' : 'Free'}</span>
                   </h4>
                   <p className="text-xs text-gray-400 mt-1">
@@ -326,8 +328,8 @@ export default function EditProfile() {
                 <div className="mt-2 pt-3 border-t border-white/5 space-y-3">
                   <div>
                     <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-300 font-medium">Virtual Training Assistant</span>
-                      <span className="text-white font-semibold flex items-center gap-1">
+                      <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Virtual Training Assistant</span>
+                      <span className={`font-semibold flex items-center gap-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                         <span>{(user?.limits?.vtaUsage || 0)}</span>
                         <span className="text-gray-500">/</span>
                         <span className="text-gray-500">5</span>
@@ -340,8 +342,8 @@ export default function EditProfile() {
                   
                   <div>
                     <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-300 font-medium">Photo Calorie Scanner</span>
-                      <span className="text-white font-semibold flex items-center gap-1">
+                      <span className={`font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Photo Calorie Scanner</span>
+                      <span className={`font-semibold flex items-center gap-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                         <span>{(user?.limits?.photoUsage || 0)}</span>
                         <span className="text-gray-500">/</span>
                         <span className="text-gray-500">5</span>
@@ -358,17 +360,17 @@ export default function EditProfile() {
             </div>
 
             {/* Wearables Section */}
-            <div className="mb-8 p-6 rounded-xl bg-[#020617]/40 border border-[#1F2937] relative overflow-hidden group hover:border-[#22D3EE]/40 transition-all duration-300">
+            <div className={`mb-8 p-6 rounded-xl border relative overflow-hidden group hover:border-[#22D3EE]/40 transition-all duration-300 ${darkMode ? 'bg-[#020617]/40 border-[#1F2937]' : 'bg-gray-50 border-gray-200'}`}>
                <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <Watch size={80} />
+                  <Watch size={80} className={darkMode ? 'text-white' : 'text-gray-900'} />
                </div>
                
                <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h4 className="font-black text-white text-lg flex items-center gap-2">
+                    <h4 className={`font-black text-lg flex items-center gap-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                       Wearables & Devices
                     </h4>
-                    <p className="text-xs text-gray-400 mt-1">Connect your smart watch to auto-sync health data.</p>
+                    <p className={`text-xs mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Connect your smart watch to auto-sync health data.</p>
                   </div>
                   {!fitStatus.linked ? (
                     <button 
@@ -436,10 +438,10 @@ export default function EditProfile() {
                       src={src} 
                       alt={`Avatar ${idx+1}`} 
                       onClick={() => setFormData({...formData, avatar: src})}
-                      className={`w-14 h-14 bg-[#0f172a] rounded-full cursor-pointer transition-all duration-200 border-2 
+                      className={`w-14 h-14 rounded-full cursor-pointer transition-all duration-200 border-2 ${darkMode ? 'bg-[#0f172a]' : 'bg-gray-100'} 
                         ${formData.avatar === src 
                           ? 'border-[#22D3EE] scale-110 shadow-[0_0_15px_rgba(34,211,238,0.4)]' 
-                          : 'border-transparent hover:border-gray-500 hover:scale-105'
+                          : `border-transparent ${darkMode ? 'hover:border-gray-500' : 'hover:border-gray-300'} hover:scale-105`
                         }`}
                     />
                   ))}
@@ -469,7 +471,7 @@ export default function EditProfile() {
                     maxLength={LIMITS.PROFILE_NAME_MAX}
                     value={formData.firstName}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-3 rounded-md bg-[#020617]/60 border border-[#1F2937] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#8B5CF6] focus:border-transparent"
+                    className={`block w-full pl-10 pr-3 py-3 rounded-md border focus:outline-none focus:ring-2 focus:ring-[#8B5CF6] focus:border-transparent ${darkMode ? 'bg-[#020617]/60 border-[#1F2937] text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'}`}
                     placeholder="John"
                     required
                   />
@@ -494,7 +496,7 @@ export default function EditProfile() {
                     maxLength={LIMITS.PROFILE_NAME_MAX}
                     value={formData.lastName}
                     onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-3 rounded-md bg-[#020617]/60 border border-[#1F2937] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#8B5CF6] focus:border-transparent"
+                    className={`block w-full pl-10 pr-3 py-3 rounded-md border focus:outline-none focus:ring-2 focus:ring-[#8B5CF6] focus:border-transparent ${darkMode ? 'bg-[#020617]/60 border-[#1F2937] text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'}`}
                     placeholder="Doe"
                   />
                 </div>
@@ -515,7 +517,7 @@ export default function EditProfile() {
                     value={formData.diseasesAndAllergies}
                     onChange={handleChange}
                     rows="4"
-                    className="block w-full pl-3 pr-3 py-3 rounded-md bg-[#020617]/60 border border-[#1F2937] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#8B5CF6] focus:border-transparent"
+                    className={`block w-full pl-3 pr-3 py-3 rounded-md border focus:outline-none focus:ring-2 focus:ring-[#8B5CF6] focus:border-transparent ${darkMode ? 'bg-[#020617]/60 border-[#1F2937] text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'}`}
                     placeholder="Diabetes, Hypertension, Pollen, Peanuts, etc."
                   ></textarea>
                 </div>
@@ -540,7 +542,7 @@ export default function EditProfile() {
                     id="email"
                     name="email"
                     value={user?.email || ""}
-                    className="block w-full pl-10 pr-3 py-3 rounded-md bg-[#020617]/40 border border-[#1F2937] text-gray-400 placeholder-gray-500 focus:outline-none cursor-not-allowed"
+                    className={`block w-full pl-10 pr-3 py-3 rounded-md border focus:outline-none cursor-not-allowed ${darkMode ? 'bg-[#020617]/40 border-[#1F2937] text-gray-400 placeholder-gray-500' : 'bg-gray-100 border-gray-200 text-gray-500 placeholder-gray-400'}`}
                     disabled
                     readOnly
                   />

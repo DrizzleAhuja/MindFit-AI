@@ -49,8 +49,8 @@ export default function Features() {
 
   return (
     <div
-      className={`min-h-screen flex flex-col ${
-        darkMode ? "bg-[#05010d] text-white" : "bg-[#020617] text-gray-100"
+      className={`min-h-screen flex flex-col transition-colors duration-300 ${
+        darkMode ? "bg-[#05010d] text-white" : "bg-gray-50 text-gray-900"
       }`}
     >
       <NavBar />
@@ -59,8 +59,8 @@ export default function Features() {
         <section className="relative overflow-hidden py-6 sm:py-8 lg:py-10">
           {/* Background blobs */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute -top-24 -left-16 w-72 h-72 bg-[#8B5CF6] rounded-full blur-3xl opacity-30" />
-            <div className="absolute -bottom-28 right-0 w-80 h-80 bg-[#22D3EE] rounded-full blur-3xl opacity-25" />
+            <div className={`absolute -top-24 -left-16 w-72 h-72 bg-[#8B5CF6] rounded-full blur-3xl ${darkMode ? 'opacity-30' : 'opacity-10'}`} />
+            <div className={`absolute -bottom-28 right-0 w-80 h-80 bg-[#22D3EE] rounded-full blur-3xl ${darkMode ? 'opacity-25' : 'opacity-10'}`} />
           </div>
           <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
             {/* Header */}
@@ -75,7 +75,7 @@ export default function Features() {
                 </h1>
               </div>
 
-              <p className="max-w-3xl mx-auto text-sm sm:text-base lg:text-lg text-gray-300">
+              <p className={`max-w-3xl mx-auto text-sm sm:text-base lg:text-lg ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                 Precision coaching, form tracking, and smart nutrition—powered
                 by AI, designed for real humans.
               </p>
@@ -86,27 +86,27 @@ export default function Features() {
               {coreFeatures.map((feature, idx) => (
                 <article
                   key={feature.title}
-                  className="relative h-full rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl p-5 sm:p-6 flex flex-col shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60 transition-transform duration-300 hover:-translate-y-1.5"
+                  className={`relative h-full rounded-2xl border backdrop-blur-xl p-5 sm:p-6 flex flex-col transition-transform duration-300 hover:-translate-y-1.5 ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white shadow-lg hover:border-[#8B5CF6]/40 hover:shadow-xl'}`}
                 >
                   <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-[#020617] border border-[#1F2937]">
+                      <div className={`flex items-center justify-center w-11 h-11 rounded-xl border ${darkMode ? 'bg-[#020617] border-[#1F2937]' : 'bg-gray-50 border-gray-200'}`}>
                         {feature.icon}
                       </div>
                       <div className="text-xs uppercase tracking-[0.18em] text-gray-400">
                         Feature {String(idx + 1).padStart(2, "0")}
                       </div>
                     </div>
-                    <span className="text-[10px] px-2 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300">
+                    <span className={`text-[10px] px-2 py-1 rounded-full border ${darkMode ? 'bg-white/5 border-white/10 text-gray-300' : 'bg-gray-100 border-gray-200 text-gray-600'}`}>
                       {feature.tag}
                     </span>
                   </div>
 
-                  <h2 className="text-lg sm:text-xl font-semibold mb-2 text-white">
+                  <h2 className={`text-lg sm:text-xl font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                     {feature.title}
                   </h2>
-                  <p className="text-sm sm:text-base text-gray-300 flex-1">
+                  <p className={`text-sm sm:text-base flex-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     {feature.description}
                   </p>
                 </article>
@@ -115,29 +115,29 @@ export default function Features() {
 
             {/* Metrics strip */}
             <section className="mb-10 sm:mb-14">
-              <div className="rounded-2xl border border-[#1F2937] bg-gradient-to-r from-[#020617] via-[#020617] to-[#020617] backdrop-blur-xl px-5 sm:px-8 py-6 sm:py-7 flex flex-col sm:flex-row items-center justify-between gap-5">
+              <div className={`rounded-2xl border backdrop-blur-xl px-5 sm:px-8 py-6 sm:py-7 flex flex-col sm:flex-row items-center justify-between gap-5 ${darkMode ? 'border-[#1F2937] bg-gradient-to-r from-[#020617] via-[#020617] to-[#020617]' : 'border-gray-200 bg-white shadow-lg'}`}>
                 <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-white mb-1">
+                  <h3 className={`text-lg sm:text-xl font-bold mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                     Built for long-term progress
                   </h3>
-                  <p className="text-sm sm:text-base text-gray-300 max-w-xl">
+                  <p className={`text-sm sm:text-base max-w-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     No more random programs. Every block builds on the last so
                     you can see steady strength, energy, and confidence gains.
                   </p>
                 </div>
                 <div className="grid grid-cols-3 gap-3 text-center text-xs sm:text-sm">
-                  <div className="px-3 py-2 rounded-xl bg-white/5 border border-white/10">
-                    <div className="font-bold text-white">+32%</div>
+                  <div className={`px-3 py-2 rounded-xl border ${darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200'}`}>
+                    <div className={`font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>+32%</div>
                     <div className="text-gray-400 text-[11px]">
                       Avg. adherence
                     </div>
                   </div>
-                  <div className="px-3 py-2 rounded-xl bg-white/5 border border-white/10">
-                    <div className="font-bold text-white">4.9/5</div>
+                  <div className={`px-3 py-2 rounded-xl border ${darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200'}`}>
+                    <div className={`font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>4.9/5</div>
                     <div className="text-gray-400 text-[11px]">User rating</div>
                   </div>
-                  <div className="px-3 py-2 rounded-xl bg-white/5 border border-white/10">
-                    <div className="font-bold text-white">24/7</div>
+                  <div className={`px-3 py-2 rounded-xl border ${darkMode ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200'}`}>
+                    <div className={`font-bold ${darkMode ? 'text-white' : 'text-gray-900'}`}>24/7</div>
                     <div className="text-gray-400 text-[11px]">AI support</div>
                   </div>
                 </div>
@@ -146,12 +146,12 @@ export default function Features() {
 
             {/* CTA */}
             <section className="text-center">
-              <div className="inline-flex flex-col sm:flex-row items-center gap-4 sm:gap-5 rounded-2xl border border-[#22D3EE]/40 bg-gradient-to-r from-[#020617]/90 via-[#05010d]/90 to-[#020617]/90 px-6 sm:px-8 py-6 sm:py-7 backdrop-blur-xl">
+              <div className={`inline-flex flex-col sm:flex-row items-center gap-4 sm:gap-5 rounded-2xl border backdrop-blur-xl px-6 sm:px-8 py-6 sm:py-7 ${darkMode ? 'border-[#22D3EE]/40 bg-gradient-to-r from-[#020617]/90 via-[#05010d]/90 to-[#020617]/90' : 'border-purple-200 bg-white shadow-xl'}`}>
                 <div className="text-left">
-                  <h3 className="text-lg sm:text-xl font-bold text-white mb-1">
+                  <h3 className={`text-lg sm:text-xl font-bold mb-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                     See these features in action
                   </h3>
-                  <p className="text-sm sm:text-base text-gray-300 max-w-md">
+                  <p className={`text-sm sm:text-base max-w-md ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     Create your free GenFit AI profile and get a personalized
                     starting plan in under 60 seconds.
                   </p>

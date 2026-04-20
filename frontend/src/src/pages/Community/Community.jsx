@@ -147,13 +147,14 @@ export default function Community() {
     );
   };
 
-  const cardShell =
-    "relative rounded-2xl sm:rounded-3xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60 transition-all duration-300 overflow-hidden";
+  const cardShell = darkMode
+    ? "relative rounded-2xl sm:rounded-3xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60 transition-all duration-300 overflow-hidden"
+    : "relative rounded-2xl sm:rounded-3xl border border-gray-200 bg-white shadow-lg hover:shadow-xl hover:border-[#8B5CF6]/40 transition-all duration-300 overflow-hidden";
 
   return (
     <div
-      className={`min-h-screen flex flex-col ${
-        darkMode ? "bg-[#05010d] text-white" : "bg-[#020617] text-gray-100"
+      className={`min-h-screen flex flex-col transition-colors duration-300 ${
+        darkMode ? "bg-[#05010d] text-white" : "bg-gray-50 text-gray-900"
       }`}
     >
       <NavBar />
@@ -169,7 +170,7 @@ export default function Community() {
             <header className="text-center mb-10">
               <div className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#8B5CF6]/20 to-[#22D3EE]/20 border border-[#8B5CF6]/40 backdrop-blur-xl mb-4">
                 <Sparkles className="w-5 h-5 text-[#FACC15]" />
-                <span className="text-sm font-semibold text-gray-100 uppercase tracking-widest">
+                <span className={`text-sm font-semibold uppercase tracking-widest ${darkMode ? 'text-gray-100' : 'text-gray-700'}`}>
                   Connect &amp; Inspire
                 </span>
               </div>
@@ -178,7 +179,7 @@ export default function Community() {
                   GenFit Community
                 </span>
               </h1>
-              <p className="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+              <p className={`text-base sm:text-lg max-w-2xl mx-auto leading-relaxed ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                 Your journey isn't solo—share progress, celebrate wins, and fuel the fire with fellow fitness seekers.
               </p>
             </header>
@@ -187,14 +188,14 @@ export default function Community() {
               {/* Main Content Area */}
               <div className="flex-1 w-full order-2 lg:order-1">
                 {/* Search & Tabs Row */}
-                <div className="flex flex-col md:flex-row gap-4 mb-8 justify-between items-center bg-[#020617]/50 backdrop-blur-lg p-2 rounded-2xl border border-[#1F2937]">
-                  <div className="flex p-1 bg-[#0f172a] rounded-xl border border-[#1F2937] w-full md:w-auto">
+                <div className={`flex flex-col md:flex-row gap-4 mb-8 justify-between items-center backdrop-blur-lg p-2 rounded-2xl border ${darkMode ? 'bg-[#020617]/50 border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm'}`}>
+                  <div className={`flex p-1 rounded-xl border w-full md:w-auto ${darkMode ? 'bg-[#0f172a] border-[#1F2937]' : 'bg-gray-100 border-gray-200'}`}>
                     <button
                       onClick={() => setActiveTab("global")}
                       className={`flex items-center gap-2 px-6 py-2 rounded-lg text-sm font-bold transition-all ${
                         activeTab === "global"
                           ? "bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] text-white shadow-lg shadow-[#8B5CF6]/30"
-                          : "text-gray-500 hover:text-gray-300"
+                          : darkMode ? "text-gray-500 hover:text-gray-300" : "text-gray-500 hover:text-gray-700"
                       }`}
                     >
                       <LayoutGrid className="w-4 h-4" />
@@ -205,7 +206,7 @@ export default function Community() {
                       className={`flex items-center gap-2 px-6 py-2 rounded-lg text-sm font-bold transition-all ${
                         activeTab === "me"
                           ? "bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] text-white shadow-lg shadow-[#8B5CF6]/30"
-                          : "text-gray-500 hover:text-gray-300"
+                          : darkMode ? "text-gray-500 hover:text-gray-300" : "text-gray-500 hover:text-gray-700"
                       }`}
                     >
                       <UserIcon className="w-4 h-4" />
@@ -220,19 +221,19 @@ export default function Community() {
                       placeholder="Search posts or members..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full bg-[#0f172a] border border-[#1F2937] rounded-xl pl-11 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#22D3EE]/50 transition-colors"
+                      className={`w-full rounded-xl pl-11 pr-4 py-2.5 text-sm focus:outline-none transition-colors ${darkMode ? 'bg-[#0f172a] border border-[#1F2937] text-white focus:border-[#22D3EE]/50' : 'bg-gray-50 border border-gray-300 text-gray-900 focus:border-[#8B5CF6]/50'}`}
                     />
                   </div>
                 </div>
 
                 {/* Create Post */}
                 {user && activeTab === "global" && (
-                  <div className={`${cardShell} mb-10 ring-1 ring-[#8B5CF6]/20 bg-gradient-to-b from-[#020617] to-[#0f172a]`}>
+                  <div className={`${cardShell} mb-10 ring-1 ring-[#8B5CF6]/20 ${darkMode ? 'bg-gradient-to-b from-[#020617] to-[#0f172a]' : ''}`}>
                     <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] to-[#22D3EE]" />
                     <form onSubmit={handlePostSubmit} className="p-6 pt-8">
                       <div className="flex items-start gap-4">
                         <div className="w-12 h-12 shrink-0 rounded-full bg-gradient-to-br from-[#8B5CF6] to-[#22D3EE] p-[2px]">
-                          <div className="w-full h-full rounded-full bg-[#020617] flex items-center justify-center font-bold text-[#22D3EE] overflow-hidden">
+                          <div className={`w-full h-full rounded-full flex items-center justify-center font-bold text-[#22D3EE] overflow-hidden ${darkMode ? 'bg-[#020617]' : 'bg-gray-100'}`}>
                             {user.avatar ? (
                               <img src={user.avatar} className="w-full h-full object-cover" alt="" />
                             ) : (
@@ -244,7 +245,7 @@ export default function Community() {
                           <textarea
                             rows={3}
                             maxLength={LIMITS.COMMUNITY_POST_MAX}
-                            className="w-full bg-transparent border-none text-lg text-white placeholder:text-gray-600 focus:outline-none focus:ring-0 resize-none min-h-[100px]"
+                            className={`w-full bg-transparent border-none text-lg placeholder:text-gray-600 focus:outline-none focus:ring-0 resize-none min-h-[100px] ${darkMode ? 'text-white' : 'text-gray-900'}`}
                             placeholder={`What's your progress today, ${user.firstName || "warrior"}?`}
                             value={newPostContent}
                             onChange={(e) => setNewPostContent(e.target.value)}
@@ -274,10 +275,10 @@ export default function Community() {
                         </div>
                       )}
 
-                      <div className="flex justify-between items-center mt-6 pt-4 border-t border-[#1F2937]">
+                      <div className={`flex justify-between items-center mt-6 pt-4 border-t ${darkMode ? 'border-[#1F2937]' : 'border-gray-200'}`}>
                         <div className="flex items-center gap-4">
                           <label className="cursor-pointer group flex items-center gap-2 text-gray-400 hover:text-[#22D3EE] transition-colors">
-                            <div className="p-2 rounded-lg bg-[#0f172a] border border-[#1F2937] group-hover:border-[#22D3EE]/50 transition-all">
+                            <div className={`p-2 rounded-lg border group-hover:border-[#22D3EE]/50 transition-all ${darkMode ? 'bg-[#0f172a] border-[#1F2937]' : 'bg-gray-100 border-gray-200'}`}>
                               <ImageIcon className="w-5 h-5" />
                             </div>
                             <span className="text-xs font-bold uppercase tracking-wider hidden sm:inline">Photo</span>

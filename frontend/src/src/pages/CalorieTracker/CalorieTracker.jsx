@@ -693,10 +693,10 @@ export default function CalorieTracker() {
     setMealNudgeTick((t) => t + 1);
   };
 
-  const cardClass = "relative rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60 transition-all duration-300";
+  const cardClass = `relative rounded-2xl border backdrop-blur-xl transition-all duration-300 ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:border-blue-400'}`;
 
   return (
-    <div className={`min-h-screen flex flex-col ${darkMode ? "bg-[#05010d] text-white" : "bg-[#020617] text-gray-100"}`}>
+    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${darkMode ? "bg-[#05010d] text-white" : "bg-gray-50 text-gray-900"}`}>
       <NavBar />
       <main className="flex-grow">
         <section className="relative overflow-hidden py-6 sm:py-8 lg:py-10">
@@ -940,7 +940,7 @@ export default function CalorieTracker() {
                       {/* Header */}
                       <div className="bg-[#1F2937]/30 px-5 py-4 flex items-center justify-between border-b border-[#1F2937]/50">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 bg-[#020617] rounded-lg border border-[#1F2937] shadow-inner">
+                          <div className={`p-2 rounded-lg border shadow-inner ${darkMode ? 'bg-[#020617] border-[#1F2937]' : 'bg-gray-100 border-gray-200'}`}>
                             {meal.icon}
                           </div>
                           <h3 className="text-lg font-bold text-white tracking-wide">{meal.label}</h3>
@@ -962,7 +962,7 @@ export default function CalorieTracker() {
                               return (
                                 <div
                                   key={rowKey}
-                                  className="flex justify-between items-center gap-2 bg-[#020617]/50 rounded-md px-3 py-2 border border-[#1F2937]/50"
+                                  className={`flex justify-between items-center gap-2 rounded-md px-3 py-2 border ${darkMode ? 'bg-[#020617]/50 border-[#1F2937]/50' : 'bg-gray-50 border-gray-200'}`}
                                 >
                                   <div className="min-w-0 flex-1">
                                     <div className="text-sm text-gray-200 font-medium capitalize truncate">
@@ -1052,7 +1052,7 @@ export default function CalorieTracker() {
                               value={inputs[meal.id] || ""}
                               onChange={(e) => setInputs(prev => ({ ...prev, [meal.id]: e.target.value }))}
                               placeholder={`E.g., "2 parathas with curd" or "1 chicken sandwich"`}
-                              className="w-full bg-[#020617]/80 text-sm text-white placeholder-gray-500 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-[#8B5CF6] transition-colors shadow-inner"
+                              className={`w-full text-sm rounded-xl px-4 py-3 transition-colors shadow-inner focus:outline-none focus:ring-2 focus:ring-[#8B5CF6] ${darkMode ? 'bg-[#020617]/80 text-white placeholder-gray-500 border border-gray-700' : 'bg-white text-gray-900 border-gray-300 placeholder-gray-500'}`}
                               onKeyDown={(e) => {
                                 if (e.key === 'Enter') logMealText(meal.id);
                               }}
@@ -1172,14 +1172,14 @@ export default function CalorieTracker() {
       {/* Limit Modal */}
       {pendingDelete && (
         <div className="fixed inset-0 z-[1002] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
-          <div className="w-full max-w-md rounded-2xl border border-[#1F2937] bg-[#020617] p-6 shadow-xl">
-            <h3 className="text-lg font-bold text-white mb-2">Remove this food?</h3>
+          <div className={`w-full max-w-md rounded-2xl border p-6 shadow-xl ${darkMode ? 'border-[#1F2937] bg-[#020617]' : 'border-gray-200 bg-white'}`}>
+            <h3 className={`text-lg font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Remove this food?</h3>
             <p className="text-sm text-gray-400 mb-6">It will be deleted from your nutrition log for today.</p>
             <div className="flex gap-3">
               <button
                 type="button"
                 onClick={() => setPendingDelete(null)}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold border border-gray-600 text-gray-300 hover:bg-gray-800"
+                className={`flex-1 py-2.5 rounded-xl text-sm font-semibold border ${darkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-800' : 'border-gray-300 text-gray-700 hover:bg-gray-100'}`}
               >
                 Cancel
               </button>
@@ -1197,15 +1197,15 @@ export default function CalorieTracker() {
 
       {editEntry && (
         <div className="fixed inset-0 z-[1001] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
-          <div className="w-full max-w-md rounded-2xl border border-[#1F2937] bg-[#020617] p-6 shadow-xl">
-            <h3 className="text-lg font-bold text-white mb-4">Edit food entry</h3>
+          <div className={`w-full max-w-md rounded-2xl border p-6 shadow-xl ${darkMode ? 'border-[#1F2937] bg-[#020617]' : 'border-gray-200 bg-white'}`}>
+            <h3 className={`text-lg font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Edit food entry</h3>
             <div className="space-y-3">
               <div>
                 <label className="text-xs text-gray-400 block mb-1">Food name</label>
                 <input
                   value={editEntry.name}
                   onChange={(e) => setEditEntry((p) => ({ ...p, name: e.target.value }))}
-                  className="w-full bg-[#0f172a] border border-gray-700 rounded-lg px-3 py-2 text-sm text-white"
+                  className={`w-full rounded-lg px-3 py-2 text-sm border ${darkMode ? 'bg-[#0f172a] border-gray-700 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -1219,7 +1219,7 @@ export default function CalorieTracker() {
                     onChange={(e) =>
                       setEditEntry((p) => ({ ...p, quantity: e.target.value }))
                     }
-                    className="w-full bg-[#0f172a] border border-gray-700 rounded-lg px-3 py-2 text-sm text-white"
+                    className={`w-full rounded-lg px-3 py-2 text-sm border ${darkMode ? 'bg-[#0f172a] border-gray-700 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
                   />
                 </div>
                 <div>
@@ -1231,7 +1231,7 @@ export default function CalorieTracker() {
                     onChange={(e) =>
                       setEditEntry((p) => ({ ...p, caloriesPerItem: e.target.value }))
                     }
-                    className="w-full bg-[#0f172a] border border-gray-700 rounded-lg px-3 py-2 text-sm text-white"
+                    className={`w-full rounded-lg px-3 py-2 text-sm border ${darkMode ? 'bg-[#0f172a] border-gray-700 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
                   />
                 </div>
               </div>
@@ -1242,7 +1242,7 @@ export default function CalorieTracker() {
                   onChange={(e) =>
                     setEditEntry((p) => ({ ...p, mealType: e.target.value }))
                   }
-                  className="w-full bg-[#0f172a] border border-gray-700 rounded-lg px-3 py-2 text-sm text-white"
+                  className={`w-full rounded-lg px-3 py-2 text-sm border ${darkMode ? 'bg-[#0f172a] border-gray-700 text-white' : 'bg-gray-100 border-gray-300 text-gray-900'}`}
                 >
                   {MEAL_TYPES.map((m) => (
                     <option key={m.id} value={m.id}>
@@ -1265,7 +1265,7 @@ export default function CalorieTracker() {
               <button
                 type="button"
                 onClick={() => setEditEntry(null)}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold border border-gray-600 text-gray-300 hover:bg-gray-800"
+                className={`flex-1 py-2.5 rounded-xl text-sm font-semibold border ${darkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-800' : 'border-gray-300 text-gray-700 hover:bg-gray-100'}`}
               >
                 Cancel
               </button>
@@ -1284,7 +1284,7 @@ export default function CalorieTracker() {
 
       {showLimitModal && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/70 backdrop-blur-md">
-          <div className="relative p-6 max-w-sm w-full mx-4 rounded-2xl border border-[#1F2937] bg-[#020617]/90 text-center shadow-[0_20px_60px_rgba(139,92,246,0.2)] overflow-hidden">
+          <div className={`relative p-6 max-w-sm w-full mx-4 rounded-2xl border text-center overflow-hidden ${darkMode ? 'border-[#1F2937] bg-[#020617]/90 shadow-[0_20px_60px_rgba(139,92,246,0.2)]' : 'border-gray-200 bg-white shadow-xl'}`}>
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-yellow-500/20 rounded-full blur-2xl" />
             
             <div className="flex justify-center mb-4">

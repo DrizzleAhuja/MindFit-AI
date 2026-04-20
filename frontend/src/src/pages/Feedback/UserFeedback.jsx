@@ -47,7 +47,7 @@ export default function UserFeedback() {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-[#05010d]' : 'bg-[#020617] text-white'}`}>
+    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${darkMode ? 'bg-[#05010d] text-white' : 'bg-gray-50 text-gray-900'}`}>
       <NavBar />
       <main className="flex-grow flex items-center justify-center p-4">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">

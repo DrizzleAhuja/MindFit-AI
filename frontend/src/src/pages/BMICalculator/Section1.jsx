@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useTheme } from "../../context/ThemeContext";
 import {
   FaWeight,
   FaBirthdayCake,
@@ -27,6 +28,7 @@ import {
 } from "./bmiFormValidation";
 
 export default function BMICalculator() {
+  const { darkMode } = useTheme();
   const user = useSelector(selectUser);
   const [heightUnit, setHeightUnit] = useState("imperial");
   const [weightUnit, setWeightUnit] = useState("kg");
@@ -185,13 +187,13 @@ export default function BMICalculator() {
     }`;
 
   return (
-    <div className="min-h-screen bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 text-gray-100">
+    <div className={`min-h-screen py-12 px-4 sm:px-6 lg:px-8 ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">
             BMI Calculator
           </h1>
-          <p className="text-xl text-gray-300">
+          <p className={`text-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
             Track your Body Mass Index and monitor your health progress
           </p>
         </div>
@@ -219,7 +221,7 @@ export default function BMICalculator() {
                     clearError(["age"]);
                     setAge(e.target.value);
                   }}
-                  className={`w-full p-3 rounded-lg bg-gray-700 border focus:ring-1 focus:ring-green-500 text-white ${inputErr(
+                  className={`w-full p-3 rounded-lg border focus:ring-1 focus:ring-green-500 ${darkMode ? 'bg-gray-700 text-white' : 'bg-gray-50 text-gray-900 border-gray-300'} ${inputErr(
                     "age"
                   )}`}
                 />
@@ -235,7 +237,7 @@ export default function BMICalculator() {
                 <select
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
-                  className="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:border-green-500 focus:ring-1 focus:ring-green-500 text-white"
+                  className={`w-full p-3 rounded-lg border focus:border-green-500 focus:ring-1 focus:ring-green-500 ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-300 text-gray-900'}`}
                 >
                   <option value="male">Male</option>
                   <option value="female">Female</option>
@@ -247,7 +249,7 @@ export default function BMICalculator() {
                   <label className="text-sm font-medium text-gray-300 flex items-center">
                     <GiBodyHeight className="mr-2 text-gray-400" /> Height
                   </label>
-                  <div className="flex rounded-lg border border-gray-600 p-1 bg-gray-700/80">
+                  <div className={`flex rounded-lg border p-1 ${darkMode ? 'border-gray-600 bg-gray-700/80' : 'border-gray-300 bg-gray-100'}`}>
                     <button
                       type="button"
                       onClick={() => switchHeightUnit("imperial")}
@@ -279,7 +281,7 @@ export default function BMICalculator() {
                             clearError(["heightFeet", "height"]);
                             setHeightFeet(e.target.value);
                           }}
-                          className={`w-full p-3 rounded-lg bg-gray-700 border focus:ring-1 focus:ring-green-500 text-white ${inputErr(
+                          className={`w-full p-3 rounded-lg border focus:ring-1 focus:ring-green-500 ${darkMode ? 'bg-gray-700 text-white' : 'bg-gray-50 text-gray-900 border-gray-300'} ${inputErr(
                             "heightFeet"
                           )}`}
                         />
@@ -304,7 +306,7 @@ export default function BMICalculator() {
                             clearError(["heightInches", "height"]);
                             setHeightInches(e.target.value);
                           }}
-                          className={`w-full p-3 rounded-lg bg-gray-700 border focus:ring-1 focus:ring-green-500 text-white ${inputErr(
+                          className={`w-full p-3 rounded-lg border focus:ring-1 focus:ring-green-500 ${darkMode ? 'bg-gray-700 text-white' : 'bg-gray-50 text-gray-900 border-gray-300'} ${inputErr(
                             "heightInches"
                           )}`}
                         />
@@ -358,7 +360,7 @@ export default function BMICalculator() {
                   <label className="text-sm font-medium text-gray-300 flex items-center">
                     <FaWeight className="mr-2 text-gray-400" /> Weight
                   </label>
-                  <div className="flex rounded-lg border border-gray-600 p-1 bg-gray-700/80">
+                  <div className={`flex rounded-lg border p-1 ${darkMode ? 'border-gray-600 bg-gray-700/80' : 'border-gray-300 bg-gray-100'}`}>
                     <button
                       type="button"
                       onClick={() => switchWeightUnit("kg")}
@@ -386,7 +388,7 @@ export default function BMICalculator() {
                     clearError(["weight"]);
                     setWeight(e.target.value);
                   }}
-                  className={`w-full p-3 rounded-lg bg-gray-700 border focus:ring-1 focus:ring-green-500 text-white ${inputErr(
+                  className={`w-full p-3 rounded-lg border focus:ring-1 focus:ring-green-500 ${darkMode ? 'bg-gray-700 text-white' : 'bg-gray-50 text-gray-900 border-gray-300'} ${inputErr(
                     "weight"
                   )}`}
                 />
@@ -404,9 +406,9 @@ export default function BMICalculator() {
             </div>
 
             {bmi && (
-              <div className="mt-8 p-5 bg-gray-700/90 rounded-xl border border-gray-600 overflow-hidden relative">
+              <div className={`mt-8 p-5 rounded-xl border overflow-hidden relative ${darkMode ? 'bg-gray-700/90 border-gray-600' : 'bg-gray-50 border-gray-200'}`}>
                 <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#8B5CF6] to-[#22D3EE]" />
-                <h3 className="text-lg font-semibold mb-4 text-white pt-1">
+                <h3 className={`text-lg font-semibold mb-4 pt-1 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                   Your BMI result
                 </h3>
                 <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-500 mb-2">
@@ -439,8 +441,8 @@ export default function BMICalculator() {
           </div>
 
           {/* History Section */}
-          <div className="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6">
-            <h2 className="text-2xl font-bold mb-6 text-white flex items-center">
+          <div className={`rounded-xl shadow-md border p-6 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+            <h2 className={`text-2xl font-bold mb-6 flex items-center ${darkMode ? 'text-white' : 'text-gray-900'}`}>
               <FaHistory className="mr-3 text-green-400" /> BMI History
             </h2>
 
@@ -449,7 +451,7 @@ export default function BMICalculator() {
                 {history.map((entry, index) => (
                   <div
                     key={index}
-                    className="p-4 bg-gray-700 rounded-lg border border-gray-600 hover:border-green-300 transition"
+                    className={`p-4 rounded-lg border hover:border-green-300 transition ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'}`}
                   >
                     <div className="flex justify-between items-center mb-2">
                       <div>
@@ -472,7 +474,7 @@ export default function BMICalculator() {
                         })}
                       </div>
                     </div>
-                    <div className="w-full bg-gray-600 rounded-full h-2">
+                    <div className={`w-full rounded-full h-2 ${darkMode ? 'bg-gray-600' : 'bg-gray-200'}`}>
                       <div
                         className={`h-2 rounded-full ${
                           entry.category === "Underweight"
@@ -510,7 +512,7 @@ export default function BMICalculator() {
           </div>
         </div>
       </div>
-      <ToastContainer position="bottom-right" autoClose={3000} theme="dark" />
+      <ToastContainer position="bottom-right" autoClose={3000} theme={darkMode ? "dark" : "light"} />
     </div>
   );
 }

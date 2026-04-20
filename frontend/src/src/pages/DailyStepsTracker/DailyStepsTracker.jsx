@@ -176,8 +176,8 @@ const DailyStepsTracker = () => {
 
   return (
     <div
-      className={`min-h-screen flex flex-col ${
-        darkMode ? "bg-[#05010d] text-white" : "bg-[#020617] text-gray-100"
+      className={`min-h-screen flex flex-col transition-colors duration-300 ${
+        darkMode ? "bg-[#05010d] text-white" : "bg-gray-50 text-gray-900"
       }`}
     >
       <NavBar />
@@ -185,8 +185,8 @@ const DailyStepsTracker = () => {
       <main className="flex-grow">
         <section className="relative overflow-hidden py-6 sm:py-8 lg:py-10">
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute -top-24 -left-16 w-72 h-72 bg-[#8B5CF6] rounded-full blur-3xl opacity-30" />
-            <div className="absolute -bottom-28 right-0 w-80 h-80 bg-[#22D3EE] rounded-full blur-3xl opacity-25" />
+            <div className={`absolute -top-24 -left-16 w-72 h-72 bg-[#8B5CF6] rounded-full blur-3xl ${darkMode ? 'opacity-30' : 'opacity-10'}`} />
+            <div className={`absolute -bottom-28 right-0 w-80 h-80 bg-[#22D3EE] rounded-full blur-3xl ${darkMode ? 'opacity-25' : 'opacity-10'}`} />
           </div>
 
           <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
@@ -194,7 +194,7 @@ const DailyStepsTracker = () => {
             <header className="text-center mb-6 sm:mb-8 lg:mb-10">
               <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-[#8B5CF6]/20 to-[#22D3EE]/20 border border-[#8B5CF6]/40 backdrop-blur-xl mb-4">
                 <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#FACC15]" />
-                <span className="text-xs sm:text-sm font-semibold text-gray-100">
+                <span className={`text-xs sm:text-sm font-semibold ${darkMode ? 'text-gray-100' : 'text-gray-700'}`}>
                   PWA Daily Walking Tracker
                 </span>
               </div>
@@ -204,7 +204,7 @@ const DailyStepsTracker = () => {
                 </span>{" "}
                 (Walking)
               </h1>
-              <p className="max-w-3xl mx-auto text-sm sm:text-base lg:text-lg text-gray-300">
+              <p className={`max-w-3xl mx-auto text-sm sm:text-base lg:text-lg ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                 Start tracking and walk with your phone in your pocket. Designed for{" "}
                 <span className="font-semibold text-[#22D3EE]">PWA</span> use on mobile.
               </p>
@@ -243,7 +243,7 @@ const DailyStepsTracker = () => {
             )}
 
             {isTracking && (
-              <div className="relative rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl p-5 sm:p-6 text-center shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60 mb-6">
+              <div className={`relative rounded-2xl border backdrop-blur-xl p-5 sm:p-6 text-center mb-6 ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white shadow-lg'}`}>
                 <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
                 <p className="text-emerald-400 font-semibold animate-pulse text-sm sm:text-base">
                   Tracking walking steps in real time…
@@ -280,17 +280,17 @@ const DailyStepsTracker = () => {
             </div>
 
             {/* Activity info */}
-            <div className="relative rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl p-5 sm:p-6 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60 transition-all duration-300">
+            <div className={`relative rounded-2xl border backdrop-blur-xl p-5 sm:p-6 transition-all duration-300 ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white shadow-lg hover:shadow-xl'}`}>
               <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
-              <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+              <h2 className={`text-lg sm:text-xl font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                 Walking activity only
               </h2>
-              <p className="text-sm sm:text-base text-gray-300 mb-2">
+              <p className={`text-sm sm:text-base mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                 This tracker is tuned for <span className="font-semibold">walking</span> with
                 your phone in your hand or pocket. It ignores most tiny shakes and counts only
                 realistic step impacts.
               </p>
-              <ul className="text-sm sm:text-base text-gray-300 space-y-2 list-disc list-inside">
+              <ul className={`text-sm sm:text-base space-y-2 list-disc list-inside ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                 <li>For best accuracy, keep the phone near your body while walking.</li>
                 <li>Short tests (1–2 minutes) may vary; longer walks give more accurate counts.</li>
                 <li>Steps, time, distance, and calories are saved for today and reset each day.</li>
@@ -305,12 +305,15 @@ const DailyStepsTracker = () => {
   );
 };
 
-const StatCard = ({ icon, title, value, color }) => (
-  <article className="relative h-full rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl p-5 sm:p-6 flex flex-col shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60 transition-transform duration-300 hover:-translate-y-1.5">
+const StatCard = ({ icon, title, value, color }) => {
+  // Note: StatCard needs its own useTheme since it's a separate component
+  const { darkMode } = useTheme();
+  return (
+  <article className={`relative h-full rounded-2xl border backdrop-blur-xl p-5 sm:p-6 flex flex-col transition-transform duration-300 hover:-translate-y-1.5 ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white shadow-lg hover:shadow-xl hover:border-[#8B5CF6]/40'}`}>
     <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
     <div className="flex items-center justify-between mb-4">
       <div className="flex items-center gap-3">
-        <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-[#020617] border border-[#1F2937]">
+        <div className={`flex items-center justify-center w-11 h-11 rounded-xl border ${darkMode ? 'bg-[#020617] border-[#1F2937]' : 'bg-gray-50 border-gray-200'}`}>
           <div className={color || "text-[#22D3EE]"}>{icon}</div>
         </div>
         <span className="text-xs uppercase tracking-[0.18em] text-gray-400">
@@ -322,7 +325,8 @@ const StatCard = ({ icon, title, value, color }) => (
       {value}
     </p>
   </article>
-);
+  );
+};
 
 export default DailyStepsTracker;
 

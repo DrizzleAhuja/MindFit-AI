@@ -38,6 +38,7 @@ import {
   ListOrdered,
 } from "lucide-react";
 import OnboardingGuide from "../../Components/OnboardingGuide";
+import { useTheme } from "../../context/ThemeContext";
 
 // Features page colors: #8B5CF6, #22D3EE, #FACC15, bg #020617 / #05010d, border #1F2937
 const COLORS = {
@@ -336,14 +337,14 @@ const CalorieIntakeSection = ({ navigate, calorieHistory }) => {
 };
 
 // Heatmap from real session dates (last 4 weeks, 7 days each)
-const StreakHeatmap = ({ activityData }) => {
+const StreakHeatmap = ({ activityData, darkMode }) => {
   const days = ["M", "T", "W", "T", "F", "S", "S"];
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Calendar className="w-5 h-5 text-[#22D3EE]" />
-          <h3 className="text-lg font-semibold text-white">Consistency</h3>
+          <h3 className={`text-lg font-semibold ${darkMode ? "text-white" : "text-gray-900"}`}>Consistency</h3>
         </div>
         <span className="text-xs text-gray-500">Last 4 weeks</span>
       </div>
@@ -366,7 +367,7 @@ const StreakHeatmap = ({ activityData }) => {
                 className={`aspect-square rounded transition-all ${
                   active
                     ? "bg-[#22D3EE] border border-[#22D3EE]/50"
-                    : "bg-[#1F2937]/60 border border-[#1F2937]"
+                    : (darkMode ? "bg-[#1F2937]/60 border border-[#1F2937]" : "bg-gray-100 border border-gray-200")
                 }`}
               />
             ))}
@@ -391,11 +392,11 @@ const StreakHeatmap = ({ activityData }) => {
 };
 
 // BMI Trend – real data only
-const BMITrendChart = ({ bmiHistory, navigate }) => {
+const BMITrendChart = ({ bmiHistory, navigate, darkMode }) => {
   if (!bmiHistory || bmiHistory.length === 0) {
     return (
       <div className="text-center py-8">
-        <Scale className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+        <Scale className={`w-12 h-12 mx-auto mb-3 ${darkMode ? "text-gray-600" : "text-gray-300"}`} />
         <p className="text-gray-400 mb-4">No BMI data yet</p>
         <button
           type="button"
@@ -416,7 +417,7 @@ const BMITrendChart = ({ bmiHistory, navigate }) => {
     <div>
       <div className="flex items-center gap-2 mb-4">
         <Scale className="w-5 h-5 text-[#22D3EE]" />
-        <h3 className="text-lg font-semibold text-white">BMI Trend</h3>
+        <h3 className={`text-lg font-semibold ${darkMode ? "text-white" : "text-gray-900"}`}>BMI Trend</h3>
       </div>
       <div className="flex items-end justify-between gap-2 h-24">
         {data.map((bmi, i) => {
@@ -469,6 +470,7 @@ export default function Home() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const { darkMode } = useTheme();
 
   const handleLoginSuccess = async (response) => {
     try {
@@ -912,12 +914,17 @@ export default function Home() {
     };
   }, [stats.streakCount, bmiHistory, workoutsThisWeek]);
 
-  const cardClass =
-    "relative rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60 transition-all duration-300";
+  const cardClass = `relative rounded-2xl border transition-all duration-300 backdrop-blur-xl shadow-xl ${
+    darkMode 
+      ? "border-[#1F2937] bg-[#020617]/80 hover:border-[#22D3EE]/60 shadow-[0_18px_45px_rgba(15,23,42,0.8)]" 
+      : "border-gray-200 bg-white hover:border-purple-300 hover:shadow-2xl hover:shadow-purple-500/10"
+  }`;
 
   return (
     <div
-      className={`min-h-screen flex flex-col ${!user ? "bg-[#05010d]" : "bg-[#020617]"}`}
+      className={`min-h-screen flex flex-col transition-colors duration-300 ${
+        darkMode ? "bg-[#020617]" : "bg-gray-50"
+      }`}
     >
       <NavBar />
 
@@ -953,7 +960,7 @@ export default function Home() {
                       <Zap className="w-6 h-6 text-yellow-400" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-white">
+                      <h3 className={`text-lg font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>
                         Upgrade to GenFit PRO
                       </h3>
                       <p className="text-sm text-yellow-100/70">
@@ -981,18 +988,18 @@ export default function Home() {
               <header className="text-center md:text-left mb-6 sm:mb-8 lg:mb-10">
                 <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-[#8B5CF6]/20 to-[#22D3EE]/20 border border-[#8B5CF6]/40 backdrop-blur-xl mb-4">
                   <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#FACC15]" />
-                  <span className="text-xs sm:text-sm font-semibold text-gray-100">
+                  <span className={`text-xs sm:text-sm font-semibold ${darkMode ? "text-gray-100" : "text-gray-700"}`}>
                     Smart Analytics Dashboard
                   </span>
                 </div>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-3 sm:mb-4 text-white">
+                <h1 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-3 sm:mb-4 ${darkMode ? "text-white" : "text-gray-900"}`}>
                   Ready to train,{" "}
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]">
                     {user.firstName || "Athlete"}
                   </span>
                   ? 🚀
                 </h1>
-                <p className="max-w-3xl text-sm sm:text-base lg:text-lg text-gray-300">
+                <p className={`max-w-3xl text-sm sm:text-base lg:text-lg ${darkMode ? "text-gray-300" : "text-gray-500"}`}>
                   Track your progress, log workouts, and check your AI insights
                   here.
                 </p>
@@ -1003,14 +1010,14 @@ export default function Home() {
                 <div className={`${cardClass} p-4 sm:p-5 md:p-6`}>
                   <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
                   <div className="flex items-center justify-between mb-2 sm:mb-3">
-                    <div className="rounded-lg p-2 sm:p-3 bg-[#020617] border border-[#1F2937]">
+                    <div className={`rounded-lg p-2 sm:p-3 border ${darkMode ? "bg-[#020617] border-[#1F2937]" : "bg-purple-50 border-purple-100"}`}>
                       <Flame className="text-[#22D3EE] text-xl sm:text-2xl" />
                     </div>
                     <span className="text-[#22D3EE]/80 text-xs font-medium">
                       This week
                     </span>
                   </div>
-                  <div className="text-3xl sm:text-4xl font-bold text-white mb-1">
+                  <div className={`text-3xl sm:text-4xl font-bold mb-1 ${darkMode ? "text-white" : "text-gray-900"}`}>
                     <AnimatedCounter value={caloriesBurnedThisWeek} />
                   </div>
                   <p className="text-gray-400 text-xs sm:text-sm">
@@ -1021,7 +1028,7 @@ export default function Home() {
                 <div className={`${cardClass} p-4 sm:p-5 md:p-6`}>
                   <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
                   <div className="flex items-center justify-between mb-2 sm:mb-3">
-                    <div className="rounded-lg p-2 sm:p-3 bg-[#020617] border border-[#1F2937]">
+                    <div className={`rounded-lg p-2 sm:p-3 border ${darkMode ? "bg-[#020617] border-[#1F2937]" : "bg-purple-50 border-purple-100"}`}>
                       <Dumbbell className="text-[#22D3EE] text-xl sm:text-2xl" />
                     </div>
                     <span className="text-[#22D3EE]/80 text-xs font-medium">

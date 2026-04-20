@@ -586,7 +586,7 @@ const MyWorkoutPlan = () => {
   if (loading) {
     return (
       <div className={`min-h-screen flex flex-col ${
-        darkMode ? 'bg-[#05010d] text-white' : 'bg-[#020617] text-gray-100'
+        darkMode ? 'bg-[#05010d] text-white' : 'bg-gray-50 text-gray-900'
       }`}>
         <NavBar />
         <div className="flex flex-col items-center justify-center flex-grow px-4">
@@ -608,7 +608,7 @@ const MyWorkoutPlan = () => {
   if (error) {
     return (
       <div className={`min-h-screen flex flex-col ${
-        darkMode ? 'bg-[#05010d] text-white' : 'bg-[#020617] text-gray-100'
+        darkMode ? 'bg-[#05010d] text-white' : 'bg-gray-50 text-gray-900'
       }`}>
         <NavBar />
         <div className="flex flex-col items-center justify-center min-h-screen text-red-400 p-4 sm:p-6">

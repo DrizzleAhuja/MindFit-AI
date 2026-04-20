@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
+import { useTheme } from "../../context/ThemeContext";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
@@ -287,6 +288,7 @@ const BMITrendChart = ({ bmiHistory }) => {
 };
 
 export default function Dashboard() {
+  const { darkMode } = useTheme();
   const user = useSelector(selectUser);
   const navigate = useNavigate();
   const [stats, setStats] = useState({ points: 0, weeklyPoints: 0, streakCount: 0, badges: [], weeklyChallenge: {} });
@@ -504,7 +506,7 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#0A0F1C] text-white">
+      <div className={`min-h-screen flex flex-col transition-colors duration-300 ${darkMode ? "bg-[#0A0F1C] text-white" : "bg-gray-50 text-gray-900"}`}>
         <NavBar />
         <div className="flex-grow flex items-center justify-center">
           <div className="flex flex-col items-center gap-4">
@@ -518,7 +520,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0A0F1C] text-white">
+    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${darkMode ? "bg-[#0A0F1C] text-white" : "bg-gray-50 text-gray-900"}`}>
       <NavBar />
       
       {/* Weekly Challenge Banner */}

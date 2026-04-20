@@ -5,8 +5,10 @@ import { API_BASE_URL } from "../../../../config/api";
 import { toast } from "react-toastify";
 import { validateLength, LIMITS } from "../../../utils/formValidation";
 import { formatRelativeTime } from "../../../utils/timeUtils";
+import { useTheme } from "../../../context/ThemeContext";
 
 export default function PostCard({ post, currentUser, onLikeToggle }) {
+  const { darkMode } = useTheme();
   const [isLiked, setIsLiked] = useState(post.isLiked || false);
   const [likesCount, setLikesCount] = useState(post.likes?.length || 0);
   const [showComments, setShowComments] = useState(false);
@@ -83,17 +85,31 @@ export default function PostCard({ post, currentUser, onLikeToggle }) {
 
   const formattedDate = formatRelativeTime(post.createdAt);
 
+  // Theme-aware classes
+  const cardClass = darkMode
+    ? "relative rounded-2xl sm:rounded-3xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60 transition-all duration-300 overflow-hidden mb-6"
+    : "relative rounded-2xl sm:rounded-3xl border border-gray-200 bg-white shadow-lg hover:shadow-xl hover:border-[#8B5CF6]/40 transition-all duration-300 overflow-hidden mb-6";
+  const nameClass = darkMode ? "font-bold text-white truncate text-base leading-tight" : "font-bold text-gray-900 truncate text-base leading-tight";
+  const contentClass = darkMode ? "text-gray-200 text-sm whitespace-pre-wrap leading-relaxed" : "text-gray-700 text-sm whitespace-pre-wrap leading-relaxed";
+  const borderClass = darkMode ? "border-[#1F2937]" : "border-gray-200";
+  const avatarBgClass = darkMode ? "bg-[#020617]" : "bg-gray-100";
+  const commentBgClass = darkMode ? "bg-[#0c0520]/70 border border-[#1F2937]" : "bg-gray-50 border border-gray-200";
+  const commentInputClass = darkMode
+    ? "flex-1 px-3 py-2 rounded-xl bg-[#0c0520]/80 border border-[#1F2937] text-xs text-white placeholder:text-gray-500 focus:outline-none focus:border-[#22D3EE]/70"
+    : "flex-1 px-3 py-2 rounded-xl bg-gray-50 border border-gray-300 text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[#8B5CF6]/70";
+  const commentTextClass = darkMode ? "text-gray-300" : "text-gray-700";
+
   return (
-    <div className="relative rounded-2xl sm:rounded-3xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60 transition-all duration-300 overflow-hidden mb-6">
+    <div className={cardClass}>
       <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] to-[#22D3EE]" />
       <div className="p-5 sm:p-6 pt-7">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-4 min-w-0">
             <div className={`relative w-12 h-12 shrink-0 rounded-full p-[2px] ${
-              (post.userId?.points || 0) > 1000 ? 'bg-gradient-to-tr from-yellow-400 to-orange-500 shadow-[0_0_15px_rgba(250,204,21,0.3)]' : 'bg-[#1F2937]'
+              (post.userId?.points || 0) > 1000 ? 'bg-gradient-to-tr from-yellow-400 to-orange-500 shadow-[0_0_15px_rgba(250,204,21,0.3)]' : (darkMode ? 'bg-[#1F2937]' : 'bg-gray-300')
             }`}>
-              <div className="w-full h-full rounded-full bg-[#020617] flex items-center justify-center font-bold text-[#22D3EE] overflow-hidden text-sm">
+              <div className={`w-full h-full rounded-full ${avatarBgClass} flex items-center justify-center font-bold text-[#22D3EE] overflow-hidden text-sm`}>
                 {post.userId?.avatar ? (
                   <img src={post.userId.avatar} alt="" className="w-full h-full object-cover" />
                 ) : (
@@ -102,14 +118,14 @@ export default function PostCard({ post, currentUser, onLikeToggle }) {
               </div>
             </div>
             <div className="min-w-0">
-              <h4 className="font-bold text-white truncate text-base leading-tight group-hover:text-[#22D3EE] transition-colors">
+              <h4 className={nameClass}>
                 {post.userId?.firstName} {post.userId?.lastName}
               </h4>
-              <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
+              <div className={`flex items-center gap-2 text-xs ${darkMode ? 'text-gray-500' : 'text-gray-400'} font-medium`}>
                 <span>{formattedDate}</span>
                 {post.type === "milestone" && (
                   <>
-                    <span className="w-1 h-1 rounded-full bg-gray-600" />
+                    <span className={`w-1 h-1 rounded-full ${darkMode ? 'bg-gray-600' : 'bg-gray-400'}`} />
                     <span className="text-[#FACC15]">Milestone ✨</span>
                   </>
                 )}
@@ -127,21 +143,21 @@ export default function PostCard({ post, currentUser, onLikeToggle }) {
 
         {/* Content */}
         <div className="mb-4">
-          <p className="text-gray-200 text-sm whitespace-pre-wrap leading-relaxed">{post.content}</p>
+          <p className={contentClass}>{post.content}</p>
           {post.mediaUrl && (
-            <div className="mt-3 rounded-xl overflow-hidden border border-[#1F2937] ring-1 ring-[#8B5CF6]/10">
+            <div className={`mt-3 rounded-xl overflow-hidden border ${borderClass} ring-1 ring-[#8B5CF6]/10`}>
               <img src={post.mediaUrl} alt="Attached" className="w-full h-auto object-cover max-h-96" />
             </div>
           )}
         </div>
 
         {/* Actions */}
-        <div className="flex flex-wrap items-center gap-6 border-t border-[#1F2937] pt-5 text-sm">
+        <div className={`flex flex-wrap items-center gap-6 border-t ${borderClass} pt-5 text-sm`}>
           <button
             type="button"
             onClick={handleLike}
             className={`flex items-center gap-2.5 transition-all duration-300 group ${
-              isLiked ? "text-[#F87171]" : "text-gray-400 hover:text-[#F87171]"
+              isLiked ? "text-[#F87171]" : `${darkMode ? 'text-gray-400' : 'text-gray-500'} hover:text-[#F87171]`
             }`}
           >
             <div className={`p-2 rounded-full transition-colors ${isLiked ? 'bg-[#F87171]/10' : 'group-hover:bg-[#F87171]/10'}`}>
@@ -153,7 +169,7 @@ export default function PostCard({ post, currentUser, onLikeToggle }) {
           <button
             type="button"
             onClick={fetchComments}
-            className="flex items-center gap-2.5 text-gray-400 hover:text-[#22D3EE] transition-all duration-300 group"
+            className={`flex items-center gap-2.5 ${darkMode ? 'text-gray-400' : 'text-gray-500'} hover:text-[#22D3EE] transition-all duration-300 group`}
           >
             <div className="p-2 rounded-full group-hover:bg-[#22D3EE]/10 transition-colors">
               <FaComment className="text-lg" />
@@ -164,23 +180,23 @@ export default function PostCard({ post, currentUser, onLikeToggle }) {
 
         {/* Comments Section */}
         {showComments && (
-          <div className="mt-5 border-t border-[#1F2937] pt-4">
+          <div className={`mt-5 border-t ${borderClass} pt-4`}>
             {loadingComments ? (
               <div className="text-center text-xs text-gray-500 py-2">Loading comments…</div>
             ) : (
               <div className="space-y-3 mb-4 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                 {comments.map((comment) => (
                   <div key={comment._id} className="flex gap-2 items-start text-xs">
-                    <div className="w-6 h-6 shrink-0 rounded-full bg-[#0f172a] border border-[#8B5CF6]/30 flex items-center justify-center font-bold text-[#22D3EE] text-[10px]">
+                    <div className={`w-6 h-6 shrink-0 rounded-full ${darkMode ? 'bg-[#0f172a] border-[#8B5CF6]/30' : 'bg-gray-100 border-gray-300'} border flex items-center justify-center font-bold text-[#22D3EE] text-[10px]`}>
                       {comment.userId?.avatar ? (
                         <img src={comment.userId.avatar} alt="" className="w-full h-full rounded-full object-cover" />
                       ) : (
                         <span>{comment.userId?.firstName?.[0]}</span>
                       )}
                     </div>
-                    <div className="bg-[#0c0520]/70 border border-[#1F2937] p-2.5 rounded-xl flex-1">
+                    <div className={`${commentBgClass} p-2.5 rounded-xl flex-1`}>
                       <span className="font-semibold text-[#22D3EE]/90 mr-1">{comment.userId?.firstName}:</span>
-                      <span className="text-gray-300">{comment.content}</span>
+                      <span className={commentTextClass}>{comment.content}</span>
                     </div>
                   </div>
                 ))}
@@ -197,7 +213,7 @@ export default function PostCard({ post, currentUser, onLikeToggle }) {
                 placeholder="Write a comment…"
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                className="flex-1 px-3 py-2 rounded-xl bg-[#0c0520]/80 border border-[#1F2937] text-xs text-white placeholder:text-gray-500 focus:outline-none focus:border-[#22D3EE]/70"
+                className={commentInputClass}
               />
               <button
                 type="submit"

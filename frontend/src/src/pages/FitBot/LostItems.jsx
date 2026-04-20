@@ -8,8 +8,8 @@ export default function LostItems() {
   const { darkMode } = useTheme();
   
   return (
-    <div className={`min-h-screen flex flex-col ${
-      darkMode ? 'bg-[#05010d] text-white' : 'bg-[#020617] text-gray-100'
+    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${
+      darkMode ? 'bg-[#05010d] text-white' : 'bg-gray-50 text-gray-900'
     }`}>
       <NavBar />
       <main>
