@@ -571,7 +571,7 @@ export default function Dashboard() {
             {/* Primary Stats Row */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               {/* Calories Burned */}
-              <div className={`relative rounded-2xl p-5 transition-all group border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}
+              <div className={`relative rounded-2xl p-5 transition-all group border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}>
                 <div className="flex items-start justify-between mb-3">
                   <div className="p-2.5 rounded-xl bg-[#84CC16]/10 group-hover:bg-[#84CC16]/20 transition-colors">
                     <Flame className="w-5 h-5 text-[#84CC16]" />
@@ -588,7 +588,7 @@ export default function Dashboard() {
               </div>
 
               {/* Workouts */}
-              <div className={`relative rounded-2xl p-5 transition-all group border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}
+              <div className={`relative rounded-2xl p-5 transition-all group border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}>
                 <div className="flex items-start justify-between mb-3">
                   <div className="p-2.5 rounded-xl bg-[#84CC16]/10 group-hover:bg-[#84CC16]/20 transition-colors">
                     <Dumbbell className="w-5 h-5 text-[#84CC16]" />
@@ -605,7 +605,7 @@ export default function Dashboard() {
               </div>
 
               {/* Day Streak */}
-              <div className={`relative rounded-2xl p-5 transition-all group border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}
+              <div className={`relative rounded-2xl p-5 transition-all group border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}>
                 <div className="flex items-start justify-between mb-3">
                   <div className="p-2.5 rounded-xl bg-[#F97316]/10 group-hover:bg-[#F97316]/20 transition-colors">
                     <Zap className="w-5 h-5 text-[#F97316]" />
@@ -619,7 +619,7 @@ export default function Dashboard() {
               </div>
 
               {/* Consistency Score */}
-              <div className={`relative rounded-2xl p-5 transition-all group border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}
+              <div className={`relative rounded-2xl p-5 transition-all group border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}>
                 <div className="flex items-start justify-between mb-3">
                   <div className="p-2.5 rounded-xl bg-[#EC4899]/10 group-hover:bg-[#EC4899]/20 transition-colors">
                     <Heart className="w-5 h-5 text-[#EC4899]" />

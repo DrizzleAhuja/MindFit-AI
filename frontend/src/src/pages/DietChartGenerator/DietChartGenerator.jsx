@@ -818,7 +818,7 @@ export default function DietChartGenerator() {
                         className={`relative p-3 rounded-xl border-2 transition-all duration-300 flex items-center gap-3 ${
                           dietType === option.id
                             ? `border-transparent bg-gradient-to-r ${option.color} text-white shadow-lg scale-[1.02]`
-                            ? (darkMode ? "border-[#1F2937] bg-[#020617]/60 hover:border-[#22D3EE]/40 text-gray-300 hover:text-white" : "border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100")
+                            : (darkMode ? "border-[#1F2937] bg-[#020617]/60 hover:border-[#22D3EE]/40 text-gray-300 hover:text-white" : "border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100")
                         }`}
                       >
                         <span className="text-2xl">{option.icon}</span>
@@ -845,7 +845,7 @@ export default function DietChartGenerator() {
                         className={`relative p-3 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-1 ${
                           cuisineType === option.id
                             ? "border-[#22D3EE] bg-gradient-to-br from-cyan-500/20 to-blue-500/20 text-white shadow-lg scale-[1.02]"
-                            ? (darkMode ? "border-[#1F2937] bg-[#020617]/60 hover:border-[#22D3EE]/40 text-gray-300 hover:text-white" : "border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100")
+                            : (darkMode ? "border-[#1F2937] bg-[#020617]/60 hover:border-[#22D3EE]/40 text-gray-300 hover:text-white" : "border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100")
                         }`}
                       >
                         <span className="text-xl">{option.icon}</span>
@@ -870,7 +870,7 @@ export default function DietChartGenerator() {
                     className={`w-full p-3 rounded-xl border-2 transition-all duration-300 flex items-center gap-3 ${
                       isSenior
                         ? "border-[#22D3EE] bg-cyan-500/20 text-white shadow-lg"
-                        ? (darkMode ? "border-[#1F2937] bg-[#020617]/60 text-gray-400" : "border-gray-200 bg-gray-100 text-gray-500")
+                        : (darkMode ? "border-[#1F2937] bg-[#020617]/60 text-gray-400" : "border-gray-200 bg-gray-100 text-gray-500")
                     }`}
                   >
                     <span className="text-xl">👴</span>
