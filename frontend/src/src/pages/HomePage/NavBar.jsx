@@ -277,18 +277,7 @@ export default function NavBar() {
 
             {/* User Section */}
             <div className="flex items-center space-x-4">
-              {/* Theme Toggle Button */}
-              <button
-                onClick={toggleDarkMode}
-                className={`p-2 rounded-full transition-all duration-300 ${
-                  darkMode 
-                    ? "bg-white/10 text-yellow-400 hover:bg-white/20" 
-                    : "bg-gray-100 text-purple-600 hover:bg-gray-200"
-                }`}
-                title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              >
-                {darkMode ? <FiSun size={20} /> : <FiMoon size={20} />}
-              </button>
+
 
               {user ? (
                 <div className="flex items-center space-x-6">
@@ -415,15 +404,7 @@ export default function NavBar() {
 
             {user && (
               <div className="flex items-center gap-3">
-                {/* Mobile Theme Toggle */}
-                <button
-                  onClick={toggleDarkMode}
-                  className={`p-2 rounded-full transition-all ${
-                    darkMode ? "bg-white/10 text-yellow-400" : "bg-gray-100 text-purple-600"
-                  }`}
-                >
-                  {darkMode ? <FiSun size={18} /> : <FiMoon size={18} />}
-                </button>
+
                 <div
                   className="w-9 h-9 rounded-full flex items-center justify-center font-medium bg-[#8B5CF6] text-white text-sm cursor-pointer shadow-[0_0_8px_rgba(139,92,246,0.3)]"
                   onClick={() => setDropdownOpen(!dropdownOpen)}
