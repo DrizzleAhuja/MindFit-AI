@@ -12,7 +12,7 @@ import {
 import { motion } from "framer-motion";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import GenFitLogo from "../../Components/GenFitLogo";
-import WorkoutScene from "../../Components/GenFitAssistant";
+import AgentChatDemo from "../../Components/AgentChatDemo";
 import { useTheme } from "../../context/ThemeContext";
 
 const HomeSec1 = ({ onLoginSuccess, onLoginError }) => {
@@ -40,8 +40,8 @@ const HomeSec1 = ({ onLoginSuccess, onLoginError }) => {
           {/* Left Column: Text & CTA */}
           <motion.div
             className="lg:col-span-7 text-center lg:text-left"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
             <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border backdrop-blur-xl mb-8 ${
@@ -147,20 +147,20 @@ const HomeSec1 = ({ onLoginSuccess, onLoginError }) => {
             </div>
           </motion.div>
 
-          {/* Right Column: Procedural Animation Element */}
+          {/* Right Column: Premium Robot Animation */}
           <motion.div
-            className="lg:col-span-5 relative scale-110 lg:scale-125 origin-center lg:origin-right"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
+            className="lg:col-span-5 relative scale-125 lg:scale-150 origin-center lg:origin-right -mt-12 lg:-mt-24"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1.2, ease: "easeOut" }}
           >
             <div className="relative flex justify-center items-center">
               {/* Dynamic Aura */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#10B981]/20 via-[#3B82F6]/10 to-transparent blur-[120px] rounded-full animate-pulse" />
 
-              {/* The AI Assistant Animation */}
-              <div className="relative z-10 w-full transform transition-transform duration-700">
-                <WorkoutScene size="large" />
+              {/* The Agentic Chatbot Demo */}
+              <div className="relative z-10 w-full transform transition-all duration-700 hover:scale-105">
+                <AgentChatDemo />
               </div>
             </div>
           </motion.div>
