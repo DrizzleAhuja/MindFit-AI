@@ -200,7 +200,7 @@ export default function BMICalculator() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Calculator Form */}
-          <div className="bg-gray-800 rounded-xl shadow-md border border-gray-700 p-6">
+          <div className={`rounded-xl shadow-md border p-6 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
             <h2 className="text-2xl font-bold mb-6 text-white flex items-center">
               <FaWeight className="mr-3 text-green-400" /> Calculate Your BMI
             </h2>

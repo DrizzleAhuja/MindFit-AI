@@ -607,7 +607,7 @@ export default function DietChartGenerator() {
                 Personalized Indian meals: Breakfast, Lunch, Evening Snack & Dinner
               </p>
               
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#020617]/60 border border-[#1F2937]">
+              <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${darkMode ? 'bg-[#020617]/60 border-[#1F2937]' : 'bg-gray-100 border-gray-300'}`}>
                 <span className="text-lg">📅</span>
                 <span className="text-sm font-medium text-gray-300">
                   {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
@@ -622,7 +622,7 @@ export default function DietChartGenerator() {
           <div className="xl:col-span-4 2xl:col-span-3 space-y-5 sm:space-y-6 order-2 xl:order-1">
             {/* BMI Data Card - Enhanced */}
             {bmiData ? (
-              <div className="group relative rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] overflow-hidden transition-all duration-500 hover:border-[#22D3EE]/60 hover:-translate-y-1 animate-slide-in-left">
+            <div className={`group relative rounded-2xl border backdrop-blur-xl shadow-lg overflow-hidden transition-all duration-500 hover:-translate-y-1 animate-slide-in-left ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white hover:border-blue-400 text-gray-900'}`}>
                 <div className="relative bg-gradient-to-r from-orange-600 via-orange-500 to-red-600 p-5 sm:p-6 overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
                   <div className="relative flex items-center gap-3">
@@ -644,7 +644,7 @@ export default function DietChartGenerator() {
                     ].map((item, idx) => (
                       <div 
                         key={idx}
-                        className="bg-[#020617]/60 backdrop-blur-sm p-4 rounded-xl border border-[#1F2937] hover:border-[#22D3EE]/40 transition-all duration-300 hover:scale-105"
+                        className={`backdrop-blur-sm p-4 rounded-xl border transition-all duration-300 hover:scale-105 ${darkMode ? 'bg-[#020617]/60 border-[#1F2937] hover:border-[#22D3EE]/40' : 'bg-gray-50 border-gray-200 hover:border-blue-300'}`}
                         style={{ animationDelay: `${idx * 100}ms` }}
                       >
                         <p className="text-xs text-gray-400 mb-1">{item.label}</p>
@@ -652,7 +652,7 @@ export default function DietChartGenerator() {
                       </div>
                     ))}
                     {bmiData.age && (
-                      <div className="bg-[#020617]/60 backdrop-blur-sm p-4 rounded-xl border border-[#1F2937] hover:border-[#22D3EE]/40 transition-all duration-300 hover:scale-105">
+                      <div className={`backdrop-blur-sm p-4 rounded-xl border transition-all duration-300 hover:scale-105 ${darkMode ? 'bg-[#020617]/60 border-[#1F2937] hover:border-[#22D3EE]/40' : 'bg-gray-50 border-gray-200 hover:border-blue-300'}`}>
                         <p className="text-xs text-gray-400 mb-1">Age</p>
                         <p className="font-bold text-lg text-green-400">{bmiData.age} years</p>
                       </div>
@@ -721,7 +721,7 @@ export default function DietChartGenerator() {
 
             {/* Active Workout Plan Card - Enhanced */}
             {activeWorkoutPlan ? (
-              <div className="group relative rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] overflow-hidden transition-all duration-500 hover:border-[#22D3EE]/60 hover:-translate-y-1 animate-slide-in-left" style={{ animationDelay: '200ms' }}>
+            <div className={`group relative rounded-2xl border backdrop-blur-xl shadow-lg overflow-hidden transition-all duration-500 hover:-translate-y-1 animate-slide-in-left ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white hover:border-blue-400 text-gray-900'}`} style={{ animationDelay: '200ms' }}>
                 <div className="relative bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 p-5 sm:p-6 overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
                   <div className="relative flex items-center gap-3">
@@ -756,7 +756,7 @@ export default function DietChartGenerator() {
                     ].map((item, idx) => (
                       <div 
                         key={idx}
-                        className="bg-[#020617]/60 backdrop-blur-sm p-3 rounded-xl border border-[#1F2937] hover:border-[#22D3EE]/40 transition-all duration-300 hover:scale-105"
+                        className={`backdrop-blur-sm p-3 rounded-xl border transition-all duration-300 hover:scale-105 ${darkMode ? 'bg-[#020617]/60 border-[#1F2937] hover:border-[#22D3EE]/40' : 'bg-gray-50 border-gray-200 hover:border-blue-300'}`}
                       >
                         <p className="text-xs text-gray-400 mb-1">{item.label}</p>
                         <p className={`font-bold text-sm ${item.color}`}>{item.value}</p>
@@ -791,7 +791,7 @@ export default function DietChartGenerator() {
             )}
 
             {/* Diet Preferences Card - NEW */}
-            <div className="group relative rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] overflow-hidden transition-all duration-500 hover:border-[#22D3EE]/60 hover:-translate-y-1 animate-slide-in-left" style={{ animationDelay: '300ms' }}>
+            <div className={`group relative rounded-2xl border backdrop-blur-xl shadow-lg overflow-hidden transition-all duration-500 hover:-translate-y-1 animate-slide-in-left ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white hover:border-blue-400 text-gray-900'}`} style={{ animationDelay: '300ms' }}>
               <div className="relative bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 p-5 sm:p-6 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
                 <div className="relative flex items-center gap-3">
@@ -818,7 +818,7 @@ export default function DietChartGenerator() {
                         className={`relative p-3 rounded-xl border-2 transition-all duration-300 flex items-center gap-3 ${
                           dietType === option.id
                             ? `border-transparent bg-gradient-to-r ${option.color} text-white shadow-lg scale-[1.02]`
-                            : "border-[#1F2937] bg-[#020617]/60 hover:border-[#22D3EE]/40 text-gray-300 hover:text-white"
+                            ? (darkMode ? "border-[#1F2937] bg-[#020617]/60 hover:border-[#22D3EE]/40 text-gray-300 hover:text-white" : "border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100")
                         }`}
                       >
                         <span className="text-2xl">{option.icon}</span>
@@ -845,7 +845,7 @@ export default function DietChartGenerator() {
                         className={`relative p-3 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-1 ${
                           cuisineType === option.id
                             ? "border-[#22D3EE] bg-gradient-to-br from-cyan-500/20 to-blue-500/20 text-white shadow-lg scale-[1.02]"
-                            : "border-[#1F2937] bg-[#020617]/60 hover:border-[#22D3EE]/40 text-gray-300 hover:text-white"
+                            ? (darkMode ? "border-[#1F2937] bg-[#020617]/60 hover:border-[#22D3EE]/40 text-gray-300 hover:text-white" : "border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100")
                         }`}
                       >
                         <span className="text-xl">{option.icon}</span>
@@ -870,7 +870,7 @@ export default function DietChartGenerator() {
                     className={`w-full p-3 rounded-xl border-2 transition-all duration-300 flex items-center gap-3 ${
                       isSenior
                         ? "border-[#22D3EE] bg-cyan-500/20 text-white shadow-lg"
-                        : "border-[#1F2937] bg-[#020617]/60 text-gray-400"
+                        ? (darkMode ? "border-[#1F2937] bg-[#020617]/60 text-gray-400" : "border-gray-200 bg-gray-100 text-gray-500")
                     }`}
                   >
                     <span className="text-xl">👴</span>
@@ -897,7 +897,7 @@ export default function DietChartGenerator() {
             </div>
 
             {/* Action Buttons Card - Enhanced */}
-            <div className="group relative rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] overflow-hidden transition-all duration-500 hover:border-[#22D3EE]/60 hover:-translate-y-1 animate-slide-in-left" style={{ animationDelay: '400ms' }}>
+            <div className={`group relative rounded-2xl border backdrop-blur-xl shadow-lg overflow-hidden transition-all duration-500 hover:-translate-y-1 animate-slide-in-left ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white hover:border-blue-400 text-gray-900'}`} style={{ animationDelay: '400ms' }}>
               <div className="relative bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 p-5 sm:p-6 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
                 <div className="relative flex items-center gap-3">
@@ -1011,9 +1011,9 @@ export default function DietChartGenerator() {
 
           {/* Right Side - Diet Chart Display - Full Height */}
           <div className="xl:col-span-8 2xl:col-span-9 order-1 xl:order-2">
-            <div className="relative rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] overflow-hidden transition-all duration-500 hover:border-[#22D3EE]/60 animate-slide-in-right h-full flex flex-col">
+            <div className={`relative rounded-2xl border backdrop-blur-xl shadow-lg overflow-hidden transition-all duration-500 animate-slide-in-right h-full flex flex-col ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white hover:border-blue-400 text-gray-900'}`}>
               <div className="relative bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 p-5 sm:p-6 overflow-hidden flex-shrink-0">
-                <div className="absolute inset-0 bg-[#020617]/20"></div>
+                <div className={`absolute inset-0 ${darkMode ? 'bg-[#020617]/20' : 'bg-gray-50/20'}`}></div>
                 <div className="absolute -right-20 -top-20 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
                 <div className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div className="flex-1">
@@ -1105,7 +1105,7 @@ export default function DietChartGenerator() {
                       {structuredDietChart.map((section, sectionIndex) => (
                         <div
                           key={`${section.title}-${sectionIndex}`}
-                          className="group relative rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl p-5 sm:p-6 shadow-[0_18px_45px_rgba(15,23,42,0.8)] transition-all duration-500 hover:scale-[1.01] hover:border-[#22D3EE]/60 animate-fade-in-up"
+                          className={`group relative rounded-2xl border backdrop-blur-xl p-5 sm:p-6 shadow-lg transition-all duration-500 hover:scale-[1.01] animate-fade-in-up ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white hover:border-blue-400 text-gray-900'}`}
                           style={{ animationDelay: `${sectionIndex * 100}ms` }}
                         >
                           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
@@ -1138,7 +1138,7 @@ export default function DietChartGenerator() {
                               {section.meals.map((meal, mealIndex) => (
                                 <div
                                   key={`${meal.title}-${mealIndex}`}
-                                  className="group/meal p-4 bg-[#020617]/60 backdrop-blur-sm border border-[#1F2937] rounded-xl transition-all duration-300 hover:scale-[1.03] hover:border-[#22D3EE]/50 hover:shadow-lg"
+                                  className={`group/meal p-4 backdrop-blur-sm border rounded-xl transition-all duration-300 hover:scale-[1.03] hover:shadow-lg ${darkMode ? 'bg-[#020617]/60 border-[#1F2937] hover:border-[#22D3EE]/50' : 'bg-gray-50 border-gray-200 hover:border-blue-300'}`}
                                 >
                                   <div className="flex items-center gap-2 mb-3">
                                     <div className="w-2 h-2 bg-gradient-to-r from-orange-400 to-red-500 rounded-full animate-pulse"></div>
@@ -1164,7 +1164,7 @@ export default function DietChartGenerator() {
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <div className="w-full max-w-4xl">
-                        <div className="whitespace-pre-wrap text-gray-300 leading-relaxed text-sm sm:text-base p-6 bg-[#020617]/60 backdrop-blur-sm rounded-2xl border border-[#1F2937]">
+                        <div className={`whitespace-pre-wrap leading-relaxed text-sm sm:text-base p-6 backdrop-blur-sm rounded-2xl border ${darkMode ? 'text-gray-300 bg-[#020617]/60 border-[#1F2937]' : 'text-gray-800 bg-gray-50 border-gray-200'}`}>
                           {formatDietChartContent(displayDietChart)}
                         </div>
                       </div>

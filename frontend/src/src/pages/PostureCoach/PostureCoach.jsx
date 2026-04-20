@@ -1333,7 +1333,7 @@ export default function PostureCoach() {
             <section className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8">
               {/* Exercise selector - show FIRST on mobile, left sidebar on desktop */}
               <aside className="xl:col-span-4 order-1 flex flex-col gap-6">
-                <div className="relative rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] overflow-hidden hover:border-[#22D3EE]/60 transition-all duration-300">
+                <div className={`relative rounded-2xl border backdrop-blur-xl shadow-lg overflow-hidden transition-all duration-300 ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white hover:border-blue-400'}`}>
                   <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
                   <div className="p-4 sm:p-5">
                     <h2 className="flex items-center gap-2 text-base sm:text-lg font-semibold text-white mb-4">
@@ -1346,11 +1346,11 @@ export default function PostureCoach() {
                         return (
                           <div
                             key={group.bodyPart}
-                            className="rounded-xl border border-[#1F2937] bg-[#020617]/40 overflow-hidden"
+                            className={`rounded-xl border overflow-hidden ${darkMode ? 'border-[#1F2937] bg-[#020617]/40' : 'border-gray-200 bg-gray-50'}`}
                           >
                             <button
                               onClick={() => toggleGroup(group.bodyPart)}
-                              className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-[#020617]/60 transition-colors"
+                              className={`w-full flex items-center justify-between px-4 py-3 text-left transition-colors ${darkMode ? 'hover:bg-[#020617]/60' : 'hover:bg-gray-100'}`}
                             >
                               <span className="text-sm font-semibold text-gray-100">{group.bodyPart}</span>
                               {isExpanded ? (
@@ -1370,8 +1370,8 @@ export default function PostureCoach() {
                                     }}
                                     className={`px-3 py-2 rounded-lg text-xs sm:text-sm border transition-all ${
                                       exercise === ex.id && selectedExerciseLabel === ex.label
-                                        ? "bg-emerald-500 text-gray-900 border-emerald-400 shadow-lg shadow-emerald-500/20"
-                                        : "border-[#1F2937] text-gray-200 hover:bg-[#020617]/80 hover:border-[#22D3EE]/40"
+                                        ? "bg-gradient-to-r from-purple-500 to-blue-600 border-transparent text-white shadow-lg"
+                                        : (darkMode ? "border-[#1F2937] text-gray-200 hover:bg-[#020617]/80 hover:border-[#22D3EE]/40" : "border-gray-200 text-gray-700 hover:bg-gray-100")
                                     }`}
                                   >
                                     {ex.label}
@@ -1387,7 +1387,7 @@ export default function PostureCoach() {
                       <div className="mt-4 flex items-center gap-2">
                         <Video className="w-4 h-4 text-gray-400" />
                         <select
-                          className="flex-1 bg-[#020617]/80 backdrop-blur-sm border border-[#1F2937] rounded-lg px-3 py-2 text-sm text-gray-100"
+                          className={`flex-1 backdrop-blur-sm border rounded-lg px-3 py-2 text-sm ${darkMode ? 'bg-[#020617]/80 border-[#1F2937] text-gray-100' : 'bg-gray-50 border-gray-200 text-gray-900'}`}
                           value={selectedCameraId || ""}
                           onChange={(e) => setSelectedCameraId(e.target.value || null)}
                         >
@@ -1427,10 +1427,10 @@ export default function PostureCoach() {
                       
                       {/* The dropdown demo box */}
                       {showDemo && (
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 md:w-80 bg-[#020617]/95 border border-[#1F2937] rounded-2xl shadow-[0_20px_60px_rgba(15,23,42,0.9)] p-4 backdrop-blur-2xl">
+                        <div className={`absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 md:w-80 border rounded-2xl shadow-xl p-4 backdrop-blur-2xl z-50 ${darkMode ? 'bg-[#020617]/95 border-[#1F2937] shadow-[0_20px_60px_rgba(15,23,42,0.9)]' : 'bg-white/95 border-gray-200'}`}>
                           <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
                           <span className="block text-xs text-gray-400 mb-3 font-medium text-center">Form Demo: {selectedExerciseLabel}</span>
-                          <div className="w-full h-44 bg-[#020617]/50 rounded-xl overflow-hidden border border-[#1F2937]/50 flex items-center justify-center p-2">
+                          <div className={`w-full h-44 rounded-xl overflow-hidden border flex items-center justify-center p-2 ${darkMode ? 'bg-[#020617]/50 border-[#1F2937]/50' : 'bg-gray-50 border-gray-200'}`}>
                             <img 
                               src={EXERCISE_ANIMATIONS[selectedExerciseLabel] || EXERCISE_ANIMATIONS[exercise] || "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjM0NzgwMjM0NzgwMjM0NzgwMjM0NzgwMjM0NzgwMjM0NzgwMjM0NyZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/3o7TqtH1jJ1A2v25sQ/giphy.gif"} 
                               alt={selectedExerciseLabel}
@@ -1459,7 +1459,7 @@ export default function PostureCoach() {
                     </button>
                   </div>
 
-                  <div className="relative rounded-2xl overflow-hidden border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] aspect-video flex items-center justify-center bg-black hover:border-[#22D3EE]/60 transition-all duration-300">
+                  <div className={`relative rounded-2xl overflow-hidden border backdrop-blur-xl aspect-video flex items-center justify-center transition-all duration-300 ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-black/5 hover:border-blue-400 shadow-md'}`}>
               <Webcam
                 ref={webcamRef}
                 audio={false}
@@ -1513,13 +1513,13 @@ export default function PostureCoach() {
                 </div>
               )}
               {isModelLoading && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#020617]/80 backdrop-blur-sm text-sm text-gray-100">
+                <div className={`absolute inset-0 flex flex-col items-center justify-center backdrop-blur-sm text-sm z-10 ${darkMode ? 'bg-[#020617]/80 text-gray-100' : 'bg-white/80 text-gray-900'}`}>
                   <div className="mb-2 h-6 w-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
                   <p>AI model loading, please wait…</p>
                 </div>
               )}
               {!isModelLoading && !isRunning && (
-                <div className="absolute inset-0 flex items-center justify-center bg-[#020617]/60 backdrop-blur-sm text-sm text-gray-100">
+                <div className={`absolute inset-0 flex items-center justify-center backdrop-blur-sm text-sm z-10 ${darkMode ? 'bg-[#020617]/60 text-gray-100' : 'bg-white/60 text-gray-900'}`}>
                   Press <span className="mx-1 font-semibold">Start Coaching</span> to begin.
                 </div>
               )}
@@ -1531,7 +1531,7 @@ export default function PostureCoach() {
 
                 {/* Stats strip - horizontal, sleek, right below camera */}
                 {exercise !== 'posture' ? (
-                  <div className="rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl overflow-hidden shadow-[0_18px_45px_rgba(15,23,42,0.8)]">
+                  <div className={`rounded-2xl border backdrop-blur-xl overflow-hidden shadow-lg ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)]' : 'border-gray-200 bg-white'}`}>
                     <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-5">
                       <div className="flex items-center gap-6 sm:gap-10">
                         <div className="flex items-center gap-3">
@@ -1616,7 +1616,7 @@ export default function PostureCoach() {
                     })()}
                   </div>
                 ) : (
-                  <div className="rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl overflow-hidden shadow-[0_18px_45px_rgba(15,23,42,0.8)] p-4 sm:p-5 flex items-center justify-between">
+                  <div className={`rounded-2xl border backdrop-blur-xl overflow-hidden shadow-lg p-4 sm:p-5 flex items-center justify-between ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)]' : 'border-gray-200 bg-white'}`}>
                     <div className="flex items-center gap-4">
                       {analysis ? (
                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${analysis.isCorrect ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400' : 'bg-amber-500/20 border-amber-500/40 text-amber-500'}`}>
@@ -1647,7 +1647,7 @@ export default function PostureCoach() {
                 {/* Feedback + History - clean 2-column layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 xl:gap-8">
                   {/* Live Feedback - primary */}
-                  <div className="relative rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl p-5 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60 transition-all">
+                  <div className={`relative rounded-2xl border backdrop-blur-xl p-5 shadow-lg transition-all ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white hover:border-blue-400'}`}>
                     <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
                     <h2 className="text-sm font-semibold text-white mb-2">Live Feedback</h2>
                     {analysis ? (
@@ -1704,7 +1704,7 @@ export default function PostureCoach() {
                   {/* Right column: History + How to use stacked */}
                   <div className="space-y-4">
                     {/* History Card */}
-                    <div className="relative rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl p-5 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60 transition-all h-fit">
+                    <div className={`relative rounded-2xl border backdrop-blur-xl p-5 shadow-lg transition-all h-fit ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white hover:border-blue-400'}`}>
                     <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
                       <h2 className="text-sm font-semibold text-white mb-3">Session History</h2>
                     {!user && (
@@ -1731,7 +1731,7 @@ export default function PostureCoach() {
                             return (
                               <li
                                 key={s._id}
-                                className="text-[11px] text-gray-200 border border-[#1F2937] rounded-lg px-3 py-2 bg-[#020617]/60 backdrop-blur-sm"
+                                className={`text-[11px] border rounded-lg px-3 py-2 backdrop-blur-sm ${darkMode ? 'text-gray-200 border-[#1F2937] bg-[#020617]/60' : 'text-gray-800 border-gray-200 bg-gray-50'}`}
                               >
                                 <div className="flex justify-between items-center mb-1">
                                   <span className="font-semibold capitalize">
@@ -1780,7 +1780,7 @@ export default function PostureCoach() {
       {/* Limit Modal */}
       {showLimitModal && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/70 backdrop-blur-md">
-          <div className="relative p-6 max-w-sm w-full mx-4 rounded-2xl border border-[#1F2937] bg-[#020617]/90 text-center shadow-[0_20px_60px_rgba(139,92,246,0.2)] overflow-hidden">
+          <div className={`relative p-6 max-w-sm w-full mx-4 rounded-2xl border text-center shadow-2xl overflow-hidden z-50 ${darkMode ? 'border-[#1F2937] bg-[#020617]/90 shadow-[0_20px_60px_rgba(139,92,246,0.2)]' : 'border-gray-200 bg-white'}`}>
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-yellow-500/20 rounded-full blur-2xl" />
             
             <div className="flex justify-center mb-4">

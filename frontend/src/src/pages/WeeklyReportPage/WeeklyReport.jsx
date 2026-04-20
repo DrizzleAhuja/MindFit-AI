@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTheme } from "../../context/ThemeContext";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
@@ -10,6 +11,7 @@ import NavBar from "../HomePage/NavBar";
 import Footer from "../HomePage/Footer";
 
 export default function WeeklyReport() {
+  const { darkMode } = useTheme();
   const user = useSelector(selectUser);
   const navigate = useNavigate();
   const [report, setReport] = useState(null);
@@ -79,7 +81,7 @@ export default function WeeklyReport() {
     
     if (hasSession) {
       return (
-        <div className="min-h-screen bg-[#020617] text-white flex flex-col">
+        <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-[#020617] text-white' : 'bg-gray-50 text-gray-900'}`}>
           <NavBar />
           <div className="flex-grow flex flex-col items-center justify-center grayscale opacity-50">
              <div className="w-16 h-16 border-4 border-t-[#22D3EE] border-white/10 rounded-full animate-spin mb-4"></div>
@@ -91,7 +93,7 @@ export default function WeeklyReport() {
     }
 
     return (
-       <div className="min-h-screen bg-[#020617] text-white flex flex-col">
+       <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-[#020617] text-white' : 'bg-gray-50 text-gray-900'}`}>
           <NavBar />
           <div className="flex-grow flex items-center justify-center">
              <div className="text-center p-12 rounded-3xl bg-white/[0.02] border border-white/5 max-w-md">
@@ -107,7 +109,7 @@ export default function WeeklyReport() {
   }
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white flex flex-col">
+    <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-[#020617] text-white' : 'bg-gray-50 text-gray-900'}`}>
       <NavBar />
       
       <main className="flex-grow container mx-auto px-4 py-12 max-w-5xl">
@@ -143,7 +145,7 @@ export default function WeeklyReport() {
              <p className="font-bold tracking-widest text-xs uppercase">Computing Insights...</p>
           </div>
         ) : !report ? (
-          <div className="text-center py-24 rounded-3xl border border-dashed border-white/10 bg-white/[0.02]">
+          <div className={`text-center py-24 rounded-3xl border border-dashed ${darkMode ? 'border-white/10 bg-white/[0.02]' : 'border-gray-300 bg-black/[0.02]'}`}>
              <FiAward className="text-6xl text-gray-700 mx-auto mb-6" />
              <h2 className="text-2xl font-bold mb-2">No Report Found</h2>
              <p className="text-gray-400 max-w-md mx-auto mb-8">Click the button above to have our AI analyze your workouts, nutrition, and streaks for the past 7 days.</p>
@@ -158,7 +160,7 @@ export default function WeeklyReport() {
                  { label: "Avg Kcal", value: report.metrics.avgCalories, icon: <FiAward />, color: "text-[#FACC15]" },
                  { label: "Streak", value: user.streakCount, icon: <FiAward />, color: "text-[#F97316]" }
                ].map((stat, i) => (
-                 <div key={i} className="bg-white/[0.03] border border-white/5 p-6 rounded-2xl flex flex-col items-center text-center">
+                 <div key={i} className={`p-6 rounded-2xl flex flex-col items-center text-center border ${darkMode ? 'bg-white/[0.03] border-white/5' : 'bg-white border-gray-200 shadow-sm'}`}>
                     <span className={`${stat.color} text-xl mb-3`}>{stat.icon}</span>
                     <span className="text-3xl font-black tracking-tighter">{stat.value}</span>
                     <span className="text-[10px] text-gray-500 font-black uppercase mt-1">{stat.label}</span>
@@ -169,7 +171,7 @@ export default function WeeklyReport() {
             {/* Content & Chart Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                {/* Consistency Chart */}
-               <div className="lg:col-span-1 p-8 rounded-3xl bg-[#0a0f1d] border border-white/5 relative overflow-hidden h-fit">
+               <div className={`lg:col-span-1 p-8 rounded-3xl relative overflow-hidden h-fit border ${darkMode ? 'bg-[#0a0f1d] border-white/5' : 'bg-white border-gray-200 shadow-md'}`}>
                   <h3 className="text-lg font-bold mb-8 flex items-center gap-2">
                     <FiBarChart2 className="text-[#22D3EE]" /> Consistency
                   </h3>
@@ -197,7 +199,7 @@ export default function WeeklyReport() {
                </div>
 
                {/* AI Markdown Report Card */}
-               <div className="lg:col-span-2 p-10 rounded-3xl bg-[#0a0f1d] border border-white/5 relative group shadow-2xl">
+               <div className={`lg:col-span-2 p-10 rounded-3xl relative group shadow-2xl border ${darkMode ? 'bg-[#0a0f1d] border-white/5' : 'bg-white border-gray-200 shadow-md'}`}>
                   {/* Glass decorative elements */}
                   <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#22D3EE]/10 rounded-full blur-3xl group-hover:bg-[#22D3EE]/15 transition-all"></div>
                   
@@ -209,7 +211,7 @@ export default function WeeklyReport() {
                   </div>
 
                   <div 
-                    className="report-content text-gray-300 leading-[1.8] text-sm"
+                    className={`report-content leading-[1.8] text-sm ${darkMode ? 'text-gray-300' : 'text-gray-800'}`}
                     dangerouslySetInnerHTML={{ __html: formatMarkdown(report.markdownContent) }}
                   />
                </div>

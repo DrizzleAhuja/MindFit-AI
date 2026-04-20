@@ -571,7 +571,7 @@ export default function Dashboard() {
             {/* Primary Stats Row */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               {/* Calories Burned */}
-              <div className="relative rounded-2xl bg-[#111827] border border-[#1F2937] p-5 hover:border-[#84CC16]/50 transition-all group">
+              <div className={`relative rounded-2xl p-5 transition-all group border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}
                 <div className="flex items-start justify-between mb-3">
                   <div className="p-2.5 rounded-xl bg-[#84CC16]/10 group-hover:bg-[#84CC16]/20 transition-colors">
                     <Flame className="w-5 h-5 text-[#84CC16]" />
@@ -588,7 +588,7 @@ export default function Dashboard() {
               </div>
 
               {/* Workouts */}
-              <div className="relative rounded-2xl bg-[#111827] border border-[#1F2937] p-5 hover:border-[#84CC16]/50 transition-all group">
+              <div className={`relative rounded-2xl p-5 transition-all group border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}
                 <div className="flex items-start justify-between mb-3">
                   <div className="p-2.5 rounded-xl bg-[#84CC16]/10 group-hover:bg-[#84CC16]/20 transition-colors">
                     <Dumbbell className="w-5 h-5 text-[#84CC16]" />
@@ -605,7 +605,7 @@ export default function Dashboard() {
               </div>
 
               {/* Day Streak */}
-              <div className="relative rounded-2xl bg-[#111827] border border-[#1F2937] p-5 hover:border-[#F97316]/50 transition-all group">
+              <div className={`relative rounded-2xl p-5 transition-all group border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}
                 <div className="flex items-start justify-between mb-3">
                   <div className="p-2.5 rounded-xl bg-[#F97316]/10 group-hover:bg-[#F97316]/20 transition-colors">
                     <Zap className="w-5 h-5 text-[#F97316]" />
@@ -619,7 +619,7 @@ export default function Dashboard() {
               </div>
 
               {/* Consistency Score */}
-              <div className="relative rounded-2xl bg-[#111827] border border-[#1F2937] p-5 hover:border-[#EC4899]/50 transition-all group">
+              <div className={`relative rounded-2xl p-5 transition-all group border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}
                 <div className="flex items-start justify-between mb-3">
                   <div className="p-2.5 rounded-xl bg-[#EC4899]/10 group-hover:bg-[#EC4899]/20 transition-colors">
                     <Heart className="w-5 h-5 text-[#EC4899]" />
@@ -639,7 +639,7 @@ export default function Dashboard() {
             {/* Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
               {/* Weekly Exercise Chart */}
-              <div className="lg:col-span-2 rounded-2xl bg-[#111827] border border-[#1F2937] p-6">
+              <div className={`lg:col-span-2 rounded-2xl p-6 border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}>
                 <WeeklyBarChart 
                   data={weeklyExerciseData} 
                   title="Weekly Exercise" 
@@ -649,7 +649,7 @@ export default function Dashboard() {
               </div>
 
               {/* Weekly Goal */}
-              <div className="rounded-2xl bg-[#111827] border border-[#1F2937] p-6">
+              <div className={`rounded-2xl p-6 border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}>
                 <div className="flex items-center gap-2 mb-6">
                   <Target className="w-5 h-5 text-[#84CC16]" />
                   <h3 className="text-lg font-semibold text-white">Weekly Goal</h3>
@@ -660,13 +660,13 @@ export default function Dashboard() {
                 </div>
                 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="text-center p-3 rounded-xl bg-[#1F2937]/50 border border-[#374151]">
+                  <div className={`text-center p-3 rounded-xl border ${darkMode ? 'bg-[#1F2937]/50 border-[#374151]' : 'bg-gray-50 border-gray-200'}`}>
                     <div className="text-xl font-bold text-white">
                       {Math.round(weeklyExerciseData.reduce((a, b) => a + b, 0))}
                     </div>
                     <div className="text-xs text-gray-400 uppercase tracking-wide">Minutes</div>
                   </div>
-                  <div className="text-center p-3 rounded-xl bg-[#1F2937]/50 border border-[#374151]">
+                  <div className={`text-center p-3 rounded-xl border ${darkMode ? 'bg-[#1F2937]/50 border-[#374151]' : 'bg-gray-50 border-gray-200'}`}>
                     <div className="text-xl font-bold text-white">
                       {workoutsThisWeek}/7
                     </div>
@@ -679,7 +679,7 @@ export default function Dashboard() {
             {/* Second Charts Row */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
               {/* Calorie Intake Chart */}
-              <div className="lg:col-span-2 rounded-2xl bg-[#111827] border border-[#1F2937] p-6">
+              <div className={`lg:col-span-2 rounded-2xl p-6 border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}>
                 <CalorieBarChart 
                   intakeData={calorieIntakeData}
                   burnedData={calorieBurnedData}
@@ -687,13 +687,13 @@ export default function Dashboard() {
               </div>
 
               {/* Streak Heatmap */}
-              <div className="rounded-2xl bg-[#111827] border border-[#1F2937] p-6">
+              <div className={`rounded-2xl p-6 border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}>
                 <StreakHeatmap activityData={streakHeatmapData} />
               </div>
             </div>
 
             {/* AI Insights Section */}
-            <div className="rounded-2xl bg-[#111827] border border-[#1F2937] p-6 mb-6">
+            <div className={`rounded-2xl p-6 mb-6 border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}>
               <div className="flex items-center gap-2 mb-4">
                 <div className="p-2 rounded-lg bg-[#84CC16]/10">
                   <Brain className="w-5 h-5 text-[#84CC16]" />
@@ -702,7 +702,7 @@ export default function Dashboard() {
                 <div className="w-2 h-2 rounded-full bg-[#84CC16] animate-pulse ml-1" />
               </div>
               
-              <div className="p-4 rounded-xl bg-[#1F2937]/30 border border-[#374151]/50">
+              <div className={`p-4 rounded-xl border ${darkMode ? 'bg-[#1F2937]/30 border-[#374151]/50' : 'bg-gray-50 border-gray-200 text-gray-900'}`}>
                 <div className="flex items-start gap-3">
                   <div className="p-2 rounded-lg bg-[#F97316]/10 flex-shrink-0">
                     <FaLightbulb className="w-4 h-4 text-[#F97316]" />
@@ -717,7 +717,7 @@ export default function Dashboard() {
 
             {/* Active Workout Plan Section */}
             {workoutPlan && (
-              <div className="rounded-2xl bg-[#111827] border border-[#1F2937] p-6 mb-6">
+              <div className={`rounded-2xl p-6 mb-6 border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}>
                 <div className="flex items-center gap-2 mb-4">
                   <div className="p-2 rounded-lg bg-[#3B82F6]/10">
                     <Dumbbell className="w-5 h-5 text-[#3B82F6]" />
@@ -725,7 +725,7 @@ export default function Dashboard() {
                   <h3 className="text-lg font-semibold text-white">Active Workout Plan</h3>
                 </div>
                 
-                <div className="p-4 rounded-xl bg-[#1F2937]/30 border border-[#374151]/50">
+                <div className={`p-4 rounded-xl border ${darkMode ? 'bg-[#1F2937]/30 border-[#374151]/50' : 'bg-gray-50 border-gray-200 text-gray-900'}`}>
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <h4 className="font-semibold text-white mb-1">{workoutPlan.name}</h4>
@@ -751,7 +751,7 @@ export default function Dashboard() {
             {/* Bottom Section: BMI Trend + Quick Actions + Badges */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* BMI Trend */}
-              <div className="rounded-2xl bg-[#111827] border border-[#1F2937] p-6">
+              <div className={`rounded-2xl p-6 border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}>
                 {bmiHistory.length > 0 ? (
                   <BMITrendChart bmiHistory={bmiHistory} />
                 ) : (
@@ -769,7 +769,7 @@ export default function Dashboard() {
               </div>
 
               {/* Quick Actions */}
-              <div className="rounded-2xl bg-[#111827] border border-[#1F2937] p-6">
+              <div className={`rounded-2xl p-6 border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}>
                 <div className="flex items-center gap-2 mb-4">
                   <Zap className="w-5 h-5 text-[#FACC15]" />
                   <h3 className="text-lg font-semibold text-white">Quick Actions</h3>
@@ -794,7 +794,7 @@ export default function Dashboard() {
               </div>
 
               {/* Badges */}
-              <div className="rounded-2xl bg-[#111827] border border-[#1F2937] p-6">
+              <div className={`rounded-2xl p-6 border ${darkMode ? 'bg-[#111827] border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm text-gray-900'}`}>
                 <div className="flex items-center gap-2 mb-4">
                   <Award className="w-5 h-5 text-[#FACC15]" />
                   <h3 className="text-lg font-semibold text-white">Badges</h3>

@@ -631,7 +631,7 @@ const MyWorkoutPlan = () => {
 
   return (
     <div className={`min-h-screen flex flex-col ${
-      darkMode ? 'bg-[#05010d] text-white' : 'bg-[#020617] text-gray-100'
+      darkMode ? 'bg-[#05010d] text-white' : 'bg-gray-50 text-gray-900'
     }`}>
       <NavBar />
       <main className="flex-grow">
@@ -710,14 +710,14 @@ const MyWorkoutPlan = () => {
 
           {/* Tabs for Active/Pending and Completed Plans */}
           <div className="flex justify-center mb-6 sm:mb-8 px-4">
-            <div className="inline-flex rounded-2xl bg-[#020617]/80 backdrop-blur-xl p-1.5 border border-[#1F2937] shadow-xl">
+className={`inline-flex rounded-2xl backdrop-blur-xl p-1.5 shadow-xl border ${darkMode ? 'bg-[#020617]/80 border-[#1F2937]' : 'bg-white border-gray-200'}`}
               <button
                 onClick={() => setActiveTab("active-pending")}
                 className={`py-2.5 sm:py-3 px-4 sm:px-8 text-sm sm:text-lg font-medium rounded-xl transition-all duration-300 transform
                 ${
                   activeTab === "active-pending"
                     ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg scale-105"
-                    : "text-gray-300 hover:text-white hover:bg-[#020617]/60"
+                    ? "text-blue-600 bg-blue-50 font-semibold" : (darkMode ? "text-gray-300 hover:text-white hover:bg-[#020617]/60" : "text-gray-600 hover:bg-gray-100")
                 }`}
               >
                 <span className="hidden sm:inline">Active & Pending Plans</span>
@@ -729,7 +729,7 @@ const MyWorkoutPlan = () => {
                 ${
                   activeTab === "completed"
                     ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg scale-105"
-                    : "text-gray-300 hover:text-white hover:bg-[#020617]/60"
+                    ? "text-blue-600 bg-blue-50 font-semibold" : (darkMode ? "text-gray-300 hover:text-white hover:bg-[#020617]/60" : "text-gray-600 hover:bg-gray-100")
                 }`}
               >
                 Completed
@@ -744,7 +744,7 @@ const MyWorkoutPlan = () => {
                 <FiActivity className="mr-3 text-purple-400" /> Active Plan
               </h2>
               {activePlan && !activePlan.completed ? (
-                <div className="relative rounded-2xl sm:rounded-3xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] overflow-hidden">
+                <div className={`relative rounded-2xl sm:rounded-3xl border backdrop-blur-xl overflow-hidden shadow-[0_18px_45px_rgba(15,23,42,0.8)] ${darkMode ? 'border-[#1F2937] bg-[#020617]/80' : 'border-gray-200 bg-white'}`}>
                   <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 p-4 sm:p-6 text-white">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                       <div className="flex-1">
@@ -753,7 +753,7 @@ const MyWorkoutPlan = () => {
                             type="text"
                             value={newPlanName}
                             onChange={(e) => setNewPlanName(e.target.value)}
-                            className="bg-[#020617]/80 backdrop-blur-sm text-white p-2 sm:p-3 rounded-xl w-full border border-[#1F2937] focus:border-purple-400 focus:outline-none transition"
+                            className={`backdrop-blur-sm p-2 sm:p-3 rounded-xl w-full border focus:border-purple-400 focus:outline-none transition ${darkMode ? 'bg-[#020617]/80 text-white border-[#1F2937]' : 'bg-white text-gray-900 border-gray-300'}`}
                           />
                         ) : (
                           <h3 className="text-xl sm:text-2xl font-bold">
@@ -767,7 +767,7 @@ const MyWorkoutPlan = () => {
                             onChange={(e) =>
                               setNewPlanDescription(e.target.value)
                             }
-                            className="bg-[#020617]/80 backdrop-blur-sm text-white p-2 sm:p-3 rounded-xl mt-2 block w-full border border-[#1F2937] focus:border-purple-400 focus:outline-none transition"
+                            className={`backdrop-blur-sm p-2 sm:p-3 rounded-xl mt-2 block w-full border focus:border-purple-400 focus:outline-none transition ${darkMode ? 'bg-[#020617]/80 text-white border-[#1F2937]' : 'bg-white text-gray-900 border-gray-300'}`}
                             placeholder="Plan description"
                           />
                         ) : (
@@ -946,7 +946,7 @@ const MyWorkoutPlan = () => {
 
                       return (
                         <>
-                          <div className="mb-6 p-4 sm:p-6 bg-[#020617]/80 backdrop-blur-xl rounded-xl sm:rounded-2xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] border border-[#1F2937]">
+                          <div className={`mb-6 p-4 sm:p-6 backdrop-blur-xl rounded-xl sm:rounded-2xl border shadow-[0_18px_45px_rgba(15,23,42,0.8)] ${darkMode ? 'bg-[#020617]/80 border-[#1F2937]' : 'bg-white border-gray-200'}`}>
                             <h4 className="text-lg sm:text-xl font-bold text-white mb-2 sm:mb-3">
                               Week {currentWeekNumber} of{" "}
                               {activePlan.durationWeeks}
@@ -962,7 +962,7 @@ const MyWorkoutPlan = () => {
                               </span>{" "}
                               days completed ({currentWeekProgressPercentage}%)
                             </p>
-                            <div className="w-full bg-[#020617]/60 h-3 rounded-full overflow-hidden border border-[#1F2937]">
+                            <div className={`w-full h-3 rounded-full overflow-hidden border ${darkMode ? 'bg-[#020617]/60 border-[#1F2937]' : 'bg-gray-100 border-gray-200'}`}>
                               <div
                                 className="bg-gradient-to-r from-purple-500 to-blue-500 h-3 rounded-full transition-all duration-500 shadow-lg"
                                 style={{
@@ -1137,7 +1137,7 @@ const MyWorkoutPlan = () => {
                                     const progressPercentage = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
                                     
                                     return (
-                                      <div className="mb-6 p-3 sm:p-4 bg-[#020617]/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-[#1F2937]">
+                                      <div className={`mb-6 p-3 sm:p-4 backdrop-blur-xl rounded-xl sm:rounded-2xl border ${darkMode ? 'bg-[#020617]/80 border-[#1F2937]' : 'bg-white border-gray-200 shadow-sm'}`}>
                                         <div className="flex items-center justify-between mb-2">
                                           <p className="text-white font-semibold text-sm sm:text-lg">
                                             Progress: {completedCount} of {totalCount} exercises
@@ -1146,7 +1146,7 @@ const MyWorkoutPlan = () => {
                                             {Math.round(progressPercentage)}%
                                           </span>
                                         </div>
-                                        <div className="w-full bg-[#020617]/60 rounded-full h-2.5 sm:h-3 overflow-hidden border border-[#1F2937]">
+                                        <div className={`w-full rounded-full h-2.5 sm:h-3 overflow-hidden border ${darkMode ? 'bg-[#020617]/60 border-[#1F2937]' : 'bg-gray-100 border-gray-200'}`}>
                                           <div
                                             className="bg-gradient-to-r from-purple-500 via-blue-500 to-purple-500 h-full rounded-full transition-all duration-500 shadow-lg"
                                             style={{ width: `${progressPercentage}%` }}
@@ -1189,7 +1189,7 @@ const MyWorkoutPlan = () => {
                                           className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 backdrop-blur-lg transition-all duration-300 ${
                                             isExerciseCompleted 
                                               ? 'bg-green-900/30 border-green-500/50 shadow-lg shadow-green-500/20' 
-                                              : 'bg-[#020617]/80 border-[#1F2937] hover:border-[#22D3EE]/60'
+                                              : (darkMode ? 'bg-[#020617]/80 border-[#1F2937] hover:border-[#22D3EE]/60' : 'bg-white border-gray-200 hover:border-blue-400 text-gray-900')
                                           }`}
                                         >
                                           <div className="flex items-start justify-between gap-3">
@@ -1244,7 +1244,7 @@ const MyWorkoutPlan = () => {
                                                 className={`p-2 sm:p-3 rounded-xl transition-all duration-300 transform hover:scale-110 shadow-lg ${
                                                   isExerciseCompleted
                                                     ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white'
-                                                    : 'bg-[#020617]/80 hover:bg-[#1F2937] text-gray-300'
+                                                    : (darkMode ? 'bg-[#020617]/80 hover:bg-[#1F2937] text-gray-300' : 'bg-white hover:bg-gray-100 text-gray-600')
                                                 }`}
                                                 disabled={todayWorkout.isCompleted}
                                                 title={isExerciseCompleted ? "Mark as not done" : "Mark as done"}
@@ -1303,7 +1303,7 @@ const MyWorkoutPlan = () => {
                               )}
                               
                               {nextWorkoutDate && (
-                                <div className="mt-4 p-3 bg-[#020617]/80 backdrop-blur-xl rounded-xl border border-[#1F2937]">
+                                <div className={`mt-4 p-3 backdrop-blur-xl rounded-xl border ${darkMode ? 'bg-[#020617]/80 border-[#1F2937]' : 'bg-gray-50 border-gray-200'}`}>
                                   <p className="text-gray-200 text-xs sm:text-sm">
                                     <strong className="text-purple-300">Next Workout:</strong> {new Date(nextWorkoutDate).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
                                   </p>
@@ -1536,7 +1536,7 @@ const MyWorkoutPlan = () => {
                               planned workout days completed (
                               {overallProgressPercentage}%).
                             </p>
-                            <div className="w-full bg-[#020617]/60 h-3 rounded-full overflow-hidden border border-[#1F2937]">
+                            <div className={`w-full h-3 rounded-full overflow-hidden border ${darkMode ? 'bg-[#020617]/60 border-[#1F2937]' : 'bg-gray-100 border-gray-200'}`}>
                               <div
                                 className="bg-gradient-to-r from-purple-500 to-blue-500 h-3 rounded-full transition-all duration-500 shadow-lg"
                                 style={{ width: `${overallProgressPercentage}%` }}

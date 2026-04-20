@@ -694,7 +694,7 @@ export default function Leaderboard() {
           <div className="info-card mb-12 border-t border-t-purple-500/30">
             <div className="flex items-center gap-3 mb-8">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#8B5CF6] to-[#22D3EE] p-[1px]">
-                <div className="w-full h-full bg-[#020617] rounded-xl flex items-center justify-center text-2xl">
+                <div className={`w-full h-full rounded-xl flex items-center justify-center text-2xl ${darkMode ? 'bg-[#020617]' : 'bg-white'}`}>
                   🏅
                 </div>
               </div>
@@ -708,7 +708,7 @@ export default function Leaderboard() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {/* Badge 1 */}
-              <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#020617] to-yellow-900/10 border border-yellow-500/20 p-6 hover:border-yellow-500/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(234,179,8,0.15)] flex flex-col items-center text-center">
+              <div className={`group relative overflow-hidden rounded-2xl border p-6 transition-all duration-300 flex flex-col items-center text-center ${darkMode ? 'bg-gradient-to-b from-[#020617] to-yellow-900/10 border-yellow-500/20 hover:border-yellow-500/50 hover:shadow-[0_0_30px_rgba(234,179,8,0.15)]' : 'bg-gradient-to-b from-white to-yellow-50 border-yellow-200 hover:border-yellow-400 hover:shadow-lg'}`}>
                 <div className="absolute inset-0 bg-gradient-to-b from-yellow-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></div>
                 
                 <div className="w-full py-6 mb-2 relative z-10 flex items-center justify-center">
@@ -726,7 +726,7 @@ export default function Leaderboard() {
               </div>
               
               {/* Badge 2 */}
-              <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#020617] to-gray-500/10 border border-gray-400/20 p-6 hover:border-gray-400/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(156,163,175,0.15)] flex flex-col items-center text-center">
+              <div className={`group relative overflow-hidden rounded-2xl border p-6 transition-all duration-300 flex flex-col items-center text-center ${darkMode ? 'bg-gradient-to-b from-[#020617] to-gray-500/10 border-gray-400/20 hover:border-gray-400/50 hover:shadow-[0_0_30px_rgba(156,163,175,0.15)]' : 'bg-gradient-to-b from-white to-gray-100 border-gray-200 hover:border-gray-300 hover:shadow-lg'}`}>
                 <div className="absolute inset-0 bg-gradient-to-b from-gray-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></div>
                 
                 <div className="w-full py-6 mb-2 relative z-10 flex items-center justify-center">
@@ -744,7 +744,7 @@ export default function Leaderboard() {
               </div>
               
               {/* Badge 3 */}
-              <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#020617] to-amber-700/10 border border-amber-600/20 p-6 hover:border-amber-500/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(217,119,6,0.15)] flex flex-col items-center text-center">
+              <div className={`group relative overflow-hidden rounded-2xl border p-6 transition-all duration-300 flex flex-col items-center text-center ${darkMode ? 'bg-gradient-to-b from-[#020617] to-amber-700/10 border-amber-600/20 hover:border-amber-500/50 hover:shadow-[0_0_30px_rgba(217,119,6,0.15)]' : 'bg-gradient-to-b from-white to-amber-50 border-amber-200 hover:border-amber-400 hover:shadow-lg'}`}>
                 <div className="absolute inset-0 bg-gradient-to-b from-amber-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></div>
                 
                 <div className="w-full py-6 mb-2 relative z-10 flex items-center justify-center">
@@ -762,7 +762,7 @@ export default function Leaderboard() {
               </div>
               
               {/* Badge 4 */}
-              <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-b from-[#020617] to-red-600/10 border border-orange-500/20 p-6 hover:border-orange-500/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(239,68,68,0.15)] flex flex-col items-center text-center">
+              <div className={`group relative overflow-hidden rounded-2xl border p-6 transition-all duration-300 flex flex-col items-center text-center ${darkMode ? 'bg-gradient-to-b from-[#020617] to-red-600/10 border-orange-500/20 hover:border-orange-500/50 hover:shadow-[0_0_30px_rgba(239,68,68,0.15)]' : 'bg-gradient-to-b from-white to-red-50 border-red-200 hover:border-red-400 hover:shadow-lg'}`}>
                 <div className="absolute inset-0 bg-gradient-to-b from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"></div>
                 
                 <div className="w-full py-6 mb-2 relative z-10 flex items-center justify-center">
