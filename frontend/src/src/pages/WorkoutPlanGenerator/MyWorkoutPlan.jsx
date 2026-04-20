@@ -710,14 +710,14 @@ const MyWorkoutPlan = () => {
 
           {/* Tabs for Active/Pending and Completed Plans */}
           <div className="flex justify-center mb-6 sm:mb-8 px-4">
-className={`inline-flex rounded-2xl backdrop-blur-xl p-1.5 shadow-xl border ${darkMode ? 'bg-[#020617]/80 border-[#1F2937]' : 'bg-white border-gray-200'}`}
+            <div className={`inline-flex rounded-2xl backdrop-blur-xl p-1.5 shadow-xl border ${darkMode ? 'bg-[#020617]/80 border-[#1F2937]' : 'bg-white border-gray-200'}`}>
               <button
                 onClick={() => setActiveTab("active-pending")}
                 className={`py-2.5 sm:py-3 px-4 sm:px-8 text-sm sm:text-lg font-medium rounded-xl transition-all duration-300 transform
                 ${
                   activeTab === "active-pending"
                     ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg scale-105"
-                    ? "text-blue-600 bg-blue-50 font-semibold" : (darkMode ? "text-gray-300 hover:text-white hover:bg-[#020617]/60" : "text-gray-600 hover:bg-gray-100")
+                    : (darkMode ? "text-gray-300 hover:text-white hover:bg-[#020617]/60" : "text-gray-600 hover:bg-gray-100")
                 }`}
               >
                 <span className="hidden sm:inline">Active & Pending Plans</span>
@@ -729,7 +729,7 @@ className={`inline-flex rounded-2xl backdrop-blur-xl p-1.5 shadow-xl border ${da
                 ${
                   activeTab === "completed"
                     ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg scale-105"
-                    ? "text-blue-600 bg-blue-50 font-semibold" : (darkMode ? "text-gray-300 hover:text-white hover:bg-[#020617]/60" : "text-gray-600 hover:bg-gray-100")
+                    : (darkMode ? "text-gray-300 hover:text-white hover:bg-[#020617]/60" : "text-gray-600 hover:bg-gray-100")
                 }`}
               >
                 Completed
