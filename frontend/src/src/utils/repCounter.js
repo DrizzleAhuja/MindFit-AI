@@ -74,6 +74,7 @@ export class RepCounter {
     this.threshold = this.getThresholds();
     this.lastKeypoints = null;
     this.repStartTime = null;
+    this.lastStateChangeTime = 0;
   }
 
   getThresholds() {
@@ -495,18 +496,26 @@ export class RepCounter {
     const { down, up } = this.threshold;
     let newRep = false;
 
-    // State machine for rep counting
+    const now = Date.now();
+
+    // State machine for rep counting with debounce to prevent rapid jumps
     if (this.state === 'rest' || this.state === 'up') {
       if (metric < down) {
-        this.state = 'down';
-        this.repStartTime = Date.now();
+        if (now - this.lastStateChangeTime > 300) {
+          this.state = 'down';
+          this.repStartTime = now;
+          this.lastStateChangeTime = now;
+        }
       }
     } else if (this.state === 'down') {
       if (metric > up) {
-        this.state = 'up';
-        // Rep completed!
-        this.reps++;
-        newRep = true;
+        if (now - this.lastStateChangeTime > 300) {
+          this.state = 'up';
+          // Rep completed!
+          this.reps++;
+          newRep = true;
+          this.lastStateChangeTime = now;
+        }
       }
     }
 
@@ -522,6 +531,7 @@ export class RepCounter {
     this.state = 'rest';
     this.lastKeypoints = null;
     this.repStartTime = null;
+    this.lastStateChangeTime = 0;
   }
 
   /**
