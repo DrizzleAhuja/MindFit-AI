@@ -227,7 +227,7 @@ export default function Section1({ darkMode }) {
                 value={searchQuery}
                 onChange={handleSearchChange}
                 placeholder="Search by Report ID"
-                className="p-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500 w-80 bg-gray-700 text-white border-gray-600"
+                className={`p-2 rounded-md focus:ring-indigo-500 focus:border-indigo-500 w-80 border ${darkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-white text-gray-900 border-gray-300'}`}
               />
               <button
                 type="submit"
@@ -266,7 +266,7 @@ export default function Section1({ darkMode }) {
               <select
                 value={sortOrder}
                 onChange={(e) => handleSortChange(e.target.value)}
-                className="p-3 rounded-lg bg-gray-700 text-white border-gray-600"
+                className={`p-3 rounded-lg border ${darkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-white text-gray-900 border-gray-300'}`}
               >
                 <option value="latest">Latest</option>
                 <option value="oldest">Oldest</option>

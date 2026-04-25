@@ -26,10 +26,10 @@ const Section2 = () => {
   const { darkMode } = useTheme(); // Access dark mode state
 
   return (
-    <section className={`py-20 ${
+    <section className={`py-20 transition-colors duration-300 ${
       darkMode
         ? 'bg-[#05010d] text-gray-100'
-        : 'bg-[#020617] text-gray-100'
+        : 'bg-gray-50 text-gray-900'
     }`}>
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="text-center mb-16">
@@ -48,7 +48,7 @@ const Section2 = () => {
               className={`p-8 rounded-xl shadow-lg transition-all hover:shadow-xl ${
                 darkMode
                   ? 'bg-[#0B1020] border border-[#1F2937]'
-                  : 'bg-[#020617] border border-[#1F2937]'
+                  : 'bg-white border border-gray-200'
               }`}
             >
               <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-6 ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
@@ -63,7 +63,7 @@ const Section2 = () => {
         <div className={`rounded-2xl overflow-hidden shadow-2xl ${
           darkMode
             ? 'bg-gradient-to-br from-[#020617] via-[#05010d] to-[#020617] border border-[#1F2937]'
-            : 'bg-gradient-to-br from-[#020617] via-[#020617] to-[#020617] border border-[#1F2937]'
+            : 'bg-white border border-gray-200'
         }`}>
           <div className="grid md:grid-cols-2">
             <div className="p-10 md:p-12 flex flex-col justify-center">
@@ -79,7 +79,7 @@ const Section2 = () => {
               </Link>
             </div>
             <div className={`hidden md:flex items-center justify-center p-8 ${
-              darkMode ? 'bg-[#020617]' : 'bg-[#020617]'
+              darkMode ? 'bg-[#020617]' : 'bg-gray-50'
             }`}>
               <div className="relative w-full h-64">
                 <div className="absolute top-0 left-0 w-32 h-32 rounded-full blur-xl opacity-20 bg-[#8B5CF6]"></div>

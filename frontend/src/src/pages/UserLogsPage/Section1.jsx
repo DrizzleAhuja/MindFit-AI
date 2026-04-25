@@ -6,8 +6,10 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
 import { FaSearch, FaSpinner, FaClipboardList } from "react-icons/fa";
 import { API_BASE_URL, API_ENDPOINTS } from "../../../config/api";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function Section1() {
+  const { darkMode } = useTheme();
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -67,13 +69,13 @@ export default function Section1() {
     });
 
   return (
-    <div className="min-h-screen py-10 px-4 bg-gray-900 text-white">
+    <div className={`min-h-screen py-10 px-4 ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold mb-2 text-white">
+          <h1 className={`text-4xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
             User Activity Logs
           </h1>
-          <p className="text-xl text-gray-300">Track your recent actions</p>
+          <p className={`text-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Track your recent actions</p>
         </div>
 
         <div className="mb-6 flex justify-between items-center">
@@ -83,7 +85,7 @@ export default function Section1() {
               placeholder="Search logs..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full p-3 pl-10 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={`w-full p-3 pl-10 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500 ${darkMode ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-gray-900 border-gray-300'}`}
             />
             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           </div>
@@ -91,7 +93,7 @@ export default function Section1() {
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            className="p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className={`p-3 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500 ${darkMode ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-gray-900 border-gray-300'}`}
           >
             <option value="latest">Latest</option>
             <option value="oldest">Oldest</option>
@@ -107,29 +109,29 @@ export default function Section1() {
             {sortedLogs.map((log) => (
               <div
                 key={log._id}
-                className="p-6 rounded-lg shadow-lg bg-gray-800 border border-gray-700"
+                className={`p-6 rounded-lg shadow-lg border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}
               >
                 <div className="flex items-center mb-4">
                   <FaClipboardList className="text-2xl mr-2 text-blue-400" />
-                  <h3 className="text-2xl font-semibold text-white">
+                  <h3 className={`text-2xl font-semibold ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                     {log.action}
                   </h3>
                 </div>
-                <p className="text-lg text-gray-400 mb-2">
+                <p className={`text-lg mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                   {new Date(log.timestamp).toLocaleString()}
                 </p>
-                <p className="text-lg text-gray-400">{log.userEmail}</p>
+                <p className={`text-lg ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{log.userEmail}</p>
               </div>
             ))}
           </div>
         ) : (
           <div className="text-center">
             <FaClipboardList className="text-6xl mx-auto mb-4 text-gray-600" />
-            <p className="text-xl text-gray-400">No logs found.</p>
+            <p className={`text-xl ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>No logs found.</p>
           </div>
         )}
       </div>
-      <ToastContainer theme="dark" />
+      <ToastContainer theme={darkMode ? "dark" : "light"} />
     </div>
   );
 }

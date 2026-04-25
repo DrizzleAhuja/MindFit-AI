@@ -47,7 +47,7 @@ export default function UserFeedback() {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-[#05010d]' : 'bg-[#020617] text-white'}`}>
+    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${darkMode ? 'bg-[#05010d] text-white' : 'bg-gray-50 text-gray-900'}`}>
       <NavBar />
       <main className="flex-grow flex items-center justify-center p-4">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -55,7 +55,7 @@ export default function UserFeedback() {
           <div className="absolute -bottom-28 right-0 w-80 h-80 bg-[#22D3EE] rounded-full blur-3xl opacity-25" />
         </div>
 
-        <div className="relative z-10 w-full max-w-xl bg-[#0c0520]/40 backdrop-blur-md rounded-2xl p-8 border border-purple-500/20 shadow-2xl">
+        <div className={`relative z-10 w-full max-w-xl backdrop-blur-md rounded-2xl p-8 border shadow-2xl ${darkMode ? 'bg-[#0c0520]/40 border-purple-500/20' : 'bg-white/80 border-gray-200'}`}>
           <header className="text-center mb-6">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#8B5CF6]/20 to-[#22D3EE]/20 border border-[#8B5CF6]/30 mb-3">
               <Sparkles className="w-4 h-4 text-[#FACC15]" />
@@ -74,7 +74,7 @@ export default function UserFeedback() {
                 value={topic} 
                 onChange={e => setTopic(e.target.value)} 
                 placeholder="e.g., General, Posture, Diet suggestion..." 
-                className="w-full p-3 rounded-xl border border-purple-500/20 bg-[#0c0520]/60 text-white focus:ring-2 focus:ring-[#22D3EE]/40 focus:border-[#22D3EE] transition-all outline-none" 
+                className={`w-full p-3 rounded-xl border focus:ring-2 focus:ring-[#22D3EE]/40 focus:border-[#22D3EE] transition-all outline-none ${darkMode ? 'border-purple-500/20 bg-[#0c0520]/60 text-white' : 'border-gray-300 bg-white text-gray-900'}`} 
               />
             </div>
             <div>
@@ -85,7 +85,7 @@ export default function UserFeedback() {
                 rows="5" 
                 maxLength={LIMITS.FEEDBACK_MSG_MAX}
                 placeholder="Tell us what you think or report issues..." 
-                className="w-full p-3 rounded-xl border border-purple-500/20 bg-[#0c0520]/60 text-white focus:ring-2 focus:ring-[#22D3EE]/40 focus:border-[#22D3EE] transition-all outline-none resize-none" 
+                className={`w-full p-3 rounded-xl border focus:ring-2 focus:ring-[#22D3EE]/40 focus:border-[#22D3EE] transition-all outline-none resize-none ${darkMode ? 'border-purple-500/20 bg-[#0c0520]/60 text-white' : 'border-gray-300 bg-white text-gray-900'}`} 
                 required 
               />
             </div>

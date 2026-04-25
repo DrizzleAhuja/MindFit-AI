@@ -6,7 +6,7 @@ import { GoogleOAuthProvider, GoogleLogin, useGoogleLogin } from "@react-oauth/g
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { FiMenu, FiX, FiUser, FiEdit2, FiLogOut, FiBell, FiCheck, FiMessageSquare, FiHelpCircle, FiUsers, FiBarChart2 } from "react-icons/fi";
+import { FiMenu, FiX, FiUser, FiEdit2, FiLogOut, FiBell, FiCheck, FiMessageSquare, FiHelpCircle, FiUsers, FiBarChart2, FiSun, FiMoon } from "react-icons/fi";
 
 
 import { io } from "socket.io-client";
@@ -27,7 +27,7 @@ export default function NavBar() {
   const [notifications, setNotifications] = useState([]);
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
-  const { darkMode } = useTheme();
+  const { darkMode, toggleDarkMode } = useTheme();
 
   // Check if running as PWA
   useEffect(() => {
@@ -252,7 +252,7 @@ export default function NavBar() {
         }}
       >
         {/* Desktop Navbar */}
-        <nav className="hidden lg:block sticky top-0 left-0 w-full z-50 bg-[#05010d]/95 backdrop-blur-xl border-b border-purple-500/30 shadow-[0_0_25px_rgba(139,92,246,0.35)] text-white">
+        <nav className={`hidden lg:block sticky top-0 left-0 w-full z-50 backdrop-blur-xl shadow-lg transition-colors duration-300 ${darkMode ? 'bg-[#05010d]/95 border-b border-purple-500/30 shadow-[0_0_25px_rgba(139,92,246,0.35)] text-white' : 'bg-white/95 border-b border-gray-200 text-gray-900'}`}>
           <div className="container mx-auto px-6 py-3 flex justify-between items-center">
             {/* Logo */}
             <GenFitLogo size="default" isHeader={true} />
@@ -266,7 +266,7 @@ export default function NavBar() {
                   className={({ isActive }) =>
                     `px-3 py-2 rounded-md text-sm font-medium transition-colors border-b-2 border-transparent ${isActive
                       ? "text-[#22D3EE] border-[#22D3EE] bg-[#22D3EE]/10"
-                      : "text-gray-300 hover:text-white hover:bg-white/5 hover:border-[#22D3EE]/60"
+                      : darkMode ? "text-gray-300 hover:text-white hover:bg-white/5 hover:border-[#22D3EE]/60" : "text-gray-600 hover:text-gray-900 hover:bg-gray-100 hover:border-[#8B5CF6]/60"
                     }`
                   }
                 >
@@ -277,6 +277,8 @@ export default function NavBar() {
 
             {/* User Section */}
             <div className="flex items-center space-x-4">
+
+
               {user ? (
                 <div className="flex items-center space-x-6">
                   {/* Notifications Bell */}
@@ -324,38 +326,38 @@ export default function NavBar() {
                     </div>
                   </div>
                   {dropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 z-50 bg-[#020617]/95 backdrop-blur-xl border border-[#1F2937]">
+                    <div className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 z-50 backdrop-blur-xl border ${darkMode ? 'bg-[#020617]/95 border-[#1F2937]' : 'bg-white border-gray-200'}`}>
                       <NavLink
                         to="/EditProfile"
-                        className="flex px-4 py-2 text-sm items-center text-gray-200 hover:bg-gray-700"
+                        className={`flex px-4 py-2 text-sm items-center ${darkMode ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'}`}
                         onClick={() => setDropdownOpen(false)}
                       >
                         <FiUser className="mr-2" /> My Profile
                       </NavLink>
                       <NavLink
                         to="/community"
-                        className="flex px-4 py-2 text-sm items-center text-gray-200 hover:bg-gray-700"
+                        className={`flex px-4 py-2 text-sm items-center ${darkMode ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'}`}
                         onClick={() => setDropdownOpen(false)}
                       >
                         <FiUsers className="mr-2" /> Community
                       </NavLink>
                       <NavLink
                         to="/weekly-report"
-                        className="flex px-4 py-2 text-sm items-center text-gray-200 hover:bg-gray-700 font-bold text-[#22D3EE]"
+                        className={`flex px-4 py-2 text-sm items-center font-bold text-[#22D3EE] ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}
                         onClick={() => setDropdownOpen(false)}
                       >
                         <FiBarChart2 className="mr-2" /> Weekly AI Report
                       </NavLink>
                       <NavLink
                         to="/Feedback"
-                        className="flex px-4 py-2 text-sm items-center text-gray-200 hover:bg-gray-700"
+                        className={`flex px-4 py-2 text-sm items-center ${darkMode ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'}`}
                         onClick={() => setDropdownOpen(false)}
                       >
                         <FiMessageSquare className="mr-2" /> Feedback
                       </NavLink>
                       <NavLink
                         to="/Support"
-                        className="flex px-4 py-2 text-sm items-center text-gray-200 hover:bg-gray-700"
+                        className={`flex px-4 py-2 text-sm items-center ${darkMode ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'}`}
                         onClick={() => setDropdownOpen(false)}
                       >
                         <FiHelpCircle className="mr-2" /> Support
@@ -363,7 +365,7 @@ export default function NavBar() {
 
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left px-4 py-2 text-sm flex items-center text-gray-200 hover:bg-gray-700"
+                        className={`w-full text-left px-4 py-2 text-sm flex items-center ${darkMode ? 'text-gray-200 hover:bg-gray-700' : 'text-gray-700 hover:bg-gray-100'}`}
                       >
                         <FiLogOut className="mr-2" /> Logout
                       </button>
@@ -389,7 +391,7 @@ export default function NavBar() {
         </nav>
 
         {/* Mobile Header with Menu Button */}
-        <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-[#05010d]/95 backdrop-blur-xl border-b border-purple-500/40 shadow-[0_0_20px_rgba(139,92,246,0.35)] text-white">
+        <div className={`lg:hidden fixed top-0 left-0 right-0 z-50 backdrop-blur-xl transition-colors duration-300 ${darkMode ? 'bg-[#05010d]/95 border-b border-purple-500/40 shadow-[0_0_20px_rgba(139,92,246,0.35)] text-white' : 'bg-white/95 border-b border-gray-200 shadow-md text-gray-900'}`}>
           <div className="flex justify-between items-center px-4 py-3">
             <button
               className="text-gray-300 hover:text-white transition-colors"
@@ -401,15 +403,18 @@ export default function NavBar() {
             <GenFitLogo size="small" isHeader={true} />
 
             {user && (
-              <div
-                className="w-9 h-9 rounded-full flex items-center justify-center font-medium bg-[#8B5CF6] text-white text-sm cursor-pointer shadow-[0_0_8px_rgba(139,92,246,0.3)]"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-              >
-                {user.avatar ? (
-                  <img src={user.avatar} alt="Avatar" className="w-full h-full rounded-full object-cover bg-[#0f172a]" />
-                ) : (
-                  getUserInitials(user)
-                )}
+              <div className="flex items-center gap-3">
+
+                <div
+                  className="w-9 h-9 rounded-full flex items-center justify-center font-medium bg-[#8B5CF6] text-white text-sm cursor-pointer shadow-[0_0_8px_rgba(139,92,246,0.3)]"
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                >
+                  {user.avatar ? (
+                    <img src={user.avatar} alt="Avatar" className="w-full h-full rounded-full object-cover bg-[#0f172a]" />
+                  ) : (
+                    getUserInitials(user)
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -417,12 +422,12 @@ export default function NavBar() {
 
         {/* Mobile Sidebar */}
         <div
-          className={`lg:hidden fixed top-0 left-0 h-full w-72 bg-[#040011] shadow-2xl border-r border-purple-500/30 transform transition-transform duration-300 ease-in-out z-50 ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+          className={`lg:hidden fixed top-0 left-0 h-full w-72 shadow-2xl transform transition-transform duration-300 ease-in-out z-50 ${darkMode ? 'bg-[#040011] border-r border-purple-500/30' : 'bg-white border-r border-gray-200'} ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
             }`}
         >
           <div className="flex flex-col h-full">
             {/* Sidebar Header */}
-            <div className="flex justify-between items-center p-4 border-b border-purple-500/40">
+            <div className={`flex justify-between items-center p-4 border-b ${darkMode ? 'border-purple-500/40' : 'border-gray-200'}`}>
               <div onClick={() => setMobileMenuOpen(false)}>
                 <GenFitLogo size="small" isHeader={true} />
               </div>
@@ -436,7 +441,7 @@ export default function NavBar() {
 
             {/* User Info Section */}
             {user && (
-              <div className="p-4 border-b border-gray-700">
+              <div className={`p-4 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 rounded-full flex items-center justify-center font-medium bg-[#8B5CF6] text-white shadow-[0_0_10px_rgba(139,92,246,0.3)]">
                     {user.avatar ? (
@@ -446,7 +451,7 @@ export default function NavBar() {
                     )}
                   </div>
                   <div>
-                    <p className="text-white font-semibold flex items-center gap-2">
+                    <p className={`font-semibold flex items-center gap-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                       {user.firstName} {user.lastName ? user.lastName : ""}
                       <span className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-sm shadow-sm ${user.plan === 'pro' ? 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black' : 'bg-gray-600 text-gray-200'}`}>
                         {user.plan === 'pro' ? 'PRO' : 'FREE'}
@@ -466,8 +471,8 @@ export default function NavBar() {
                   to={link.path}
                   className={({ isActive }) =>
                     `block px-6 py-3 text-base font-medium transition-colors ${isActive
-                      ? "bg-gray-700 text-white border-l-4 border-[#22D3EE]"
-                      : "text-gray-300 hover:bg-[#020617]/60 hover:text-white"
+                      ? darkMode ? "bg-gray-700 text-white border-l-4 border-[#22D3EE]" : "bg-purple-50 text-[#8B5CF6] border-l-4 border-[#8B5CF6]"
+                      : darkMode ? "text-gray-300 hover:bg-[#020617]/60 hover:text-white" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                     }`
                   }
                   onClick={() => setMobileMenuOpen(false)}
@@ -478,7 +483,7 @@ export default function NavBar() {
             </div>
 
             {/* Footer Section */}
-            <div className="border-t border-gray-700 p-4">
+            <div className={`border-t p-4 ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
               {user ? (
                 <div className="space-y-2">
                   <NavLink
@@ -533,7 +538,7 @@ export default function NavBar() {
 
         {/* User Dropdown for Mobile Top Bar */}
         {user && dropdownOpen && (
-          <div className="lg:hidden fixed top-16 right-4 w-48 rounded-md shadow-lg py-1 z-50 bg-[#020617]/95 backdrop-blur-xl border border-[#1F2937]">
+          <div className={`lg:hidden fixed top-16 right-4 w-48 rounded-md shadow-lg py-1 z-50 backdrop-blur-xl border ${darkMode ? 'bg-[#020617]/95 border-[#1F2937]' : 'bg-white border-gray-200'}`}>
             <NavLink
               to="/EditProfile"
               className="flex px-4 py-2 text-sm items-center text-gray-200 hover:bg-gray-700"

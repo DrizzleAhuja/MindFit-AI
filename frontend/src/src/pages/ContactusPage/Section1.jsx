@@ -181,10 +181,11 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/userSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { API_BASE_URL } from "../../../config/api";
 import { validateLength, LIMITS } from "../../utils/formValidation";
+import { useTheme } from "../../context/ThemeContext";
 
 const ContactUs = () => {
+  const { darkMode } = useTheme();
   const user = useSelector(selectUser);
 
   const [formData, setFormData] = useState({
@@ -277,7 +278,7 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="flex flex-col items-center py-10 px-4 w-full bg-gray-900 text-white">
+    <div className={`flex flex-col items-center py-10 px-4 w-full ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
       {/* Feedback Form Link */}
       <div className="w-full max-w-md mb-6">
         <a
@@ -316,55 +317,55 @@ const ContactUs = () => {
       <form onSubmit={handleSubmit} className="w-full max-w-md">
         {/* Form Fields */}
         <div className="mb-4">
-          <label className="block mb-2 text-gray-300">Name</label>
+          <label className={`block mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Name</label>
           <input
             type="text"
             name="name"
             maxLength={LIMITS.CONTACT_NAME_MAX}
             value={formData.name}
             onChange={handleChange}
-            className="p-2 rounded-md w-full bg-gray-800 border-gray-600 text-white"
+            className={`p-2 rounded-md w-full border ${darkMode ? 'bg-gray-800 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
             required
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-2 text-gray-300">Roll No</label>
+          <label className={`block mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Roll No</label>
           <input
             type="text"
             name="rollNo"
             maxLength={LIMITS.CONTACT_ROLL_MAX}
             value={formData.rollNo}
             onChange={handleChange}
-            className="p-2 rounded-md w-full bg-gray-800 border-gray-600 text-white"
+            className={`p-2 rounded-md w-full border ${darkMode ? 'bg-gray-800 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
             required
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-2 text-gray-300">Email</label>
+          <label className={`block mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Email</label>
           <input
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="p-2 rounded-md w-full bg-gray-800 border-gray-600 text-white"
+            className={`p-2 rounded-md w-full border ${darkMode ? 'bg-gray-800 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
             readOnly
             required
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-2 text-gray-300">Item Lost/Found</label>
+          <label className={`block mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Item Lost/Found</label>
           <input
             type="text"
             name="item"
             maxLength={LIMITS.CONTACT_ITEM_MAX}
             value={formData.item}
             onChange={handleChange}
-            className="p-2 rounded-md w-full bg-gray-800 border-gray-600 text-white"
+            className={`p-2 rounded-md w-full border ${darkMode ? 'bg-gray-800 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
             required
           />
         </div>
         <div className="mb-4">
-          <label className="block mb-2 text-gray-300">
+          <label className={`block mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
             Description of Problem
           </label>
           <textarea
@@ -377,7 +378,7 @@ const ContactUs = () => {
           ></textarea>
         </div>
         <div className="mb-4">
-          <label className="block mb-2 text-gray-300">
+          <label className={`block mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
             Report ID (Optional)
           </label>
           <input
@@ -386,7 +387,7 @@ const ContactUs = () => {
             maxLength={LIMITS.CONTACT_REPORT_ID_MAX}
             value={formData.reportId}
             onChange={handleChange}
-            className="p-2 rounded-md w-full bg-gray-800 border-gray-600 text-white"
+            className={`p-2 rounded-md w-full border ${darkMode ? 'bg-gray-800 border-gray-600 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
           />
         </div>
         <button
@@ -396,7 +397,7 @@ const ContactUs = () => {
           Send Message
         </button>
       </form>
-      <ToastContainer theme="dark" />
+      <ToastContainer theme={darkMode ? "dark" : "light"} />
     </div>
   );
 };

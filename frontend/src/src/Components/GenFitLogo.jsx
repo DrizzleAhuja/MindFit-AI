@@ -1,19 +1,18 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import oldLogo from "../assets/navbarlogo-removebg-preview.png";
-import newLogo from "../assets/GenFit_AI__Elevate_Your_Fitness-removebg-preview.png";
+import chatGptLogo from "../assets/ChatGPT_Image_Apr_20__2026__02_14_12_PM-removebg-preview.png";
 
 export default function GenFitLogo({ className = "", showText = false, size = "default", isHeader = false }) {
   const sizeClasses = {
-    small: "h-8 sm:h-10",
-    default: "h-10 sm:h-12",
-    large: "h-16 sm:h-20",
-    xlarge: "h-20 sm:h-28",
-    xllarge: "h-32 sm:h-48"
+    small: "h-8 sm:h-10 scale-150 transform transition duration-300",
+    default: "h-10 sm:h-12 scale-[1.75] transform transition duration-300 mx-4",
+    large: "h-16 sm:h-20 scale-150 transform",
+    xlarge: "h-20 sm:h-28 scale-150 transform",
+    xllarge: "h-32 sm:h-48 scale-150 transform"
   }
 
   const logoHeight = sizeClasses[size] || sizeClasses.default;
-  const logoToUse = isHeader ? oldLogo : newLogo;
+  const logoToUse = chatGptLogo;
 
   return (
     <NavLink
@@ -28,7 +27,7 @@ export default function GenFitLogo({ className = "", showText = false, size = "d
         <img 
           src={logoToUse} 
           alt="GenFit AI Logo" 
-          className={`${logoHeight} w-auto object-contain transition-all duration-500 group-hover:scale-110 drop-shadow-[0_0_20px_rgba(139,92,246,0.6)] brightness-[1.25] contrast-[1.25]`}
+          className={`${logoHeight} w-auto object-contain drop-shadow-[0_0_20px_rgba(139,92,246,0.6)] brightness-[1.25] contrast-[1.25]`}
         />
       </div>
     </NavLink>

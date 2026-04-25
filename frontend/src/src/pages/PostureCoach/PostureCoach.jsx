@@ -608,7 +608,7 @@ export default function PostureCoach() {
   // Track session duration and update calories
   useEffect(() => {
     let intervalId = null;
-    
+
     if (isRunning) {
       if (!sessionStartTimeRef.current) {
         sessionStartTimeRef.current = Date.now();
@@ -617,7 +617,7 @@ export default function PostureCoach() {
 
         const duration = Math.floor((Date.now() - sessionStartTimeRef.current) / 1000);
         setSessionDuration(duration);
-        
+
         // Only calculate calories if we have reps OR if it's a time-based exercise
         if (exercise === 'plank' || exercise === 'side_plank') {
           // For time-based exercises, use duration
@@ -649,7 +649,7 @@ export default function PostureCoach() {
         sessionStartTimeRef.current = null;
       }
     }
-    
+
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
@@ -750,9 +750,9 @@ export default function PostureCoach() {
 
   const drawSkeleton = useCallback((pose, ctx, width, height, exerciseType, repCounter) => {
     if (!pose || !pose.keypoints) return;
-    
+
     ctx.clearRect(0, 0, width, height);
-    
+
     // Draw skeleton connections
     ctx.strokeStyle = "#38bdf8";
     ctx.lineWidth = 3;
@@ -762,7 +762,7 @@ export default function PostureCoach() {
     const adjacentPairs = poseDetection.util.getAdjacentPairs(
       poseDetection.SupportedModels.MoveNet
     );
-    
+
     adjacentPairs.forEach(([i, j]) => {
       const kp1 = pose.keypoints[i];
       const kp2 = pose.keypoints[j];
@@ -881,8 +881,8 @@ export default function PostureCoach() {
         const rightAnkle = getKp('right_ankle');
 
         // Draw left leg angle
-        if (leftHip && leftKnee && leftAnkle && 
-            leftHip.score > 0.3 && leftKnee.score > 0.3 && leftAnkle.score > 0.3) {
+        if (leftHip && leftKnee && leftAnkle &&
+          leftHip.score > 0.3 && leftKnee.score > 0.3 && leftAnkle.score > 0.3) {
           ctx.beginPath();
           ctx.moveTo(leftHip.x, leftHip.y);
           ctx.lineTo(leftKnee.x, leftKnee.y);
@@ -892,7 +892,7 @@ export default function PostureCoach() {
 
         // Draw right leg angle
         if (rightHip && rightKnee && rightAnkle &&
-            rightHip.score > 0.3 && rightKnee.score > 0.3 && rightAnkle.score > 0.3) {
+          rightHip.score > 0.3 && rightKnee.score > 0.3 && rightAnkle.score > 0.3) {
           ctx.beginPath();
           ctx.moveTo(rightHip.x, rightHip.y);
           ctx.lineTo(rightKnee.x, rightKnee.y);
@@ -916,7 +916,7 @@ export default function PostureCoach() {
 
         // Draw left arm angle
         if (leftShoulder && leftElbow && leftWrist &&
-            leftShoulder.score > 0.3 && leftElbow.score > 0.3 && leftWrist.score > 0.3) {
+          leftShoulder.score > 0.3 && leftElbow.score > 0.3 && leftWrist.score > 0.3) {
           ctx.beginPath();
           ctx.moveTo(leftShoulder.x, leftShoulder.y);
           ctx.lineTo(leftElbow.x, leftElbow.y);
@@ -926,7 +926,7 @@ export default function PostureCoach() {
 
         // Draw right arm angle
         if (rightShoulder && rightElbow && rightWrist &&
-            rightShoulder.score > 0.3 && rightElbow.score > 0.3 && rightWrist.score > 0.3) {
+          rightShoulder.score > 0.3 && rightElbow.score > 0.3 && rightWrist.score > 0.3) {
           ctx.beginPath();
           ctx.moveTo(rightShoulder.x, rightShoulder.y);
           ctx.lineTo(rightElbow.x, rightElbow.y);
@@ -939,7 +939,7 @@ export default function PostureCoach() {
         const leftAnkle = getKp('left_ankle');
 
         if (leftHip && leftKnee && leftAnkle &&
-            leftHip.score > 0.3 && leftKnee.score > 0.3 && leftAnkle.score > 0.3) {
+          leftHip.score > 0.3 && leftKnee.score > 0.3 && leftAnkle.score > 0.3) {
           ctx.beginPath();
           ctx.moveTo(leftHip.x, leftHip.y);
           ctx.lineTo(leftKnee.x, leftKnee.y);
@@ -1152,8 +1152,8 @@ export default function PostureCoach() {
           )
             ? highConfLandmarks
             : rawLandmarks.filter(
-                (kp) => (kp?.score || 0) >= exerciseThresholds.keypointScoreVisible
-              );
+              (kp) => (kp?.score || 0) >= exerciseThresholds.keypointScoreVisible
+            );
 
           // 1) Temporal smoothing: keep last N frames of (filtered) landmarks
           landmarkHistoryRef.current.push(repLandmarks);
@@ -1278,8 +1278,8 @@ export default function PostureCoach() {
                     if (nowTime - (lastPostureSpeechTimeRef.current || 0) > 4000) {
                       if (!res.analysis.isCorrect) {
                         lastPostureSpeechTimeRef.current = nowTime;
-                        const issue = Array.isArray(res.analysis.issues) && res.analysis.issues.length 
-                          ? res.analysis.issues[0] 
+                        const issue = Array.isArray(res.analysis.issues) && res.analysis.issues.length
+                          ? res.analysis.issues[0]
                           : "Needs adjustment.";
                         let textToSpeak = "";
                         if (narrationLangRef.current === "hi-IN") {
@@ -1362,7 +1362,7 @@ export default function PostureCoach() {
     } else {
       // Optimistically start the session immediately to prevent UI lag
       setIsRunning(true);
-      
+
       // Start speaking right after coaching begins
       speakStartNarration();
 
@@ -1403,9 +1403,8 @@ export default function PostureCoach() {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col ${
-      darkMode ? 'bg-[#05010d] text-white' : 'bg-[#020617] text-gray-100'
-    }`}>
+    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${darkMode ? 'bg-[#05010d] text-white' : 'bg-gray-50 text-gray-900'
+      }`}>
       <NavBar />
       <main className="flex-grow">
         <section className="relative overflow-hidden py-6 sm:py-8 lg:py-10">
@@ -1457,7 +1456,7 @@ export default function PostureCoach() {
             <section className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8">
               {/* Exercise selector - show FIRST on mobile, left sidebar on desktop */}
               <aside className="xl:col-span-4 order-1 flex flex-col gap-6">
-                <div className="relative rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] overflow-hidden hover:border-[#22D3EE]/60 transition-all duration-300">
+                <div className={`relative rounded-2xl border backdrop-blur-xl shadow-lg overflow-hidden transition-all duration-300 ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white hover:border-blue-400'}`}>
                   <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
                   <div className="p-4 sm:p-5">
                     <h2 className="flex items-center gap-2 text-base sm:text-lg font-semibold text-white mb-4">
@@ -1470,11 +1469,11 @@ export default function PostureCoach() {
                         return (
                           <div
                             key={group.bodyPart}
-                            className="rounded-xl border border-[#1F2937] bg-[#020617]/40 overflow-hidden"
+                            className={`rounded-xl border overflow-hidden ${darkMode ? 'border-[#1F2937] bg-[#020617]/40' : 'border-gray-200 bg-gray-50'}`}
                           >
                             <button
                               onClick={() => toggleGroup(group.bodyPart)}
-                              className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-[#020617]/60 transition-colors"
+                              className={`w-full flex items-center justify-between px-4 py-3 text-left transition-colors ${darkMode ? 'hover:bg-[#020617]/60' : 'hover:bg-gray-100'}`}
                             >
                               <span className="text-sm font-semibold text-gray-100">{group.bodyPart}</span>
                               {isExpanded ? (
@@ -1492,11 +1491,10 @@ export default function PostureCoach() {
                                       setExercise(ex.id);
                                       setSelectedExerciseLabel(ex.label);
                                     }}
-                                    className={`px-3 py-2 rounded-lg text-xs sm:text-sm border transition-all ${
-                                      exercise === ex.id && selectedExerciseLabel === ex.label
-                                        ? "bg-emerald-500 text-gray-900 border-emerald-400 shadow-lg shadow-emerald-500/20"
-                                        : "border-[#1F2937] text-gray-200 hover:bg-[#020617]/80 hover:border-[#22D3EE]/40"
-                                    }`}
+                                    className={`px-3 py-2 rounded-lg text-xs sm:text-sm border transition-all ${exercise === ex.id && selectedExerciseLabel === ex.label
+                                        ? "bg-gradient-to-r from-purple-500 to-blue-600 border-transparent text-white shadow-lg"
+                                        : (darkMode ? "border-[#1F2937] text-gray-200 hover:bg-[#020617]/80 hover:border-[#22D3EE]/40" : "border-gray-200 text-gray-700 hover:bg-gray-100")
+                                      }`}
                                   >
                                     {ex.label}
                                   </button>
@@ -1511,7 +1509,7 @@ export default function PostureCoach() {
                       <div className="mt-4 flex items-center gap-2">
                         <Video className="w-4 h-4 text-gray-400" />
                         <select
-                          className="flex-1 bg-[#020617]/80 backdrop-blur-sm border border-[#1F2937] rounded-lg px-3 py-2 text-sm text-gray-100"
+                          className={`flex-1 backdrop-blur-sm border rounded-lg px-3 py-2 text-sm ${darkMode ? 'bg-[#020617]/80 border-[#1F2937] text-gray-100' : 'bg-gray-50 border-gray-200 text-gray-900'}`}
                           value={selectedCameraId || ""}
                           onChange={(e) => setSelectedCameraId(e.target.value || null)}
                         >
@@ -1525,7 +1523,7 @@ export default function PostureCoach() {
                     )}
                   </div>
                 </div>
-                
+
 
               </aside>
 
@@ -1537,11 +1535,11 @@ export default function PostureCoach() {
                     <p className="text-sm text-gray-300">
                       Selected: <span className="font-semibold text-emerald-400">{selectedExerciseLabel}</span>
                     </p>
-                    
+
                     <div className="flex items-center gap-4">
                       {/* The popup trigger */}
                       <div className="relative">
-                        <button 
+                        <button
                           onClick={() => setShowDemo(!showDemo)}
                           className="flex items-center gap-2 text-sm text-[#22D3EE] font-semibold hover:text-[#22D3EE]/80 transition-colors"
                         >
@@ -1549,20 +1547,20 @@ export default function PostureCoach() {
                           Don't know how to workout?
                           {showDemo ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                         </button>
-                        
+
                         {/* The dropdown demo box */}
                         {showDemo && (
                           <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 md:w-80 bg-[#020617]/95 border border-[#1F2937] rounded-2xl shadow-[0_20px_60px_rgba(15,23,42,0.9)] p-4 backdrop-blur-2xl">
                             <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
                             <span className="block text-xs text-gray-400 mb-3 font-medium text-center">Form Demo: {selectedExerciseLabel}</span>
                             <div className="w-full h-44 bg-[#020617]/50 rounded-xl overflow-hidden border border-[#1F2937]/50 flex items-center justify-center p-2">
-                              <img 
-                                src={EXERCISE_ANIMATIONS[selectedExerciseLabel] || EXERCISE_ANIMATIONS[exercise] || "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjM0NzgwMjM0NzgwMjM0NzgwMjM0NzgwMjM0NzgwMjM0NzgwMjM0NyZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/3o7TqtH1jJ1A2v25sQ/giphy.gif"} 
+                              <img
+                                src={EXERCISE_ANIMATIONS[selectedExerciseLabel] || EXERCISE_ANIMATIONS[exercise] || "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjM0NzgwMjM0NzgwMjM0NzgwMjM0NzgwMjM0NzgwMjM0NzgwMjM0NyZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/3o7TqtH1jJ1A2v25sQ/giphy.gif"}
                                 alt={selectedExerciseLabel}
                                 className="object-contain w-full h-full max-h-40 rounded-lg mix-blend-lighten"
                                 onError={(e) => {
-                                  e.target.onerror = null; 
-                                  e.target.src = "https://cdn-icons-png.flaticon.com/512/2964/2964514.png"; 
+                                  e.target.onerror = null;
+                                  e.target.src = "https://cdn-icons-png.flaticon.com/512/2964/2964514.png";
                                   e.target.className = "w-16 h-16 opacity-30 object-contain mx-auto";
                                 }}
                               />
@@ -1587,80 +1585,79 @@ export default function PostureCoach() {
                     <button
                       onClick={toggleRunning}
                       disabled={isModelLoading || !!lastError}
-                      className={`px-6 py-3 rounded-full text-sm font-semibold transition-all shadow-lg ${
-                        isRunning
+                      className={`px-6 py-3 rounded-full text-sm font-semibold transition-all shadow-lg ${isRunning
                           ? "bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700"
                           : "bg-gradient-to-r from-[#22D3EE] via-[#0EA5E9] to-[#8B5CF6] text-white hover:opacity-95"
-                      } ${isModelLoading || lastError ? "opacity-60 cursor-not-allowed" : ""}`}
+                        } ${isModelLoading || lastError ? "opacity-60 cursor-not-allowed" : ""}`}
                     >
                       {isModelLoading ? "Loading AI model..." : isRunning ? "Stop Coaching" : "Start Coaching"}
                     </button>
                   </div>
 
-                  <div className="relative rounded-2xl overflow-hidden border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl shadow-[0_18px_45px_rgba(15,23,42,0.8)] aspect-video flex items-center justify-center bg-black hover:border-[#22D3EE]/60 transition-all duration-300">
-              <Webcam
-                ref={webcamRef}
-                audio={false}
-                mirrored={true}
-                onUserMedia={() => {
-                  setCameraError("");
-                  setLastError(null);
-                }}
-                onUserMediaError={(err) => {
-                  console.error("Camera access error:", err);
-                  setCameraError(
-                    "Unable to access camera. Please allow camera permission for this site in your browser settings and reload."
-                  );
-                  setLastError(
-                    "Camera access was blocked. Check browser permission for this site and try again."
-                  );
-                }}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                }}
-                videoConstraints={{
-                  deviceId: selectedCameraId || undefined,
-                  facingMode: selectedCameraId ? undefined : "user",
-                  width: { ideal: 640 },
-                  height: { ideal: 480 },
-                }}
-              />
-              <canvas
-                ref={canvasRef}
-                className="absolute inset-0 w-full h-full pointer-events-none"
-                style={{ 
-                  objectFit: "contain",
-                  transform: "scaleX(-1)"
-                }}
-              />
-              {cameraError && (
-                <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-red-500/90 text-white text-[11px] md:text-xs px-3 py-1 rounded-full shadow-lg max-w-full text-center">
-                  {cameraError}
-                </div>
-              )}
-              {visibilityMessage && !isModelLoading && (
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-red-500/80 text-white text-[11px] md:text-xs px-3 py-1 rounded-full shadow-lg">
-                  {visibilityMessage}
-                </div>
-              )}
-              {!visibilityMessage && angleGuidanceMessage && isRunning && !isModelLoading && (
-                <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-cyan-500/80 text-white text-[11px] md:text-xs px-3 py-1 rounded-full shadow-lg max-w-[90%] text-center">
-                  {angleGuidanceMessage}
-                </div>
-              )}
-              {isModelLoading && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#020617]/80 backdrop-blur-sm text-sm text-gray-100">
-                  <div className="mb-2 h-6 w-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
-                  <p>AI model loading, please wait…</p>
-                </div>
-              )}
-              {!isModelLoading && !isRunning && (
-                <div className="absolute inset-0 flex items-center justify-center bg-[#020617]/60 backdrop-blur-sm text-sm text-gray-100">
-                  Press <span className="mx-1 font-semibold">Start Coaching</span> to begin.
-                </div>
-              )}
+                  <div className={`relative rounded-2xl overflow-hidden border backdrop-blur-xl aspect-video flex items-center justify-center transition-all duration-300 ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-black/5 hover:border-blue-400 shadow-md'}`}>
+                    <Webcam
+                      ref={webcamRef}
+                      audio={false}
+                      mirrored={true}
+                      onUserMedia={() => {
+                        setCameraError("");
+                        setLastError(null);
+                      }}
+                      onUserMediaError={(err) => {
+                        console.error("Camera access error:", err);
+                        setCameraError(
+                          "Unable to access camera. Please allow camera permission for this site in your browser settings and reload."
+                        );
+                        setLastError(
+                          "Camera access was blocked. Check browser permission for this site and try again."
+                        );
+                      }}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                      }}
+                      videoConstraints={{
+                        deviceId: selectedCameraId || undefined,
+                        facingMode: selectedCameraId ? undefined : "user",
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                      }}
+                    />
+                    <canvas
+                      ref={canvasRef}
+                      className="absolute inset-0 w-full h-full pointer-events-none"
+                      style={{
+                        objectFit: "contain",
+                        transform: "scaleX(-1)"
+                      }}
+                    />
+                    {cameraError && (
+                      <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-red-500/90 text-white text-[11px] md:text-xs px-3 py-1 rounded-full shadow-lg max-w-full text-center">
+                        {cameraError}
+                      </div>
+                    )}
+                    {visibilityMessage && !isModelLoading && (
+                      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-red-500/80 text-white text-[11px] md:text-xs px-3 py-1 rounded-full shadow-lg">
+                        {visibilityMessage}
+                      </div>
+                    )}
+                    {!visibilityMessage && angleGuidanceMessage && isRunning && !isModelLoading && (
+                      <div className="absolute top-2 left-1/2 -translate-x-1/2 bg-cyan-500/80 text-white text-[11px] md:text-xs px-3 py-1 rounded-full shadow-lg max-w-[90%] text-center">
+                        {angleGuidanceMessage}
+                      </div>
+                    )}
+                    {isModelLoading && (
+                      <div className={`absolute inset-0 flex flex-col items-center justify-center backdrop-blur-sm text-sm z-10 ${darkMode ? 'bg-[#020617]/80 text-gray-100' : 'bg-white/80 text-gray-900'}`}>
+                        <div className="mb-2 h-6 w-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
+                        <p>AI model loading, please wait…</p>
+                      </div>
+                    )}
+                    {!isModelLoading && !isRunning && (
+                      <div className={`absolute inset-0 flex items-center justify-center backdrop-blur-sm text-sm z-10 ${darkMode ? 'bg-[#020617]/60 text-gray-100' : 'bg-white/60 text-gray-900'}`}>
+                        Press <span className="mx-1 font-semibold">Start Coaching</span> to begin.
+                      </div>
+                    )}
                   </div>
                   {lastError && (
                     <p className="text-xs text-red-400 mt-1">{lastError}</p>
@@ -1669,7 +1666,7 @@ export default function PostureCoach() {
 
                 {/* Stats strip - horizontal, sleek, right below camera */}
                 {exercise !== 'posture' ? (
-                  <div className="rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl overflow-hidden shadow-[0_18px_45px_rgba(15,23,42,0.8)]">
+                  <div className={`rounded-2xl border backdrop-blur-xl overflow-hidden shadow-lg ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)]' : 'border-gray-200 bg-white'}`}>
                     <div className="flex flex-wrap items-center justify-between gap-4 p-4 sm:p-5">
                       <div className="flex items-center gap-6 sm:gap-10">
                         <div className="flex items-center gap-3">
@@ -1741,11 +1738,10 @@ export default function PostureCoach() {
                               });
                             }}
                             disabled={!canMarkComplete}
-                            className={`shrink-0 py-2.5 px-5 rounded-xl font-semibold text-sm transition-all ${
-                              canMarkComplete
+                            className={`shrink-0 py-2.5 px-5 rounded-xl font-semibold text-sm transition-all ${canMarkComplete
                                 ? "bg-cyan-500 hover:bg-cyan-600 text-gray-900"
                                 : "bg-gray-600/60 text-gray-400 cursor-not-allowed"
-                            }`}
+                              }`}
                           >
                             Mark exercise complete
                           </button>
@@ -1754,16 +1750,16 @@ export default function PostureCoach() {
                     })()}
                   </div>
                 ) : (
-                  <div className="rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl overflow-hidden shadow-[0_18px_45px_rgba(15,23,42,0.8)] p-4 sm:p-5 flex items-center justify-between">
+                  <div className={`rounded-2xl border backdrop-blur-xl overflow-hidden shadow-lg p-4 sm:p-5 flex items-center justify-between ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)]' : 'border-gray-200 bg-white'}`}>
                     <div className="flex items-center gap-4">
                       {analysis ? (
-                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${analysis.isCorrect ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400' : 'bg-amber-500/20 border-amber-500/40 text-amber-500'}`}>
-                           <Activity className="w-6 h-6" />
-                         </div>
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${analysis.isCorrect ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400' : 'bg-amber-500/20 border-amber-500/40 text-amber-500'}`}>
+                          <Activity className="w-6 h-6" />
+                        </div>
                       ) : (
-                         <div className="w-12 h-12 rounded-xl flex items-center justify-center border bg-gray-500/20 border-gray-500/40 text-gray-400">
-                           <Activity className="w-6 h-6" />
-                         </div>
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center border bg-gray-500/20 border-gray-500/40 text-gray-400">
+                          <Activity className="w-6 h-6" />
+                        </div>
                       )}
                       <div>
                         <div className="text-[11px] text-gray-400 uppercase tracking-wider flex items-center gap-1">
@@ -1771,11 +1767,11 @@ export default function PostureCoach() {
                           Posture Status
                         </div>
                         {analysis ? (
-                           <div className={`text-base font-bold ${analysis.isCorrect ? 'text-emerald-400' : 'text-amber-400'}`}>
-                             {analysis.isCorrect ? "Correct Posture" : "Incorrect Posture"}
-                           </div>
+                          <div className={`text-base font-bold ${analysis.isCorrect ? 'text-emerald-400' : 'text-amber-400'}`}>
+                            {analysis.isCorrect ? "Correct Posture" : "Incorrect Posture"}
+                          </div>
                         ) : (
-                           <div className="text-sm font-semibold text-gray-300">Awaiting analysis...</div>
+                          <div className="text-sm font-semibold text-gray-300">Awaiting analysis...</div>
                         )}
                       </div>
                     </div>
@@ -1785,7 +1781,7 @@ export default function PostureCoach() {
                 {/* Feedback + History - clean 2-column layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 xl:gap-8">
                   {/* Live Feedback - primary */}
-                  <div className="relative rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl p-5 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60 transition-all">
+                  <div className={`relative rounded-2xl border backdrop-blur-xl p-5 shadow-lg transition-all ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white hover:border-blue-400'}`}>
                     <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
                     <h2 className="text-sm font-semibold text-white mb-2">Live Feedback</h2>
                     {analysis ? (
@@ -1794,15 +1790,14 @@ export default function PostureCoach() {
                           <span className="uppercase tracking-wide text-[11px] text-gray-400">
                             {analysis.exerciseType}
                           </span>
-                        <span
-                          className={`px-2 py-0.5 rounded-full text-[11px] ${
-                            analysis.isCorrect
-                              ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                              : "bg-amber-500/20 text-amber-300 border border-amber-500/40"
-                          }`}
-                        >
-                          {analysis.isCorrect ? "Good form" : "Needs adjustment"}
-                        </span>
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[11px] ${analysis.isCorrect
+                                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+                                : "bg-amber-500/20 text-amber-300 border border-amber-500/40"
+                              }`}
+                          >
+                            {analysis.isCorrect ? "Good form" : "Needs adjustment"}
+                          </span>
                         </div>
                         <div className="text-[11px] text-gray-400">
                           Score: <span className="font-semibold text-gray-100">{Math.round(analysis.score || 0)}/100</span>
@@ -1842,71 +1837,71 @@ export default function PostureCoach() {
                   {/* Right column: History + How to use stacked */}
                   <div className="space-y-4">
                     {/* History Card */}
-                    <div className="relative rounded-2xl border border-[#1F2937] bg-[#020617]/80 backdrop-blur-xl p-5 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60 transition-all h-fit">
-                    <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
+                    <div className={`relative rounded-2xl border backdrop-blur-xl p-5 shadow-lg transition-all h-fit ${darkMode ? 'border-[#1F2937] bg-[#020617]/80 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60' : 'border-gray-200 bg-white hover:border-blue-400'}`}>
+                      <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
                       <h2 className="text-sm font-semibold text-white mb-3">Session History</h2>
-                    {!user && (
-                      <p className="text-xs text-gray-400">Sign in to save your coaching sessions and see history here.</p>
-                    )}
-                    {user && historyLoading && <p className="text-xs text-gray-400">Loading history…</p>}
-                    {user && !historyLoading && historyError && <p className="text-xs text-red-400">{historyError}</p>}
-              {user &&
-                !historyLoading &&
-                !historyError &&
-                sessionHistory.length === 0 && (
-                  <p className="text-xs text-gray-400">
-                    No sessions logged yet. Finish a coaching session and tap
-                    “Stop Coaching” to save it.
-                  </p>
-                )}
-                    {user &&
-                      !historyLoading &&
-                      !historyError &&
-                      sessionHistory.length > 0 && (
-                        <ul className="mt-2 space-y-2 max-h-52 overflow-y-auto pr-1 custom-scrollbar">
-                          {sessionHistory.map((s) => {
-                            const d = new Date(s.date);
-                            return (
-                              <li
-                                key={s._id}
-                                className="text-[11px] text-gray-200 border border-[#1F2937] rounded-lg px-3 py-2 bg-[#020617]/60 backdrop-blur-sm"
-                              >
-                                <div className="flex justify-between items-center mb-1">
-                                  <span className="font-semibold capitalize">
-                                    {s.exerciseType.replace(/_/g, " ")}
-                                  </span>
-                                  <span className="text-gray-400">
-                                    {d.toLocaleDateString()}{" "}
-                                    {d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                                  </span>
-                                </div>
-                                <div className="flex flex-wrap gap-3 text-[10px] text-gray-300">
-                                  <span>Reps: <span className="font-semibold">{s.reps ?? 0}</span></span>
-                                  <span>Calories: <span className="font-semibold">{typeof s.calories === "number" ? s.calories.toFixed(1) : "0.0"}</span></span>
-                                  <span>Time: <span className="font-semibold">{formatTime(s.durationSeconds || 0)}</span></span>
-                                </div>
-                              </li>
-                            );
-                          })}
-                        </ul>
+                      {!user && (
+                        <p className="text-xs text-gray-400">Sign in to save your coaching sessions and see history here.</p>
                       )}
-            </div>
+                      {user && historyLoading && <p className="text-xs text-gray-400">Loading history…</p>}
+                      {user && !historyLoading && historyError && <p className="text-xs text-red-400">{historyError}</p>}
+                      {user &&
+                        !historyLoading &&
+                        !historyError &&
+                        sessionHistory.length === 0 && (
+                          <p className="text-xs text-gray-400">
+                            No sessions logged yet. Finish a coaching session and tap
+                            “Stop Coaching” to save it.
+                          </p>
+                        )}
+                      {user &&
+                        !historyLoading &&
+                        !historyError &&
+                        sessionHistory.length > 0 && (
+                          <ul className="mt-2 space-y-2 max-h-52 overflow-y-auto pr-1 custom-scrollbar">
+                            {sessionHistory.map((s) => {
+                              const d = new Date(s.date);
+                              return (
+                                <li
+                                  key={s._id}
+                                  className={`text-[11px] border rounded-lg px-3 py-2 backdrop-blur-sm ${darkMode ? 'text-gray-200 border-[#1F2937] bg-[#020617]/60' : 'text-gray-800 border-gray-200 bg-gray-50'}`}
+                                >
+                                  <div className="flex justify-between items-center mb-1">
+                                    <span className="font-semibold capitalize">
+                                      {s.exerciseType.replace(/_/g, " ")}
+                                    </span>
+                                    <span className="text-gray-400">
+                                      {d.toLocaleDateString()}{" "}
+                                      {d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                                    </span>
+                                  </div>
+                                  <div className="flex flex-wrap gap-3 text-[10px] text-gray-300">
+                                    <span>Reps: <span className="font-semibold">{s.reps ?? 0}</span></span>
+                                    <span>Calories: <span className="font-semibold">{typeof s.calories === "number" ? s.calories.toFixed(1) : "0.0"}</span></span>
+                                    <span>Time: <span className="font-semibold">{formatTime(s.durationSeconds || 0)}</span></span>
+                                  </div>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        )}
+                    </div>
 
-            <div className="relative rounded-2xl border border-[#1F2937] bg-gradient-to-br from-[#8B5CF6]/10 to-[#22D3EE]/10 backdrop-blur-xl p-5 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60 transition-all">
-              <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
-              <h2 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-lg bg-[#22D3EE]/20 flex items-center justify-center text-[#22D3EE] text-xs font-bold">?</span>
-                How to use
-              </h2>
-              <ol className="space-y-2 text-sm text-gray-300">
-                <li className="flex gap-2"><span className="text-[#22D3EE] font-semibold shrink-0">1.</span>Position your phone so your full body is visible.</li>
-                <li className="flex gap-2"><span className="text-[#22D3EE] font-semibold shrink-0">2.</span>Pick an exercise, tap “Start Coaching”.</li>
-                <li className="flex gap-2"><span className="text-[#22D3EE] font-semibold shrink-0">3.</span>Perform reps and follow the live feedback.</li>
-              </ol>
-              <p className="text-xs text-gray-400 mt-3 pt-3 border-t border-[#1F2937]">
-                Works in modern browsers with camera access.
-              </p>
-            </div>
+                    <div className="relative rounded-2xl border border-[#1F2937] bg-gradient-to-br from-[#8B5CF6]/10 to-[#22D3EE]/10 backdrop-blur-xl p-5 shadow-[0_18px_45px_rgba(15,23,42,0.8)] hover:border-[#22D3EE]/60 transition-all">
+                      <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
+                      <h2 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-lg bg-[#22D3EE]/20 flex items-center justify-center text-[#22D3EE] text-xs font-bold">?</span>
+                        How to use
+                      </h2>
+                      <ol className="space-y-2 text-sm text-gray-300">
+                        <li className="flex gap-2"><span className="text-[#22D3EE] font-semibold shrink-0">1.</span>Position your phone so your full body is visible.</li>
+                        <li className="flex gap-2"><span className="text-[#22D3EE] font-semibold shrink-0">2.</span>Pick an exercise, tap “Start Coaching”.</li>
+                        <li className="flex gap-2"><span className="text-[#22D3EE] font-semibold shrink-0">3.</span>Perform reps and follow the live feedback.</li>
+                      </ol>
+                      <p className="text-xs text-gray-400 mt-3 pt-3 border-t border-[#1F2937]">
+                        Works in modern browsers with camera access.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1918,27 +1913,27 @@ export default function PostureCoach() {
       {/* Limit Modal */}
       {showLimitModal && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/70 backdrop-blur-md">
-          <div className="relative p-6 max-w-sm w-full mx-4 rounded-2xl border border-[#1F2937] bg-[#020617]/90 text-center shadow-[0_20px_60px_rgba(139,92,246,0.2)] overflow-hidden">
+          <div className={`relative p-6 max-w-sm w-full mx-4 rounded-2xl border text-center shadow-2xl overflow-hidden z-50 ${darkMode ? 'border-[#1F2937] bg-[#020617]/90 shadow-[0_20px_60px_rgba(139,92,246,0.2)]' : 'border-gray-200 bg-white'}`}>
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-yellow-500/20 rounded-full blur-2xl" />
-            
+
             <div className="flex justify-center mb-4">
               <div className="p-3 bg-yellow-500/10 rounded-full border border-yellow-500/30">
                 <Zap className="w-8 h-8 text-yellow-500 animate-pulse" />
               </div>
             </div>
-            
+
             <h3 className="text-xl font-extrabold text-white mb-2">Limit Reached!</h3>
             <p className="text-xs text-gray-400 mb-6">{limitMessage}</p>
-            
+
             <div className="flex flex-col gap-3">
-              <button 
-                onClick={() => navigate('/')} 
+              <button
+                onClick={() => navigate('/')}
                 className="w-full py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-yellow-400 to-orange-500 text-black shadow-lg hover:scale-105 transition-transform"
               >
                 Upgrade to PRO (₹199)
               </button>
-              <button 
-                onClick={() => setShowLimitModal(false)} 
+              <button
+                onClick={() => setShowLimitModal(false)}
                 className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
               >
                 Maybe later
