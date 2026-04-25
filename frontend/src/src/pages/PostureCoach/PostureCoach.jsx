@@ -10,7 +10,7 @@ import { API_BASE_URL } from "../../../config/api";
 import NavBar from "../HomePage/NavBar";
 import Footer from "../HomePage/Footer";
 import { useTheme } from '../../context/ThemeContext';
-import { Sparkles, ChevronDown, ChevronRight, Video, Activity, Zap } from 'lucide-react';
+import { Sparkles, ChevronDown, ChevronRight, Video, Activity, Zap, Volume2 } from 'lucide-react';
 import { analyzePosture } from "../../utils/postureService";
 import { RepCounter, calculateCaloriesBurned } from "../../utils/repCounter";
 
@@ -280,6 +280,101 @@ const EXERCISE_ANIMATIONS = {
   "Posture": "https://media.tenor.com/ShX1lf_iH5IAAAAM/chair-posture-stretching.gif"
 };
 
+const HINDI_TRANSLATIONS = {
+  "Bench Press": "बेंच प्रेस",
+  "Push-up": "पुश-अप",
+  "Bicep Curl": "बाइसेप कर्ल",
+  "Back Squat": "बैक स्क्वाट",
+  "Front Squat": "फ्रंट स्क्वाट",
+  "Leg Press": "लेग प्रेस",
+  "Walking Lunge": "लंज",
+  "Reverse Lunge": "लंज",
+  "Deadlift": "डेडलिफ्ट",
+  "Plank": "प्लैंक",
+  "Side Plank": "साइड प्लैंक",
+  "Mountain Climber": "माउंटेन क्लाइंबर",
+  "High Knees": "हाई नीज़",
+  "Jumping Jack": "जंपिंग जैक",
+  "Posture": "पॉस्चर",
+  "Tricep Extension": "ट्राइसेप एक्सटेंशन",
+  "Shoulder Press": "शोल्डर प्रेस",
+  "Lateral Raise": "लेटरल रेज़",
+  "Bent-over Row": "बेंट-ओवर रो",
+  "Barbell Row": "बार्बेल रो",
+  "Lat Pulldown": "लैट पुलडाउन",
+  "Pull-up": "पुल-अप",
+  "Cable Row": "केबल रो",
+  "Single-Arm Row": "सिंगल-आर्म रो",
+  "T-Bar Row": "टी-बार रो",
+  "Chin-up": "चिन-अप",
+  "Overhead Press": "ओवरहेड प्रेस",
+  "Military Press": "मिलिट्री प्रेस",
+  "Arnold Press": "अर्नोल्ड प्रेस",
+  "Front Raise": "फ्रंट रेज़",
+  "Reverse Fly": "रिवर्स फ्लाई",
+  "Face Pull": "फेस पुल",
+  "Upright Row": "अपराइट रो",
+  "Hammer Curl": "हैमर कर्ल",
+  "Preacher Curl": "प्रीचर कर्ल",
+  "Concentration Curl": "कंसंट्रेशन कर्ल",
+  "Cable Curl": "केबल कर्ल",
+  "Barbell Curl": "बार्बेल कर्ल",
+  "Incline Curl": "इन्क्लाइन कर्ल",
+  "Squat": "स्क्वाट",
+  "Lunge": "लंज",
+  "Forearm Plank": "फोरआर्म प्लैंक",
+  "Hollow Hold": "हॉलो होल्ड",
+  "Dead Bug": "डेड बग",
+  "Unable to see legs clearly – step back and ensure full body is in frame.": "पैर साफ नहीं दिख रहे हैं, कृपया पीछे हटें।",
+  "You are squatting too deep – stop before your knees go below ~60°.": "आप बहुत नीचे जा रहे हैं, थोड़ा पहले रुकें।",
+  "Go a bit lower – bend your knees more to engage quads and glutes.": "थोड़ा और नीचे जाएं, घुटनों को और मोड़ें।",
+  "Move back so your whole body is visible from shoulders to feet.": "पीछे हटें ताकि पूरा शरीर दिख सके।",
+  "Keep your body in a straight line – avoid sagging hips.": "शरीर को सीधा रखें, कूल्हों को नीचे न झुकने दें।",
+  "Lower yourself more – bend your elbows to around 90° at the bottom.": "और नीचे जाएं, कोहनियों को लगभग 90° तक मोड़ें।",
+  "Don't go excessively deep – stop around 90° at the elbow.": "बहुत नीचे न जाएं, कोहनी 90° होने पर रुकें।",
+  "Ensure at least one full arm is clearly visible from shoulder to wrist.": "कम से कम एक पूरा हाथ साफ दिखना चाहिए।",
+  "Arms are almost straight – curl up more to contract the biceps.": "हाथ सीधे हैं, बाइसेप्स के लिए और कर्ल करें।",
+  "Don't bring the dumbbells too high; stop slightly before your elbows fully close.": "डंबल को बहुत ऊपर न लाएं, थोड़ा पहले रुकें।",
+  "Make sure your front leg is fully visible from hip to ankle while lunging.": "लंज करते समय आगे का पैर दिखना चाहिए।",
+  "Bend your front knee more; aim for roughly 90° at the bottom.": "आगे के घुटने को और मोड़ें, 90° का लक्ष्य रखें।",
+  "Do not allow the front knee to collapse too much; keep it near 90°.": "आगे के घुटने को बहुत ज्यादा न झुकने दें।",
+  "Make sure your full body is visible from shoulders to feet while holding the plank.": "प्लैंक करते समय पूरा शरीर दिखना चाहिए।",
+  "Lift your hips slightly to form a straight line from shoulders to heels.": "शरीर को सीधा करने के लिए कूल्हों को थोड़ा उठाएं।",
+  "Lower your hips; avoid piking them up too high.": "कूल्हों को नीचे करें, उन्हें बहुत ऊंचा न उठाएं।",
+  "Make sure at least one full arm (shoulder–elbow–wrist) is clearly visible while pressing overhead.": "ओवरहेड प्रेस के दौरान एक पूरा हाथ दिखना चाहिए।",
+  "Press the weight higher – fully extend your elbows at the top.": "वजन को और ऊपर उठाएं, कोहनियों को पूरा सीधा करें।",
+  "Lower the weight under control – don't lock out aggressively.": "वजन को नियंत्रण में नीचे लाएं।",
+  "Stand side‑on with one full arm and your torso clearly visible for lateral raise analysis.": "एक तरफ मुड़कर खड़े हों ताकि हाथ दिख सके।",
+  "Raise your arms higher – aim for shoulder height.": "हाथों को और ऊंचा उठाएं, कंधे की ऊंचाई तक।",
+  "Avoid swinging the arms too high; stop around shoulder height.": "हाथों को बहुत ऊंचा न ले जाएं, कंधे तक ही रोकें।",
+  "Make sure your full side profile from shoulders to knees is visible for deadlift analysis.": "डेडलिफ्ट के लिए आपका पूरा साइड प्रोफाइल दिखना चाहिए।",
+  "Don't collapse into the bottom – keep some bend at the hips, not just the knees.": "कूल्हों पर थोड़ा झुकाव रखें, सिर्फ घुटनों पर नहीं।",
+  "Push your hips back more to initiate the deadlift with a hinge, not just a squat.": "कूल्हों को और पीछे धकेलें।",
+  "Stand side‑on so your torso and working arm are visible from shoulder to wrist.": "एक तरफ मुड़कर खड़े हों ताकि धड़ और हाथ दिख सके।",
+  "Hinge more at the hips – your torso should lean forward for a good row position.": "कूल्हों से और झुकें, धड़ आगे झुका होना चाहिए।",
+  "Pull your elbow back further to fully engage the upper back.": "कोहनी को और पीछे खींचें।",
+  "Make sure your upper arm and forearm are visible for tricep extension.": "ट्राइसेप एक्सटेंशन के लिए आपकी बांह दिखनी चाहिए।",
+  "Avoid hyper‑extending the elbows; stop just short of full lockout.": "कोहनियों को पूरी तरह सीधा करने से बचें।",
+  "Don't let the elbows collapse too much; keep control at the bottom.": "कोहनियों को गिरने न दें, नियंत्रण रखें।",
+  "For side plank, keep your entire side body visible from shoulder to feet or knees.": "साइड प्लैंक के लिए अपने शरीर का पूरा हिस्सा दिखाएं।",
+  "Lift your hips so your body forms a straight line from shoulder to ankle.": "कूल्हों को उठाएं ताकि शरीर एक सीधी रेखा में हो।",
+  "Avoid piking hips up too high; stay in a straight line.": "कूल्हों को बहुत ऊंचा न उठाएं।",
+  "Move back so at least one full leg is visible from hip to ankle.": "पीछे हटें ताकि कम से कम एक पूरा पैर दिख सके।",
+  "Drive your knee higher toward hip level.": "घुटने को और ऊंचा उठाएं।",
+  "Stand far enough from the camera so your full body is visible for jumping jacks.": "कैमरे से दूर खड़े हों ताकि पूरा शरीर दिख सके।",
+  "Jump your feet wider apart to increase leg range.": "पैरों को और दूर तक फैलाएं।",
+  "Raise your arms higher overhead during each jack.": "हर जैक के दौरान अपने हाथों को और ऊपर उठाएं।",
+  "Start in a visible plank position so your shoulders, hips and at least one leg are clearly tracked.": "प्लैंक स्थिति में आएं ताकि शरीर साफ दिख सके।",
+  "Keep your body straighter – avoid letting hips sag.": "शरीर को सीधा रखें - कूल्हों को नीचे न झुकने दें।",
+  "Drive your knee closer to your chest on each rep.": "हर रेप पर घुटने को छाती के करीब लाएं।",
+  "Needs adjustment.": "सुधार की ज़रूरत है।",
+  "Human body not clearly visible. Step back and make sure your full body is in the frame.": "शरीर साफ नहीं दिख रहा है। पीछे हटें और सुनिश्चित करें कि आपका पूरा शरीर फ्रेम में है।"
+};
+
+function translateToHindi(text) {
+  return HINDI_TRANSLATIONS[text] || text;
+}
+
 const DEFAULT_FRONTEND_THRESHOLDS = {
   keypointScoreVisible: 0.3,
   keypointConfidenceThreshold: 0.5,
@@ -414,6 +509,7 @@ export default function PostureCoach() {
     bodyVisible: false,
     fullBodyVisible: false,
   });
+  const narrationLangRef = useRef("en-US");
   // Temporal smoothing buffer for live analysis
   const landmarkHistoryRef = useRef([]);
   // Motion tracking buffer for each rep (start -> mid -> end)
@@ -448,6 +544,12 @@ export default function PostureCoach() {
     EXERCISE_GROUPS.reduce((acc, g) => ({ ...acc, [g.bodyPart]: ["Chest", "Back", "Legs"].includes(g.bodyPart) }), {})
   );
   const [showDemo, setShowDemo] = useState(false);
+  const [narrationLang, setNarrationLangState] = useState("en-US");
+
+  const setNarrationLang = (lang) => {
+    setNarrationLangState(lang);
+    narrationLangRef.current = lang;
+  };
 
   // When opened from workout plan, pre-select the matching exercise so the correct option is highlighted (e.g. Lat Pulldown, not Bent-over Row)
   useEffect(() => {
@@ -904,9 +1006,16 @@ export default function PostureCoach() {
       if (!text || typeof text !== "string") return;
 
       const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = narrationLangRef.current;
       utterance.rate = 1.25;
       utterance.pitch = 0.95;
       utterance.volume = 1;
+
+      const voices = window.speechSynthesis.getVoices();
+      const targetVoices = voices.filter(v => v.lang.startsWith(narrationLangRef.current.substring(0, 2)));
+      if (targetVoices.length > 0) {
+        utterance.voice = targetVoices.find(v => v.localService) || targetVoices[0];
+      }
 
       // Replace any ongoing speech so it stays synced to reps.
       stopNarration();
@@ -916,10 +1025,11 @@ export default function PostureCoach() {
   );
 
   const speakStartNarration = useCallback(() => {
-    speakText(
-      "Coaching started. Keep slow, controlled reps. I will give feedback after each rep.",
-      1.25
-    );
+    if (narrationLangRef.current === "hi-IN") {
+      speakText("कोचिंग शुरू हो गई है। धीमी और नियंत्रित गति से करें। मैं हर रेप के बाद फीडबैक दूंगा।", 1.25);
+    } else {
+      speakText("Coaching started. Keep slow, controlled reps. I will give feedback after each rep.", 1.25);
+    }
   }, [speakText]);
 
   const speakRepNarration = useCallback(
@@ -950,21 +1060,28 @@ export default function PostureCoach() {
       const issues = Array.isArray(a?.issues) ? a.issues : [];
 
       let text;
+      const isHindi = narrationLangRef.current === "hi-IN";
       if (!a) {
-        text = `Rep ${repNumber} for ${selectedExerciseLabel}. Keep going slowly.`;
+        text = isHindi
+          ? `${translateToHindi(selectedExerciseLabel)} का रेप ${repNumber}। धीरे-धीरे करते रहें।`
+          : `Rep ${repNumber} for ${selectedExerciseLabel}. Keep going slowly.`;
       } else if (fullBodyVisible) {
         if (isCorrect) {
-          text = `Rep ${repNumber} for ${selectedExerciseLabel}. Good rep. Great control.`;
+          text = isHindi
+            ? `${translateToHindi(selectedExerciseLabel)} का रेप ${repNumber}। बहुत बढ़िया। अच्छा नियंत्रण।`
+            : `Rep ${repNumber} for ${selectedExerciseLabel}. Good rep. Great control.`;
         } else {
           const firstIssue = issues[0];
           text = firstIssue
-            ? `Rep ${repNumber} for ${selectedExerciseLabel}. Fix: ${firstIssue}`
-            : `Rep ${repNumber} for ${selectedExerciseLabel}. Needs adjustment.`;
+            ? (isHindi ? `${translateToHindi(selectedExerciseLabel)} का रेप ${repNumber}। सुधार करें: ${translateToHindi(firstIssue)}` : `Rep ${repNumber} for ${selectedExerciseLabel}. Fix: ${firstIssue}`)
+            : (isHindi ? `${translateToHindi(selectedExerciseLabel)} का रेप ${repNumber}। सुधार की ज़रूरत है।` : `Rep ${repNumber} for ${selectedExerciseLabel}. Needs adjustment.`);
         }
       } else {
         // If only the target body part is visible, do not read issue details.
         // Avoid saying "good/bad" from possibly stale analysis; just keep you moving.
-        text = `Rep ${repNumber} for ${selectedExerciseLabel}. I cannot validate form until full body is visible.`;
+        text = isHindi
+          ? `${translateToHindi(selectedExerciseLabel)} का रेप ${repNumber}। जब तक पूरा शरीर नहीं दिखता, मैं फॉर्म की जाँच नहीं कर सकता।`
+          : `Rep ${repNumber} for ${selectedExerciseLabel}. I cannot validate form until full body is visible.`;
       }
 
       speakText(text, rate);
@@ -1105,30 +1222,30 @@ export default function PostureCoach() {
                           Array.isArray(res.analysis.issues) && res.analysis.issues[0]
                             ? res.analysis.issues[0]
                             : "Form is not correct.";
-                        speakText(
-                          `Rep ${attemptedRep} for ${selectedExerciseLabel} not counted. ${issue}`,
-                          rate
-                        );
+                        const text = narrationLangRef.current === "hi-IN"
+                          ? `${selectedExerciseLabel} का रेप ${attemptedRep} नहीं गिना गया। ${issue}`
+                          : `Rep ${attemptedRep} for ${selectedExerciseLabel} not counted. ${issue}`;
+                        speakText(text, rate);
                       }
                     } else {
-                      speakText(
-                        `Rep ${attemptedRep} for ${selectedExerciseLabel} not counted. I could not validate posture.`,
-                        rate
-                      );
+                      const text = narrationLangRef.current === "hi-IN"
+                        ? `${selectedExerciseLabel} का रेप ${attemptedRep} नहीं गिना गया। मैं पॉस्चर की जाँच नहीं कर सका।`
+                        : `Rep ${attemptedRep} for ${selectedExerciseLabel} not counted. I could not validate posture.`;
+                      speakText(text, rate);
                     }
                   })
                   .catch(() => {
-                    speakText(
-                      `Rep ${attemptedRep} for ${selectedExerciseLabel} not counted. I could not validate posture.`,
-                      rate
-                    );
+                    const text = narrationLangRef.current === "hi-IN"
+                      ? `${selectedExerciseLabel} का रेप ${attemptedRep} नहीं गिना गया। मैं पॉस्चर की जाँच नहीं कर सका।`
+                      : `Rep ${attemptedRep} for ${selectedExerciseLabel} not counted. I could not validate posture.`;
+                    speakText(text, rate);
                   });
               } else {
                 // If full body isn't visible, do not count the rep.
-                speakText(
-                  `Rep ${attemptedRep} for ${selectedExerciseLabel} not counted. Show full body in frame.`,
-                  rate
-                );
+                const text = narrationLangRef.current === "hi-IN"
+                  ? `${selectedExerciseLabel} का रेप ${attemptedRep} नहीं गिना गया। पूरे शरीर को फ्रेम में दिखाएं।`
+                  : `Rep ${attemptedRep} for ${selectedExerciseLabel} not counted. Show full body in frame.`;
+                speakText(text, rate);
               }
             }
           }
@@ -1164,11 +1281,18 @@ export default function PostureCoach() {
                         const issue = Array.isArray(res.analysis.issues) && res.analysis.issues.length 
                           ? res.analysis.issues[0] 
                           : "Needs adjustment.";
-                        const prefix = exercise === 'posture' ? "Posture is incorrect. " : "";
-                        speakText(`${prefix}${issue}`, 1.25);
+                        let textToSpeak = "";
+                        if (narrationLangRef.current === "hi-IN") {
+                          const prefix = exercise === "posture" ? "पॉस्चर सही नहीं है। " : "";
+                          textToSpeak = `${prefix}${translateToHindi(issue)}`;
+                        } else {
+                          const prefix = exercise === "posture" ? "Posture is incorrect. " : "";
+                          textToSpeak = `${prefix}${issue}`;
+                        }
+                        speakText(textToSpeak, 1.25);
                       } else if (exercise === 'posture') {
                         lastPostureSpeechTimeRef.current = nowTime;
-                        speakText("Posture is correct.", 1.25);
+                        speakText(narrationLangRef.current === "hi-IN" ? "पॉस्चर सही है।" : "Posture is correct.", 1.25);
                       }
                     }
                   }
@@ -1414,36 +1538,50 @@ export default function PostureCoach() {
                       Selected: <span className="font-semibold text-emerald-400">{selectedExerciseLabel}</span>
                     </p>
                     
-                    {/* The popup trigger */}
-                    <div className="relative">
-                      <button 
-                        onClick={() => setShowDemo(!showDemo)}
-                        className="flex items-center gap-2 text-sm text-[#22D3EE] font-semibold hover:text-[#22D3EE]/80 transition-colors"
-                      >
-                        <Video className="w-4 h-4" />
-                        Don't know how to workout?
-                        {showDemo ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                      </button>
-                      
-                      {/* The dropdown demo box */}
-                      {showDemo && (
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 md:w-80 bg-[#020617]/95 border border-[#1F2937] rounded-2xl shadow-[0_20px_60px_rgba(15,23,42,0.9)] p-4 backdrop-blur-2xl">
-                          <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
-                          <span className="block text-xs text-gray-400 mb-3 font-medium text-center">Form Demo: {selectedExerciseLabel}</span>
-                          <div className="w-full h-44 bg-[#020617]/50 rounded-xl overflow-hidden border border-[#1F2937]/50 flex items-center justify-center p-2">
-                            <img 
-                              src={EXERCISE_ANIMATIONS[selectedExerciseLabel] || EXERCISE_ANIMATIONS[exercise] || "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjM0NzgwMjM0NzgwMjM0NzgwMjM0NzgwMjM0NzgwMjM0NzgwMjM0NyZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/3o7TqtH1jJ1A2v25sQ/giphy.gif"} 
-                              alt={selectedExerciseLabel}
-                              className="object-contain w-full h-full max-h-40 rounded-lg mix-blend-lighten"
-                              onError={(e) => {
-                                e.target.onerror = null; 
-                                e.target.src = "https://cdn-icons-png.flaticon.com/512/2964/2964514.png"; 
-                                e.target.className = "w-16 h-16 opacity-30 object-contain mx-auto";
-                              }}
-                            />
+                    <div className="flex items-center gap-4">
+                      {/* The popup trigger */}
+                      <div className="relative">
+                        <button 
+                          onClick={() => setShowDemo(!showDemo)}
+                          className="flex items-center gap-2 text-sm text-[#22D3EE] font-semibold hover:text-[#22D3EE]/80 transition-colors"
+                        >
+                          <Video className="w-4 h-4" />
+                          Don't know how to workout?
+                          {showDemo ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                        </button>
+                        
+                        {/* The dropdown demo box */}
+                        {showDemo && (
+                          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 md:w-80 bg-[#020617]/95 border border-[#1F2937] rounded-2xl shadow-[0_20px_60px_rgba(15,23,42,0.9)] p-4 backdrop-blur-2xl">
+                            <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
+                            <span className="block text-xs text-gray-400 mb-3 font-medium text-center">Form Demo: {selectedExerciseLabel}</span>
+                            <div className="w-full h-44 bg-[#020617]/50 rounded-xl overflow-hidden border border-[#1F2937]/50 flex items-center justify-center p-2">
+                              <img 
+                                src={EXERCISE_ANIMATIONS[selectedExerciseLabel] || EXERCISE_ANIMATIONS[exercise] || "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMjM0NzgwMjM0NzgwMjM0NzgwMjM0NzgwMjM0NzgwMjM0NzgwMjM0NyZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/3o7TqtH1jJ1A2v25sQ/giphy.gif"} 
+                                alt={selectedExerciseLabel}
+                                className="object-contain w-full h-full max-h-40 rounded-lg mix-blend-lighten"
+                                onError={(e) => {
+                                  e.target.onerror = null; 
+                                  e.target.src = "https://cdn-icons-png.flaticon.com/512/2964/2964514.png"; 
+                                  e.target.className = "w-16 h-16 opacity-30 object-contain mx-auto";
+                                }}
+                              />
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 bg-[#020617]/80 backdrop-blur-sm border border-[#1F2937] rounded-lg px-2 py-1">
+                        <Volume2 className="w-4 h-4 text-[#22D3EE]" />
+                        <select
+                          className="bg-transparent text-sm font-semibold text-[#22D3EE] focus:outline-none focus:ring-0 cursor-pointer"
+                          value={narrationLang}
+                          onChange={(e) => setNarrationLang(e.target.value)}
+                        >
+                          <option value="en-US" className="bg-[#020617] text-gray-100">English</option>
+                          <option value="hi-IN" className="bg-[#020617] text-gray-100">Hindi</option>
+                        </select>
+                      </div>
                     </div>
 
                     <button
