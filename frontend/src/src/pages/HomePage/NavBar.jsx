@@ -297,24 +297,44 @@ export default function NavBar() {
             <GenFitLogo size="default" isHeader={true} />
 
             {/* Desktop Navigation Links */}
-            <div className="flex items-center gap-2 xl:gap-3 max-w-[54vw] overflow-x-auto pr-1">
+            <div className="flex items-center gap-2 xl:gap-3 max-w-[56vw] overflow-x-auto pr-1">
               {navLinks.map((link) => (
                 <NavLink
                   key={link.path}
                   to={link.path}
                   className={({ isActive }) =>
-                    `group relative inline-flex items-center justify-center h-11 px-4 rounded-2xl text-xs font-semibold tracking-wide whitespace-nowrap border transition-all duration-200 ${
+                    `group relative inline-flex items-center justify-center h-12 px-5 rounded-2xl text-sm font-semibold tracking-wide whitespace-nowrap border overflow-hidden transition-all duration-300 ${
                       isActive
                         ? darkMode
-                          ? "text-white bg-gradient-to-r from-[#8B5CF6]/30 to-[#22D3EE]/25 border-[#22D3EE]/70 shadow-[0_8px_18px_rgba(34,211,238,0.18)]"
-                          : "text-[#1e293b] bg-gradient-to-r from-[#8B5CF6]/15 to-[#22D3EE]/20 border-[#8B5CF6]/45 shadow-[0_8px_18px_rgba(139,92,246,0.14)]"
+                          ? "text-white border-[#22D3EE]/70 shadow-[0_10px_24px_rgba(34,211,238,0.22)]"
+                          : "text-[#1e293b] border-[#8B5CF6]/50 shadow-[0_10px_24px_rgba(139,92,246,0.16)]"
                         : darkMode
-                          ? "text-gray-200 bg-white/[0.04] border-[#2b3548] hover:text-white hover:border-[#22D3EE]/55 hover:bg-[#22D3EE]/10"
-                          : "text-gray-700 bg-white border-gray-200 hover:text-gray-900 hover:border-[#8B5CF6]/45 hover:bg-[#f8fafc]"
+                          ? "text-gray-200 bg-white/[0.04] border-[#2b3548] hover:text-white hover:border-[#22D3EE]/55 hover:shadow-[0_8px_18px_rgba(34,211,238,0.14)]"
+                          : "text-gray-700 bg-white border-gray-200 hover:text-gray-900 hover:border-[#8B5CF6]/45 hover:shadow-[0_8px_18px_rgba(139,92,246,0.12)]"
                     }`
                   }
                 >
-                  {link.label}
+                  {({ isActive }) => (
+                    <>
+                      <span
+                        className={`absolute inset-0 transition-opacity duration-300 ${
+                          isActive
+                            ? darkMode
+                              ? "bg-gradient-to-r from-[#8B5CF6]/35 to-[#22D3EE]/30 opacity-100"
+                              : "bg-gradient-to-r from-[#8B5CF6]/18 to-[#22D3EE]/22 opacity-100"
+                            : "opacity-0 group-hover:opacity-100"
+                        }`}
+                      />
+                      <span className="relative z-10">{link.label}</span>
+                      <span
+                        className={`relative z-10 ml-2 h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+                          isActive
+                            ? "bg-[#22D3EE] shadow-[0_0_10px_rgba(34,211,238,0.8)]"
+                            : "bg-transparent group-hover:bg-[#22D3EE]/70"
+                        }`}
+                      />
+                    </>
+                  )}
                 </NavLink>
               ))}
             </div>
@@ -538,11 +558,11 @@ export default function NavBar() {
                   key={link.path}
                   to={link.path}
                   className={({ isActive }) =>
-                    `mx-3 mb-2 block px-4 py-3 rounded-xl text-sm font-semibold tracking-wide border transition-all ${
+                    `mx-3 mb-2.5 block px-4 py-3.5 rounded-2xl text-sm font-semibold tracking-wide border transition-all duration-300 ${
                       isActive
                         ? darkMode
-                          ? "text-white bg-gradient-to-r from-[#8B5CF6]/25 to-[#22D3EE]/20 border-[#22D3EE]/60"
-                          : "text-[#1e293b] bg-gradient-to-r from-[#8B5CF6]/10 to-[#22D3EE]/15 border-[#8B5CF6]/35"
+                          ? "text-white bg-gradient-to-r from-[#8B5CF6]/30 to-[#22D3EE]/25 border-[#22D3EE]/60 shadow-[0_8px_18px_rgba(34,211,238,0.18)]"
+                          : "text-[#1e293b] bg-gradient-to-r from-[#8B5CF6]/12 to-[#22D3EE]/18 border-[#8B5CF6]/35 shadow-[0_8px_18px_rgba(139,92,246,0.12)]"
                         : darkMode
                           ? "text-gray-200 bg-white/[0.03] border-[#243044] hover:bg-[#22D3EE]/10 hover:border-[#22D3EE]/50"
                           : "text-gray-700 bg-white border-gray-200 hover:bg-gray-50 hover:border-[#8B5CF6]/35"
@@ -550,7 +570,18 @@ export default function NavBar() {
                   }
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  {link.label}
+                  {({ isActive }) => (
+                    <span className="flex items-center justify-between gap-3">
+                      <span>{link.label}</span>
+                      <span
+                        className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+                          isActive
+                            ? "bg-[#22D3EE] shadow-[0_0_10px_rgba(34,211,238,0.8)]"
+                            : "bg-transparent"
+                        }`}
+                      />
+                    </span>
+                  )}
                 </NavLink>
               ))}
             </div>
