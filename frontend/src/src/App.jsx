@@ -48,9 +48,6 @@ import AdminChallenges from "./pages/Admin/Challenges";
 import Community from "./pages/Community/Community.jsx";
 import NoPageFound from "./pages/NoPageFound/NoPageFound.jsx";
 
-
-
-
 function App() {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -59,7 +56,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     const savedLoginStatus = localStorage.getItem("isLoggedIn");
     const savedUser = localStorage.getItem("user");
-    
+
     // Auto-hydrate Redux on startup if user exists in storage
     if (savedUser && savedUser !== "undefined") {
       try {
@@ -68,20 +65,30 @@ function App() {
         console.error("Failed to parse saved user", e);
       }
     }
-    
+
     return savedLoginStatus === "true";
   });
 
   useEffect(() => {
     localStorage.setItem("isLoggedIn", isLoggedIn);
-    
+
     // Splash screen timer
     const timer = setTimeout(() => {
       setIsSplashLoading(false);
     }, 2800); // 2.8 seconds loading overlay
-    
+
     return () => clearTimeout(timer);
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (isSplashLoading) return;
+
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "auto",
+    });
+  }, [location.pathname, isSplashLoading]);
 
   useEffect(() => {
     if (isSplashLoading) return;
@@ -104,9 +111,7 @@ function App() {
       {" "}
       {/* Wrap the entire application with ThemeProvider */}
       <div className="w-screen min-h-screen">
-        <PWAInstallBanner />
-        {" "}
-        {/* Removed bg-white and text-black */}
+        <PWAInstallBanner /> {/* Removed bg-white and text-black */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
@@ -122,7 +127,6 @@ function App() {
           <Route path="/Feedback" element={<UserFeedback />} />
           <Route path="/Support" element={<UserSupport />} />
           <Route path="/weekly-report" element={<WeeklyReport />} />
-
 
           <Route path="/UserLogs" element={<UserLogsPage />} />
           <Route path="/calorie-tracker" element={<CalorieTracker />} />
@@ -160,14 +164,11 @@ function App() {
             <Route path="support" element={<AdminSupport />} />
             <Route path="income" element={<AdminIncome />} />
             <Route path="challenges" element={<AdminChallenges />} />
-
           </Route>
 
           <Route path="/no-page-found" element={<NoPageFound />} />
           <Route path="*" element={<NoPageFound />} />
         </Routes>
-
-
         {!isAdminRoute && <FitBotWidget />}
         <ScrollToTopButton />
         <ToastContainer
