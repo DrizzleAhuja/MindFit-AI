@@ -339,20 +339,25 @@ const CalorieIntakeSection = ({ navigate, calorieHistory }) => {
 // Heatmap from real session dates (last 4 weeks, 7 days each)
 const StreakHeatmap = ({ activityData, darkMode }) => {
   const days = ["M", "T", "W", "T", "F", "S", "S"];
+  const mutedTextClass = darkMode ? "text-gray-100" : "text-gray-500";
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Calendar className="w-5 h-5 text-[#22D3EE]" />
-          <h3 className={`text-lg font-semibold ${darkMode ? "text-white" : "text-gray-900"}`}>Consistency</h3>
+          <h3
+            className={`text-lg font-semibold ${darkMode ? "text-white" : "text-gray-900"}`}
+          >
+            Consistency
+          </h3>
         </div>
-        <span className="text-xs text-gray-500">Last 4 weeks</span>
+        <span className={`text-xs ${mutedTextClass}`}>Last 4 weeks</span>
       </div>
       <div className="grid grid-cols-7 gap-1.5 mb-2">
         {days.map((day, i) => (
           <div
             key={i}
-            className="text-center text-[10px] text-gray-500 font-medium"
+            className={`text-center text-[10px] font-medium ${mutedTextClass}`}
           >
             {day}
           </div>
@@ -367,7 +372,9 @@ const StreakHeatmap = ({ activityData, darkMode }) => {
                 className={`aspect-square rounded transition-all ${
                   active
                     ? "bg-[#22D3EE] border border-[#22D3EE]/50"
-                    : (darkMode ? "bg-[#1F2937]/60 border border-[#1F2937]" : "bg-gray-100 border border-gray-200")
+                    : darkMode
+                      ? "bg-[#1F2937]/60 border border-[#1F2937]"
+                      : "bg-gray-100 border border-gray-200"
                 }`}
               />
             ))}
@@ -375,7 +382,7 @@ const StreakHeatmap = ({ activityData, darkMode }) => {
         ))}
       </div>
       <div className="flex justify-end gap-3 mt-2 text-[10px]">
-        <span className="text-gray-500">Less</span>
+        <span className={mutedTextClass}>Less</span>
         <div className="flex gap-0.5">
           {[0, 0.25, 0.5, 0.75, 1].map((op, i) => (
             <div
@@ -385,7 +392,7 @@ const StreakHeatmap = ({ activityData, darkMode }) => {
             />
           ))}
         </div>
-        <span className="text-gray-500">More</span>
+        <span className={mutedTextClass}>More</span>
       </div>
     </div>
   );
@@ -396,7 +403,9 @@ const BMITrendChart = ({ bmiHistory, navigate, darkMode }) => {
   if (!bmiHistory || bmiHistory.length === 0) {
     return (
       <div className="text-center py-8">
-        <Scale className={`w-12 h-12 mx-auto mb-3 ${darkMode ? "text-gray-600" : "text-gray-300"}`} />
+        <Scale
+          className={`w-12 h-12 mx-auto mb-3 ${darkMode ? "text-gray-600" : "text-gray-300"}`}
+        />
         <p className="text-gray-400 mb-4">No BMI data yet</p>
         <button
           type="button"
@@ -412,12 +421,18 @@ const BMITrendChart = ({ bmiHistory, navigate, darkMode }) => {
   const maxBMI = Math.max(...data.map((b) => b.bmi), 30);
   const minBMI = Math.min(...data.map((b) => b.bmi), 15);
   const range = maxBMI - minBMI || 10;
+  const valueTextClass = darkMode ? "text-gray-100" : "text-gray-400";
+  const dateTextClass = darkMode ? "text-gray-200" : "text-gray-500";
 
   return (
     <div>
       <div className="flex items-center gap-2 mb-4">
         <Scale className="w-5 h-5 text-[#22D3EE]" />
-        <h3 className={`text-lg font-semibold ${darkMode ? "text-white" : "text-gray-900"}`}>BMI Trend</h3>
+        <h3
+          className={`text-lg font-semibold ${darkMode ? "text-white" : "text-gray-900"}`}
+        >
+          BMI Trend
+        </h3>
       </div>
       <div className="flex items-end justify-between gap-2 h-24">
         {data.map((bmi, i) => {
@@ -425,14 +440,14 @@ const BMITrendChart = ({ bmiHistory, navigate, darkMode }) => {
           const isNormal = bmi.category === "Normal weight";
           return (
             <div key={i} className="flex flex-col items-center flex-1">
-              <span className="text-xs text-gray-400 mb-1">
+              <span className={`text-xs mb-1 ${valueTextClass}`}>
                 {formatBmiOneDecimal(bmi.bmi)}
               </span>
               <div
                 className={`w-full max-w-[24px] rounded-t transition-all ${isNormal ? "bg-[#22C55E]" : "bg-[#F97316]"}`}
                 style={{ height: `${Math.max(height, 10)}%` }}
               />
-              <span className="text-[10px] text-gray-500 mt-1">
+              <span className={`text-[10px] mt-1 ${dateTextClass}`}>
                 {new Date(bmi.date).toLocaleDateString("en-IN", {
                   day: "2-digit",
                   month: "short",
@@ -915,8 +930,8 @@ export default function Home() {
   }, [stats.streakCount, bmiHistory, workoutsThisWeek]);
 
   const cardClass = `relative rounded-2xl border transition-all duration-300 backdrop-blur-xl shadow-xl ${
-    darkMode 
-      ? "border-[#1F2937] bg-[#020617]/80 hover:border-[#22D3EE]/60 shadow-[0_18px_45px_rgba(15,23,42,0.8)]" 
+    darkMode
+      ? "border-[#1F2937] bg-[#020617]/80 hover:border-[#22D3EE]/60 shadow-[0_18px_45px_rgba(15,23,42,0.8)]"
       : "border-gray-200 bg-white hover:border-purple-300 hover:shadow-2xl hover:shadow-purple-500/10"
   }`;
 
@@ -960,7 +975,9 @@ export default function Home() {
                       <Zap className="w-6 h-6 text-yellow-400" />
                     </div>
                     <div>
-                      <h3 className={`text-lg font-bold ${darkMode ? "text-white" : "text-gray-900"}`}>
+                      <h3
+                        className={`text-lg font-bold ${darkMode ? "text-white" : "text-gray-900"}`}
+                      >
                         Upgrade to GenFit PRO
                       </h3>
                       <p className="text-sm text-yellow-100/70">
@@ -988,18 +1005,24 @@ export default function Home() {
               <header className="text-center md:text-left mb-6 sm:mb-8 lg:mb-10">
                 <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-gradient-to-r from-[#8B5CF6]/20 to-[#22D3EE]/20 border border-[#8B5CF6]/40 backdrop-blur-xl mb-4">
                   <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#FACC15]" />
-                  <span className={`text-xs sm:text-sm font-semibold ${darkMode ? "text-gray-100" : "text-gray-700"}`}>
+                  <span
+                    className={`text-xs sm:text-sm font-semibold ${darkMode ? "text-gray-100" : "text-gray-700"}`}
+                  >
                     Smart Analytics Dashboard
                   </span>
                 </div>
-                <h1 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-3 sm:mb-4 ${darkMode ? "text-white" : "text-gray-900"}`}>
+                <h1
+                  className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-3 sm:mb-4 ${darkMode ? "text-white" : "text-gray-900"}`}
+                >
                   Ready to train,{" "}
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]">
                     {user.firstName || "Athlete"}
                   </span>
                   ? 🚀
                 </h1>
-                <p className={`max-w-3xl text-sm sm:text-base lg:text-lg ${darkMode ? "text-gray-300" : "text-gray-500"}`}>
+                <p
+                  className={`max-w-3xl text-sm sm:text-base lg:text-lg ${darkMode ? "text-gray-300" : "text-gray-500"}`}
+                >
                   Track your progress, log workouts, and check your AI insights
                   here.
                 </p>
@@ -1010,14 +1033,18 @@ export default function Home() {
                 <div className={`${cardClass} p-4 sm:p-5 md:p-6`}>
                   <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
                   <div className="flex items-center justify-between mb-2 sm:mb-3">
-                    <div className={`rounded-lg p-2 sm:p-3 border ${darkMode ? "bg-[#020617] border-[#1F2937]" : "bg-purple-50 border-purple-100"}`}>
+                    <div
+                      className={`rounded-lg p-2 sm:p-3 border ${darkMode ? "bg-[#020617] border-[#1F2937]" : "bg-purple-50 border-purple-100"}`}
+                    >
                       <Flame className="text-[#22D3EE] text-xl sm:text-2xl" />
                     </div>
                     <span className="text-[#22D3EE]/80 text-xs font-medium">
                       This week
                     </span>
                   </div>
-                  <div className={`text-3xl sm:text-4xl font-bold mb-1 ${darkMode ? "text-white" : "text-gray-900"}`}>
+                  <div
+                    className={`text-3xl sm:text-4xl font-bold mb-1 ${darkMode ? "text-white" : "text-gray-900"}`}
+                  >
                     <AnimatedCounter value={caloriesBurnedThisWeek} />
                   </div>
                   <p className="text-gray-400 text-xs sm:text-sm">
@@ -1028,7 +1055,9 @@ export default function Home() {
                 <div className={`${cardClass} p-4 sm:p-5 md:p-6`}>
                   <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
                   <div className="flex items-center justify-between mb-2 sm:mb-3">
-                    <div className={`rounded-lg p-2 sm:p-3 border ${darkMode ? "bg-[#020617] border-[#1F2937]" : "bg-purple-50 border-purple-100"}`}>
+                    <div
+                      className={`rounded-lg p-2 sm:p-3 border ${darkMode ? "bg-[#020617] border-[#1F2937]" : "bg-purple-50 border-purple-100"}`}
+                    >
                       <Dumbbell className="text-[#22D3EE] text-xl sm:text-2xl" />
                     </div>
                     <span className="text-[#22D3EE]/80 text-xs font-medium">
@@ -1125,7 +1154,10 @@ export default function Home() {
                 </div>
                 <div className={cardClass + " p-4 sm:p-6"}>
                   <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
-                  <StreakHeatmap activityData={heatmapData} />
+                  <StreakHeatmap
+                    activityData={heatmapData}
+                    darkMode={darkMode}
+                  />
                 </div>
               </div>
 
@@ -1167,7 +1199,11 @@ export default function Home() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
                 <div className={cardClass + " p-4 sm:p-6"}>
                   <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
-                  <BMITrendChart bmiHistory={bmiHistory} navigate={navigate} />
+                  <BMITrendChart
+                    bmiHistory={bmiHistory}
+                    navigate={navigate}
+                    darkMode={darkMode}
+                  />
                 </div>
                 <div className={cardClass + " p-4 sm:p-6"}>
                   <div className="absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-[#8B5CF6] via-[#A855F7] to-[#22D3EE]" />
