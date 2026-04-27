@@ -27,6 +27,19 @@ import {
 } from "react-icons/fi";
 
 import { io } from "socket.io-client";
+import {
+  LayoutDashboard,
+  Users as UsersIcon,
+  Info,
+  Sparkles,
+  Mail,
+  Bot,
+  Scale,
+  Flame,
+  Dumbbell,
+  UtensilsCrossed,
+  Trophy,
+} from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 import { API_BASE_URL, API_ENDPOINTS } from "../../../config/api";
 import { isPWAInstalled } from "../../utils/pwaInstall";
@@ -244,30 +257,34 @@ export default function NavBar() {
 
   const navLinks = [
     ...(user && user.role !== "admin"
-      ? [{ path: "/", label: "Dashboard" }]
+      ? [{ path: "/", label: "Dashboard", icon: LayoutDashboard }]
       : []),
     ...(user && user.role === "admin"
       ? [
-          { path: "/admin/dashboard", label: "Dashboard" },
-          { path: "/admin/users", label: "Users" },
+          {
+            path: "/admin/dashboard",
+            label: "Dashboard",
+            icon: LayoutDashboard,
+          },
+          { path: "/admin/users", label: "Users", icon: UsersIcon },
         ]
       : []),
     ...(!user
       ? [
-          { path: "/about", label: "About" },
-          { path: "/features", label: "Features" },
-          { path: "/Contactus", label: "Contact" },
-          { path: "/leaderboard", label: "Leaderboard" },
+          { path: "/about", label: "About", icon: Info },
+          { path: "/features", label: "Features", icon: Sparkles },
+          { path: "/Contactus", label: "Contact", icon: Mail },
+          { path: "/leaderboard", label: "Leaderboard", icon: Trophy },
         ]
       : user.role === "admin"
         ? [] // Hide user pages for Admin
         : [
-            { path: "/VirtualTA", label: "VTA" },
-            { path: "/CurrentBMI", label: "Current BMI" },
-            { path: "/calorie-tracker", label: "Calorie" },
-            { path: "/Workout", label: "Workout" },
-            { path: "/diet-chart", label: "Diet" },
-            { path: "/leaderboard", label: "Leaderboard" },
+            { path: "/VirtualTA", label: "VTA", icon: Bot },
+            { path: "/CurrentBMI", label: "Current BMI", icon: Scale },
+            { path: "/calorie-tracker", label: "Calorie", icon: Flame },
+            { path: "/Workout", label: "Workout", icon: Dumbbell },
+            { path: "/diet-chart", label: "Diet", icon: UtensilsCrossed },
+            { path: "/leaderboard", label: "Leaderboard", icon: Trophy },
           ]),
   ];
 
@@ -297,13 +314,13 @@ export default function NavBar() {
             <GenFitLogo size="default" isHeader={true} />
 
             {/* Desktop Navigation Links */}
-            <div className="flex items-center gap-2 xl:gap-3 max-w-[56vw] overflow-x-auto pr-1">
+            <div className="flex items-center gap-2 xl:gap-3 max-w-[56vw] overflow-x-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {navLinks.map((link) => (
                 <NavLink
                   key={link.path}
                   to={link.path}
                   className={({ isActive }) =>
-                    `group relative inline-flex items-center justify-center h-12 px-5 rounded-2xl text-sm font-semibold tracking-wide whitespace-nowrap border overflow-hidden transition-all duration-300 ${
+                    `group relative inline-flex items-center justify-center h-12 px-5 rounded-2xl text-[13px] xl:text-sm leading-none font-semibold tracking-[0.02em] whitespace-nowrap border overflow-hidden transition-all duration-300 ${
                       isActive
                         ? darkMode
                           ? "text-white border-[#22D3EE]/70 shadow-[0_10px_24px_rgba(34,211,238,0.22)]"
@@ -314,27 +331,28 @@ export default function NavBar() {
                     }`
                   }
                 >
-                  {({ isActive }) => (
-                    <>
-                      <span
-                        className={`absolute inset-0 transition-opacity duration-300 ${
-                          isActive
-                            ? darkMode
-                              ? "bg-gradient-to-r from-[#8B5CF6]/35 to-[#22D3EE]/30 opacity-100"
-                              : "bg-gradient-to-r from-[#8B5CF6]/18 to-[#22D3EE]/22 opacity-100"
-                            : "opacity-0 group-hover:opacity-100"
-                        }`}
-                      />
-                      <span className="relative z-10">{link.label}</span>
-                      <span
-                        className={`relative z-10 ml-2 h-1.5 w-1.5 rounded-full transition-all duration-300 ${
-                          isActive
-                            ? "bg-[#22D3EE] shadow-[0_0_10px_rgba(34,211,238,0.8)]"
-                            : "bg-transparent group-hover:bg-[#22D3EE]/70"
-                        }`}
-                      />
-                    </>
-                  )}
+                  {({ isActive }) => {
+                    const Icon = link.icon;
+                    return (
+                      <>
+                        <span
+                          className={`absolute inset-0 transition-opacity duration-300 ${
+                            isActive
+                              ? darkMode
+                                ? "bg-gradient-to-r from-[#8B5CF6]/35 to-[#22D3EE]/30 opacity-100"
+                                : "bg-gradient-to-r from-[#8B5CF6]/18 to-[#22D3EE]/22 opacity-100"
+                              : "opacity-0 group-hover:opacity-100"
+                          }`}
+                        />
+                        <span className="relative z-10 inline-flex items-center gap-2.5">
+                          <Icon
+                            className={`h-4 w-4 ${isActive ? "text-[#22D3EE]" : "text-gray-400 group-hover:text-[#22D3EE]"}`}
+                          />
+                          <span>{link.label}</span>
+                        </span>
+                      </>
+                    );
+                  }}
                 </NavLink>
               ))}
             </div>
@@ -553,37 +571,40 @@ export default function NavBar() {
 
             {/* Navigation Links */}
             <div className="flex-1 overflow-y-auto py-4">
-              {navLinks.map((link) => (
-                <NavLink
-                  key={link.path}
-                  to={link.path}
-                  className={({ isActive }) =>
-                    `mx-3 mb-2.5 block px-4 py-3.5 rounded-2xl text-sm font-semibold tracking-wide border transition-all duration-300 ${
-                      isActive
-                        ? darkMode
-                          ? "text-white bg-gradient-to-r from-[#8B5CF6]/30 to-[#22D3EE]/25 border-[#22D3EE]/60 shadow-[0_8px_18px_rgba(34,211,238,0.18)]"
-                          : "text-[#1e293b] bg-gradient-to-r from-[#8B5CF6]/12 to-[#22D3EE]/18 border-[#8B5CF6]/35 shadow-[0_8px_18px_rgba(139,92,246,0.12)]"
-                        : darkMode
-                          ? "text-gray-200 bg-white/[0.03] border-[#243044] hover:bg-[#22D3EE]/10 hover:border-[#22D3EE]/50"
-                          : "text-gray-700 bg-white border-gray-200 hover:bg-gray-50 hover:border-[#8B5CF6]/35"
-                    }`
-                  }
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {({ isActive }) => (
-                    <span className="flex items-center justify-between gap-3">
-                      <span>{link.label}</span>
-                      <span
-                        className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
+              <div className="px-3 sm:px-4">
+                <div className="flex items-center gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  {navLinks.map((link) => (
+                    <NavLink
+                      key={link.path}
+                      to={link.path}
+                      className={({ isActive }) =>
+                        `shrink-0 inline-flex items-center h-11 px-4 rounded-xl text-[13px] leading-none font-semibold tracking-[0.02em] whitespace-nowrap border transition-all duration-300 ${
                           isActive
-                            ? "bg-[#22D3EE] shadow-[0_0_10px_rgba(34,211,238,0.8)]"
-                            : "bg-transparent"
-                        }`}
-                      />
-                    </span>
-                  )}
-                </NavLink>
-              ))}
+                            ? darkMode
+                              ? "text-white bg-gradient-to-r from-[#8B5CF6]/30 to-[#22D3EE]/25 border-[#22D3EE]/60 shadow-[0_8px_18px_rgba(34,211,238,0.18)]"
+                              : "text-[#1e293b] bg-gradient-to-r from-[#8B5CF6]/12 to-[#22D3EE]/18 border-[#8B5CF6]/35 shadow-[0_8px_18px_rgba(139,92,246,0.12)]"
+                            : darkMode
+                              ? "text-gray-200 bg-white/[0.03] border-[#243044] hover:bg-[#22D3EE]/10 hover:border-[#22D3EE]/50"
+                              : "text-gray-700 bg-white border-gray-200 hover:bg-gray-50 hover:border-[#8B5CF6]/35"
+                        }`
+                      }
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {({ isActive }) => {
+                        const Icon = link.icon;
+                        return (
+                          <span className="inline-flex items-center gap-2.5">
+                            <Icon
+                              className={`h-4 w-4 ${isActive ? "text-[#22D3EE]" : "text-gray-400"}`}
+                            />
+                            <span>{link.label}</span>
+                          </span>
+                        );
+                      }}
+                    </NavLink>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Footer Section */}
