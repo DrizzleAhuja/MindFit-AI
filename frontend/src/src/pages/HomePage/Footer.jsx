@@ -229,7 +229,7 @@ export default function Footer() {
       darkMode ? "bg-[#020617] border-white/5" : "bg-white border-gray-100"
     }`}>
       <div className="container mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 mb-12">
           {/* Brand & Social */}
           <div className="space-y-6">
             <GenFitLogo size="large" />
@@ -276,6 +276,45 @@ export default function Footer() {
                 <span>Innovation Hub, Tech City</span>
               </li>
             </ul>
+          </div>
+
+          {/* Download App */}
+          <div className="space-y-6">
+            <h5 className={`font-bold mb-6 tracking-tight ${darkMode ? "text-white" : "text-gray-900"}`}>DOWNLOAD APP</h5>
+            <p className={`text-sm leading-relaxed ${darkMode ? "text-gray-400" : "text-gray-500 font-medium"}`}>
+              Get the best experience by installing our app on your device.
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={handleAndroidInstall}
+                className={`flex items-center justify-center gap-3 px-6 py-3 rounded-xl border transition-all duration-300 group ${
+                  darkMode 
+                    ? "bg-white/5 border-white/10 hover:bg-emerald-500/10 hover:border-emerald-500/30 text-gray-300 hover:text-emerald-400" 
+                    : "bg-gray-50 border-gray-200 hover:bg-purple-50 hover:border-purple-200 text-gray-700 hover:text-purple-600"
+                }`}
+              >
+                <FaAndroid size={20} className="transition-transform group-hover:scale-110" />
+                <div className="text-left">
+                  <div className="text-[10px] uppercase tracking-wider opacity-60">Get it for</div>
+                  <div className="text-sm font-bold">Android</div>
+                </div>
+              </button>
+
+              <button
+                onClick={handleIOSInstall}
+                className={`flex items-center justify-center gap-3 px-6 py-3 rounded-xl border transition-all duration-300 group ${
+                  darkMode 
+                    ? "bg-white/5 border-white/10 hover:bg-blue-500/10 hover:border-blue-500/30 text-gray-300 hover:text-blue-400" 
+                    : "bg-gray-50 border-gray-200 hover:bg-indigo-50 hover:border-indigo-200 text-gray-700 hover:text-indigo-600"
+                }`}
+              >
+                <FaApple size={20} className="transition-transform group-hover:scale-110" />
+                <div className="text-left">
+                  <div className="text-[10px] uppercase tracking-wider opacity-60">Download on</div>
+                  <div className="text-sm font-bold">App Store</div>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
 
