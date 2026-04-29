@@ -40,6 +40,7 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`
   const [isOpen, setIsOpen] = useState(Boolean(defaultOpen));
   const [imageBase64, setImageBase64] = useState(null);
   const [isListening, setIsListening] = useState(false);
+  const [speechLang, setSpeechLang] = useState('en-IN');
   const [interimInput, setInterimInput] = useState("");
   const chatEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -100,9 +101,7 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`;
       const recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
-      // 'hi-IN' natively auto-detects and supports both English and Hindi in most modern browsers
-      recognition.lang = 'hi-IN';
-
+      recognition.lang = speechLang;
       recognition.onstart = () => {
         setIsListening(true);
         setInterimInput("");
@@ -114,7 +113,6 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`;
       recognition.onresult = (event) => {
         let currentInterim = "";
         let newFinal = "";
-
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           if (event.results[i].isFinal) {
             newFinal += event.results[i][0].transcript;
@@ -122,13 +120,11 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`;
             currentInterim += event.results[i][0].transcript;
           }
         }
-        
         if (currentInterim) {
           setInterimInput(currentInterim);
         } else {
           setInterimInput("");
         }
-
         if (newFinal) {
           setInput((prev) => prev.trim() + (prev ? " " : "") + newFinal.trim() + " ");
         }
@@ -142,7 +138,7 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`;
       };
       recognitionRef.current = recognition;
     }
-  }, []);
+  }, [speechLang]);
 
   const toggleListening = () => {
     if (isListening) {
@@ -375,14 +371,26 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`;
             </div>
           )}
           <div className={`flex rounded-lg border focus-within:ring-2 focus-within:ring-[#22D3EE] focus-within:border-transparent items-center ${darkMode ? 'bg-[#020617]/80 border-[#1F2937]' : 'bg-gray-50 border-gray-300'}`}>
-            <button
-              type="button"
-              onClick={toggleListening}
-              className={`p-3 text-gray-400 hover:text-white transition ${isListening ? 'text-red-500 animate-pulse' : ''}`}
-              title="Start/Stop Voice Input"
-            >
-              {isListening ? <FaMicrophoneSlash /> : <FaMicrophone />}
-            </button>
+            <div className="flex flex-col items-center">
+              <button
+                type="button"
+                onClick={() => setSpeechLang(prev => prev === 'en-IN' ? 'hi-IN' : 'en-IN')}
+                className={`text-[9px] font-bold px-1 rounded border transition-colors ${
+                  darkMode ? 'border-[#1F2937] text-gray-400 hover:text-white' : 'border-gray-200 text-gray-500 hover:text-gray-900'
+                }`}
+                title="Switch Language"
+              >
+                {speechLang === 'en-IN' ? 'EN' : 'HI'}
+              </button>
+              <button
+                type="button"
+                onClick={toggleListening}
+                className={`p-3 text-gray-400 hover:text-white transition ${isListening ? 'text-red-500 animate-pulse' : ''}`}
+                title="Start/Stop Voice Input"
+              >
+                {isListening ? <FaMicrophoneSlash /> : <FaMicrophone />}
+              </button>
+            </div>
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
