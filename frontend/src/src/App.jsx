@@ -3,8 +3,8 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useDispatch } from "react-redux";
-import { setUser } from "./redux/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser, selectUser } from "./redux/userSlice";
 import Home from "./pages/HomePage/Home";
 import Signin from "./pages/SigninPage/Signin";
 import Report from "./pages/BMICalculator/Report.jsx";
@@ -51,6 +51,7 @@ import NoPageFound from "./pages/NoPageFound/NoPageFound.jsx";
 function App() {
   const location = useLocation();
   const dispatch = useDispatch();
+  const user = useSelector(selectUser);
   const isAdminRoute = location.pathname.startsWith("/admin");
   const [isSplashLoading, setIsSplashLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -169,7 +170,7 @@ function App() {
           <Route path="/no-page-found" element={<NoPageFound />} />
           <Route path="*" element={<NoPageFound />} />
         </Routes>
-        {!isAdminRoute && <FitBotWidget />}
+        {!isAdminRoute && user && <FitBotWidget />}
         <ScrollToTopButton />
         <ToastContainer
           position="bottom-right"
