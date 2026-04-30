@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import { FiCopy, FiRefreshCw } from "react-icons/fi";
-import { FaDumbbell, FaHeartbeat, FaRunning, FaMicrophone, FaMicrophoneSlash, FaImage } from "react-icons/fa";
+import { FaDumbbell, FaHeartbeat, FaRunning, FaMicrophone, FaMicrophoneSlash, FaImage, FaVolumeUp, FaStop } from "react-icons/fa";
 import { BsRobot } from "react-icons/bs";
 import { IoMdSend } from "react-icons/io";
 import { useSelector } from "react-redux";
@@ -42,9 +42,30 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`
   const [isListening, setIsListening] = useState(false);
   const [speechLang, setSpeechLang] = useState('en-IN');
   const [interimInput, setInterimInput] = useState("");
+  const [speakingIndex, setSpeakingIndex] = useState(null);
   const chatEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const recognitionRef = useRef(null);
+
+  const isHindi = (text) => /[\u0900-\u097F]/.test(text);
+
+  const handleSpeak = (text, index) => {
+    if (speakingIndex === index) {
+      window.speechSynthesis.cancel();
+      setSpeakingIndex(null);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = isHindi(text) ? 'hi-IN' : 'en-US';
+    
+    utterance.onend = () => setSpeakingIndex(null);
+    utterance.onerror = () => setSpeakingIndex(null);
+    
+    setSpeakingIndex(index);
+    window.speechSynthesis.speak(utterance);
+  };
 
   // Update initial message when user data changes
   useEffect(() => {
@@ -323,6 +344,15 @@ Try using the microphone 🎤 or attaching an image 🖼️! 💪`;
                   <span className={`text-xs font-medium ${darkMode ? 'text-gray-200' : 'text-gray-500'}`}>
                     {msg.role === "user" ? "You" : "FitBot"}
                   </span>
+                  <button
+                    onClick={() => handleSpeak(msg.content, index)}
+                    className={`ml-auto p-1 rounded-full transition-colors ${
+                      darkMode ? 'hover:bg-white/10 text-gray-400' : 'hover:bg-black/5 text-gray-500'
+                    } ${speakingIndex === index ? 'text-cyan-400' : ''}`}
+                    title={speakingIndex === index ? "Stop Narration" : "Listen to Message"}
+                  >
+                    {speakingIndex === index ? <FaStop size={12} /> : <FaVolumeUp size={12} />}
+                  </button>
                 </div>
                 <p className={`whitespace-pre-wrap ${msg.role === 'user' ? 'text-white' : darkMode ? 'text-gray-100' : 'text-gray-800'}`}>
                   {msg.content}

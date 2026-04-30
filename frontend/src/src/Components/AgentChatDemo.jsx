@@ -1,11 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mic, Send, Bot, User, CheckCircle2, Languages, Sparkles } from 'lucide-react';
+import { Mic, Send, Bot, User, CheckCircle2, Languages, Sparkles, Volume2, Square } from 'lucide-react';
 
 const AgentChatDemo = () => {
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [step, setStep] = useState(0);
+  const [speakingIndex, setSpeakingIndex] = useState(null);
+
+  const isHindi = (text) => /[\u0900-\u097F]/.test(text);
+
+  const handleSpeak = (text, index) => {
+    if (speakingIndex === index) {
+      window.speechSynthesis.cancel();
+      setSpeakingIndex(null);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = isHindi(text) ? 'hi-IN' : 'en-US';
+    
+    utterance.onend = () => setSpeakingIndex(null);
+    utterance.onerror = () => setSpeakingIndex(null);
+    
+    setSpeakingIndex(index);
+    window.speechSynthesis.speak(utterance);
+  };
 
   const demoSequence = [
     { role: 'user', text: 'Update my BMI to 60', type: 'voice' },
@@ -95,7 +116,18 @@ const AgentChatDemo = () => {
                       <span className="text-[9px] font-black uppercase opacity-60 tracking-widest">Voice Command</span>
                     </div>
                   )}
-                  <p className="text-sm font-medium leading-relaxed">{msg.text}</p>
+                  <div className="flex justify-between items-start gap-4">
+                    <p className="text-sm font-medium leading-relaxed flex-1">{msg.text}</p>
+                    <button
+                      onClick={() => handleSpeak(msg.text, i)}
+                      className={`p-1 rounded-md transition-colors ${
+                        speakingIndex === i ? 'text-cyan-400 bg-white/10' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      }`}
+                      title={speakingIndex === i ? "Stop Narration" : "Listen to Message"}
+                    >
+                      {speakingIndex === i ? <Square className="w-3 h-3 fill-current" /> : <Volume2 className="w-3 h-3" />}
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ))}
